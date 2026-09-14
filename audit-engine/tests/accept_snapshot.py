@@ -36,6 +36,27 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     results = json.loads(cli('result', 'inspect', multi_id))
     assert [r['detector_id'] for r in results] == ['framework.health', 'framework.snapshot_integrity']
     assert results[1]['finding_count'] == 1 and len(results[1]['findings'][0]['evidence']) == 11
+    # Business policy uses the same exported snapshot, with no live source authority.
+    from collections import Counter
+    business_policy = policy_path.with_name('business-rulepack-v1.json')
+    prior_runs = {p.name for p in (Path(directory) / 'runs').iterdir()}
+    cli('run', '--snapshot', ids[0], '--policy', str(business_policy),
+        env={**os.environ, 'AUDIT_SOURCE_DATABASE_URL': 'unusable', 'DATABASE_URL': 'unusable'})
+    business_id = next(p.name for p in (Path(directory) / 'runs').iterdir() if p.name not in prior_runs)
+    business = json.loads(cli('result', 'inspect', business_id))
+    counts = Counter(row['reference'] for row in one.tables['invoices'] if row['reference'] not in (None, ''))
+    expected = {ref: count for ref, count in counts.items() if count > 1}
+    assert business['detector_id'] == 'business.duplicate_transaction_reference'
+    # Existing fixture anomalies change both case and whitespace. This rule deliberately
+    # does not trim, so those benchmark groups are not exact-reference duplicates.
+    assert business['finding_count'] == len(expected)
+    assert business['status'] == ('findings' if expected else 'passed')
+    actual = {f['evidence'][0]['observed_value']: len(f['evidence']) for f in business['findings']}
+    assert actual == expected
+    for finding in business['findings']:
+        ref = finding['evidence'][0]['observed_value']
+        assert {e['source_record_id']['id'] for e in finding['evidence']} == {
+            row['id'] for row in one.tables['invoices'] if row['reference'] == ref}
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -53,7 +74,7 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 8, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 9, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
                       'snapshot_hash': one.snapshot.snapshot_hash,
-                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, secret exclusion, tamper rejection'}))
+                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, secret exclusion, tamper rejection'}))

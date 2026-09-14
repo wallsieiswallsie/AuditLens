@@ -9,7 +9,7 @@ from audit_engine.models.contracts import AuditRun, Provenance, AuditResult, Run
 from audit_engine.snapshots import load_snapshot, location, atomic_write, now, DEFAULT_ROOT
 from audit_engine.versioning import FRAMEWORK_VERSION
 from audit_engine.policy import load_policy, AuditPolicy
-from audit_engine.detectors import DEFAULT_DETECTORS, validate_policy, compatibility, result_for
+from audit_engine.detectors import DEFAULT_DETECTORS, validate_policy, compatibility, result_for, resolve_requirements
 
 
 def canonical_json(value):
@@ -96,9 +96,9 @@ def execute_policy(snapshot_id, root=DEFAULT_ROOT, operator='local', policy=None
         failed = False
         for detector, config in selected:
             metadata = detector.metadata()
-            reason = 'strict_failure' if failed and (policy.fail_on_detector_error or not policy.allow_partial_results) else compatibility(context, metadata.requirements)
             started = now()
             try:
+                reason = 'strict_failure' if failed and (policy.fail_on_detector_error or not policy.allow_partial_results) else compatibility(context, resolve_requirements(detector, config))
                 if reason:
                     result = replace(result_for(metadata, context, config, reason), status=ResultStatus.SKIPPED)
                 else:

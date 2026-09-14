@@ -13,7 +13,7 @@ class ConfigField(Contract):
 
     def validate(self, value):
         # Deliberately small schema; extend only when an actual detector needs it.
-        kinds = {'boolean': bool, 'integer': int}
+        kinds = {'boolean': bool, 'integer': int, 'string': str}
         if self.type not in kinds or type(value) is not kinds[self.type]:
             raise ValueError('Invalid detector configuration type')
 
@@ -64,6 +64,10 @@ class AuditDetector(Protocol):
     def analyze(self, context: AuditContext, config: DetectorConfig) -> AuditResult: ...
 
 
+class ConfiguredRequirementsDetector(AuditDetector, Protocol):
+    def requirements_for(self, config: DetectorConfig) -> DetectorRequirements: ...
+
+
 class DetectorRegistry:
     def __init__(self, detectors=()):
         self._entries = {}
@@ -103,10 +107,20 @@ def resolve_config(metadata, supplied):
 def validate_policy(policy, registry):
     for key in sorted(set(policy.enabled_detectors) | set(policy.disabled_detectors) | set(policy.detector_configuration)):
         detector = registry.get(key)
-        resolve_config(detector.metadata(), policy.detector_configuration.get(key, {}))
+        config = resolve_config(detector.metadata(), policy.detector_configuration.get(key, {}))
+        resolve_requirements(detector, config)
     return tuple((registry.get(key), resolve_config(registry.get(key).metadata(),
                   policy.detector_configuration.get(key, {})))
                  for key in policy.enabled_detectors if key not in policy.disabled_detectors)
+
+
+def resolve_requirements(detector, config):
+    """Optional trusted SDK hook; existing detectors retain static metadata requirements."""
+    resolver = getattr(detector, 'requirements_for', None)
+    requirements = resolver(config) if resolver is not None else detector.metadata().requirements
+    # Reuse metadata validation for the resolved table/field declarations.
+    from dataclasses import replace
+    return replace(detector.metadata(), requirements=requirements).requirements
 
 
 def compatibility(context, requirements):
@@ -166,4 +180,7 @@ class SnapshotIntegrityDetector:
         return result_for(self.metadata(), context, config, 'Snapshot inventory verified; no business audit checks executed', findings)
 
 
-DEFAULT_DETECTORS = DetectorRegistry((FrameworkHealthDetector(), SnapshotIntegrityDetector()))
+from audit_engine.rules.duplicate_transaction_reference import DuplicateTransactionReferenceDetector
+
+DEFAULT_DETECTORS = DetectorRegistry((FrameworkHealthDetector(), SnapshotIntegrityDetector(),
+                                     DuplicateTransactionReferenceDetector()))

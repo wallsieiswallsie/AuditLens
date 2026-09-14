@@ -1,6 +1,61 @@
 # Verification record
 
-## Audit Policy + Detector SDK — 2026-09-15 Asia/Jakarta (current)
+## Audit Rule Pack v1 Foundation — 2026-09-15 Asia/Jakarta (current)
+
+Implemented exactly one business detector: `business.duplicate_transaction_reference`
+version 1.0.0, category transaction_integrity. Framework remains 0.3.0. The existing
+SDK gained string configuration and an optional configured-requirements method;
+snapshot, result, policy shapes, source schema and hash algorithm are unchanged.
+See [rule semantics, fixture and limitations](AUDIT-RULE-PACK.md).
+
+| Executed check | Result | Evidence |
+| --- | --- | --- |
+| `audit-engine/.venv/Scripts/python.exe -m pytest` | PASS: 112 passed, 0 failed | All 79 pre-existing tests retained; 33 new business regressions |
+| `npm test` | PASS: 17 passed, 0 failed | Existing Node suite and secret-sentinel build tests |
+| `$env:API_URL='http://localhost:3001'; npm run build` | PASS | Vite production build, 26 modules |
+| CLI no arguments / help / health | PASS | Actual subprocess commands; existing health JSON and no-policy behavior retained |
+| CLI detector inspect / policy validate | PASS | Business metadata, business example policy and unchanged default policy |
+| Offline fixture snapshot inspect / policy run / result inspect | PASS | Actual CLI; 1 finding, 2 evidence records; checked-in canonical example result |
+| Positive / unique / reordered CLI fixtures | PASS | Actual subprocess regression tests; unchanged logical hash for reordered input |
+| Invalid configuration / missing-field CLI fixtures | PASS | Expected exit 1; invalid config creates no runs; missing field records skipped result and failed run |
+| Missing table / ID field / reference field | PASS | Compatibility errors before analyze, including empty tables |
+| Logical reproducibility and sensitivity | PASS | Row/dictionary order, root, operator, IDs, timestamps invariant; reference, record IDs, version, config, finding and evidence mutations change hash |
+| Old boolean/integer policy serialization and logical hashes | PASS | Golden values produced using pre-change SDK/execution from Git 52c8b72887480894929cd54e69ccd18e261ae140, then compared against new execution |
+| `$env:PG_BIN='C:/Program Files/PostgreSQL/17/bin'; npm run test:db` | PASS | PostgreSQL 17.5; final report 2026-09-14T22:23:54.876Z UTC |
+| PostgreSQL framework acceptance | PASS: 9 checks | Eleven tables, 19,654 records, reader extraction twice, legacy/framework/business policy paths, offline source isolation and tamper rejection |
+| PostgreSQL constraints, privileges and integrity | PASS | Seven constraint cases; reader SELECT and seventeen denials; source fixture hashes unchanged; audit schema empty |
+| `npm run docs:check` | PASS | Schema parity and Markdown links/diagrams validated |
+| `git diff --check` | PASS | No whitespace errors |
+
+PostgreSQL's existing synthetic invoice anomalies intentionally change whitespace
+and case. Under this rule's exact-reference semantics the business policy correctly
+returns zero findings on that exported dataset. Positive duplicate findings and full
+record evidence are verified with the checked-in offline snapshot and CLI regression
+fixtures, not claimed as positive PostgreSQL detections. Existing generator and
+benchmark labels/hashes were not changed.
+
+Initial attempts: the first Python run caught a requirements-hook name collision
+with an existing test detector (12 failed, 98 passed). Renaming the optional method
+to `requirements_for` fixed the implementation without changing old tests. Subsequent
+runs passed (111, then 112 after adding the checked-in-result/reordered CLI regression).
+The sandboxed PostgreSQL attempt failed at initdb's Windows restricted token creation.
+An authorized broader-process run reached the new acceptance test and caught its
+incorrect assumption that existing whitespace-modified benchmark references must
+match. That new assertion was corrected to follow the specified exact semantics;
+the full subsequent disposable acceptance passed and stopped its cluster. No
+application security settings were relaxed and no external database was targeted.
+
+The rule receives only frozen context and validated config, with no DB/environment/
+filesystem/network access. Existing secret-leakage tests and new business-run secret
+sentinels pass. No new runtime dependencies, source writes, contract/version bumps,
+authentication, production deployment or Git commits were introduced.
+
+Phase 0: Verified locally. Phase 1: Verified on disposable PostgreSQL.
+Local CLI Audit Framework: Complete. Audit Policy + Detector SDK: Complete.
+Audit Rule Pack v1 Foundation: Complete. Additional Business Rules: Not started.
+Production/Railway verification: Unverified.
+
+## Audit Policy + Detector SDK — 2026-09-15 Asia/Jakarta (historical)
 
 Completed incrementally on the existing working tree, framework version 0.3.0.
 No business detectors, production migrations, authentication or Railway changes.

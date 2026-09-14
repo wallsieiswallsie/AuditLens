@@ -1,14 +1,14 @@
 # Development roadmap
 
-Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 and business detector phases remain NOT STARTED. Railway runtime remains separately unverified.
+Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 remains NOT STARTED. Audit Rule Pack v1 has one implemented business detector; the broader business detector phases remain incomplete. Railway runtime remains separately unverified.
 
 ## Immediate next milestone
 
-NEXT PHASE: Audit Policy + Detector SDK.
+Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Recommended next incremental rule: `business.missing_required_field` (not started).
 
 Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
 
-Delivered after stabilization: typed contracts, restricted read-only extraction, deterministic JSONL snapshots/hashes, independent integrity validation, explicit operator provenance, central versions, immutable context, CLI lifecycle and local results. Only framework.health runs. Next freeze policy/rule and Detector SDK semantics before User Access Review. Authentication/RBAC is required before remote audit access; database result writer and retention service remain deferred. See [framework](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
+Delivered after stabilization: typed contracts, restricted read-only extraction, deterministic JSONL snapshots/hashes, independent integrity validation, explicit operator provenance, central versions, immutable context, CLI lifecycle and local results. Policy-driven framework detectors and duplicate transaction reference detection now run through the existing frozen-context SDK. Authentication/RBAC is required before remote audit access; database result writer and retention service remain deferred. See [framework](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
 
 ## Phase 0: Architecture & Documentation
 
@@ -36,7 +36,7 @@ Delivered after stabilization: typed contracts, restricted read-only extraction,
 
 ## Phase 3: Audit Framework
 
-- Current local milestone: COMPLETE and locally verified; snapshots, CLI, provenance, result contracts and non-business smoke execution. No business detectors or database result tables.
+- Current local milestone: COMPLETE and locally verified; snapshots, CLI, provenance, result contracts, Audit Policy and Detector SDK. The first business rule is available in Audit Rule Pack v1; no database result tables exist.
 
 - Objective: Execute reproducible validated runs.
 - Deliverables: Extraction snapshots, manifests, versioned tests, results/evidence and CLI orchestration.
@@ -54,7 +54,7 @@ Delivered after stabilization: typed contracts, restricted read-only extraction,
 
 - Objective: Explain incompatible permissions.
 - Deliverables: SoD rules, permission expansion and conflicts.
-- Dependencies: Phases 3–4.
+- Dependencies: Phases 3â€“4.
 - Definition of done: Cross-role combinations detected with traceable evidence.
 
 ## Phase 6: Transaction Testing
@@ -75,14 +75,14 @@ Delivered after stabilization: typed contracts, restricted read-only extraction,
 
 - Objective: Support human conclusions.
 - Deliverables: Draft/review/closure workflow and evidence links.
-- Dependencies: Phases 2–3 and at least one test module.
+- Dependencies: Phases 2â€“3 and at least one test module.
 - Definition of done: Unauthorized transitions rejected; evidence retained.
 
 ## Phase 9: Dashboard & Reporting
 
 - Objective: Communicate coverage and conclusions.
 - Deliverables: Scope-aware summaries and exports.
-- Dependencies: Phases 4–8.
+- Dependencies: Phases 4â€“8.
 - Definition of done: Counts reconcile to runs and findings; limitations displayed.
 
 ## Phase 10: Portfolio Polish

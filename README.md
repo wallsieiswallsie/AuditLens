@@ -3,7 +3,7 @@
 
 An educational full-stack project exploring how system data supports traceable internal control testing.
 
-**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; only framework.health executes. No business detectors or authentication exist. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
+**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; policy-driven framework detectors and the first business rule, duplicate transaction reference, are implemented. Authentication is not implemented. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
 
 ## Problem and planned capabilities
 Permissions, transactions and activity logs can hide control weaknesses when reviewed separately. AuditLens will connect repeatable testing with evidence and human-reviewed findings.
@@ -11,7 +11,7 @@ Permissions, transactions and activity logs can hide control weaknesses when rev
 Planned modules: user access review; segregation of duties; transaction exceptions; audit trail analysis; risk/control mapping; findings; scope-aware dashboard and reporting.
 
 ## Architecture
-A Demo Business System will own source writes. AuditLens reads approved source columns through a restricted connection, freezes normalized snapshots and executes a Python health detector against immutable context. Runs, provenance and results are local files. One PostgreSQL database, auditlens, contains business and audit schemas; no result tables are created. A modular Hapi API serves the React UI. See [source-reader provisioning](docs/adr/ADR-008-database-privilege-separation.md) and the [framework specification](docs/AUDIT-FRAMEWORK.md).
+A Demo Business System will own source writes. AuditLens reads approved source columns through a restricted connection, freezes normalized snapshots and executes policy-selected Python detectors against immutable context. Runs, provenance and results are local files. One PostgreSQL database, auditlens, contains business and audit schemas; no result tables are created. A modular Hapi API serves the React UI. See [source-reader provisioning](docs/adr/ADR-008-database-privilege-separation.md) and the [framework specification](docs/AUDIT-FRAMEWORK.md).
 
 ## Stack
 React 19, Vite, JavaScript, React Router, Tailwind CSS and DaisyUI; Node.js and Hapi; PostgreSQL 17, Knex and pg; Python standard-library snapshot framework with Pandas health; JWT planned for Phase 2; Docker Compose for local PostgreSQL; Git. Use Node.js 22.12+ and Python 3.11+.
@@ -150,7 +150,7 @@ See [contracts, integrity and retention](docs/AUDIT-FRAMEWORK.md) and [ADR-009](
 - [ADR 004: database strategy](docs/adr/ADR-004-database-strategy.md)
 
 ## Limitations and disclaimer
-A deterministic synthetic source dataset, business migrations, manifests and fixture QA exist. Authentication, audit rules, finding workflows and reports remain planned. Health indicates process liveness, not database readiness. Disposable local migration/seed/rollback/constraints and source-reader write denial pass; remote provisioning and deployment settings remain unverified. PORT tests and configured Web build now pass. This is not production-ready or an assurance tool.
+A deterministic synthetic source dataset, business migrations, manifests and fixture QA exist. Authentication, additional audit rules, finding workflows and reports remain planned. Health indicates process liveness, not database readiness. Disposable local migration/seed/rollback/constraints and source-reader write denial pass; remote provisioning and deployment settings remain unverified. PORT tests and configured Web build now pass. This is not production-ready or an assurance tool.
 
 "AuditLens is an educational portfolio project designed to demonstrate digital audit, internal control, system analysis, and software engineering concepts using synthetic data. It does not represent or reproduce any proprietary audit methodology."
 
@@ -162,4 +162,4 @@ The local framework now supports explicit versioned detector registration and im
 JSON policies. Default execution remains `framework.health`; select
 `audit-engine/policies/examples.json` to run both non-business framework detectors.
 See [Detector SDK](docs/DETECTOR-SDK.md) and [ADR-010](docs/adr/ADR-010-detector-sdk-and-audit-policy.md).
-Business detectors are not started; no production deployment changes are included.
+Audit Rule Pack v1 now includes `business.duplicate_transaction_reference`. See [rule semantics and offline example](docs/AUDIT-RULE-PACK.md). No production deployment changes are included.

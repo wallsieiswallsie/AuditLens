@@ -11,7 +11,7 @@ def health():
     return {"status": "ok", "service": "auditlens-engine", "pandas_version": pd.__version__}
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='AuditLens local snapshot framework (no business detectors)')
+    parser = argparse.ArgumentParser(description='AuditLens local snapshot framework and Audit Rule Pack v1')
     parser.add_argument('--artifacts-dir', default=str(DEFAULT_ROOT), help='Local artifact root')
     commands = parser.add_subparsers(dest='command')
     commands.add_parser('health', help='Database-free dependency health')
@@ -47,7 +47,8 @@ def main(argv=None):
         elif args.command == 'run':
             from audit_engine.execution import execute_policy
             value, results = execute_policy(args.snapshot, args.artifacts_dir, args.operator, args.policy)
-            print(f'Audit run {value.status.value}\nAudit Run ID: {value.audit_run_id}\nSnapshot: {value.snapshot_id}\nFramework: {value.framework_version}\nPolicy: {value.policy_version}\nResults: {len(results)} (framework smoke only)')
+            suffix = ' (framework smoke only)' if args.policy is None else ''
+            print(f'Audit run {value.status.value}\nAudit Run ID: {value.audit_run_id}\nSnapshot: {value.snapshot_id}\nFramework: {value.framework_version}\nPolicy: {value.policy_version}\nResults: {len(results)}{suffix}')
             return 1 if value.status.value == 'failed' else 0
         elif args.command == 'detectors':
             from audit_engine.detectors import DEFAULT_DETECTORS

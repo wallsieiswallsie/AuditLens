@@ -1,7 +1,8 @@
 # Audit Policy and Detector SDK
 
-Framework version: **0.3.0**. Business audit logic is not part of this phase.
-Only `framework.health` and `framework.snapshot_integrity` are explicitly registered.
+Framework version: **0.3.0**. The explicit registry contains `framework.health`,
+`framework.snapshot_integrity`, and `business.duplicate_transaction_reference`.
+See [Audit Rule Pack v1](AUDIT-RULE-PACK.md) for business rule semantics.
 
 ```mermaid
 flowchart TD
@@ -69,11 +70,10 @@ IDs, and never replaces a registration. `get(id, expected_version)` checks versi
 metadata stability. `list()` sorts by ID. No imports are derived from policy text or
 user paths. Only explicitly registered, reviewed repository modules are supported.
 
-`ConfigField` deliberately supports boolean and integer values, the types needed by
-this SDK proof. Booleans do not count as integers. Unknown keys and incorrect types
+`ConfigField` supports exactly boolean, integer and string values. Booleans do not count as integers. Unknown keys and incorrect types
 are rejected. Defaults are deterministic; `DetectorConfig.values` is deeply frozen.
-There is no string/path/connection configuration type or environment interpolation.
-Extend the schema only when an actual reviewed detector needs additional types.
+String support is used for configured snapshot table/field names. There is no
+arbitrary JSON configuration, connection capability or environment interpolation.
 No passwords, tokens, connection strings or other secrets belong in policy/config.
 
 ## Lifecycle and compatibility
@@ -83,6 +83,14 @@ snapshot loader, including manifest, SHA-256, table inventory, canonical row, an
 schema checks. It constructs frozen context, loads/validates policy, resolves explicit
 registrations and effective configuration, and then executes in ascending detector ID.
 Each detector's requirements are checked before its `analyze` method is called.
+Detectors with configured inputs may implement the optional typed
+`ConfiguredRequirementsDetector.requirements_for(config) -> DetectorRequirements`
+hook. It receives validated frozen configuration only, returns requirements using
+the existing metadata model, and must be pure and deterministic. Metadata lists the
+requirements for default configuration; the hook resolves effective names. Policy
+validation validates those declarations (including disabled selections), and execution
+checks them against the loaded snapshot. Existing detectors retain static requirements.
+This is a method on an explicitly registered trusted object, not plugin discovery.
 Missing tables, missing fields and unsupported schema versions yield `skipped` results
 with stable codes, not raw tracebacks. Empty-table columns are checked against the
 loader's versioned schema catalog; fields are also checked on every present row.
@@ -193,7 +201,7 @@ introducing database access. No isolation worker is implemented in this phase.
 `SnapshotIntegrityDetector` is the concrete SDK example: optional `emit_inventory`
 produces one info finding with per-table row-count evidence. Validation already
 happened in the loader; this detector demonstrates result production without interpreting
-business risk. There is no business audit rule, score, remediation or compliance conclusion.
+business risk. That framework example makes no business risk, remediation or compliance conclusion.
 
 For example, exercise the existing detector with a validated context:
 

@@ -1,7 +1,7 @@
 # Local CLI Audit Framework
 
 The local framework exports a frozen population and executes only `framework.health`.
-It implements no business detector, authentication, dashboard or database result writer.
+The first business detector is documented in [Audit Rule Pack v1](AUDIT-RULE-PACK.md). Authentication, dashboard integration and database result writing are not implemented.
 See [verification](VERIFICATION.md) for executed checks and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md) for the decision.
 
 ```mermaid
@@ -171,11 +171,11 @@ future concern. Reader grant drift requires renewed privilege acceptance. Railwa
 runtime and production reader provisioning require separate verification.
 
 The subsequent Audit Policy + Detector SDK milestone is implemented in version 0.3.0;
-see the extension below. Business detectors remain a future milestone.
+see the extension below. The first business detector is implemented in Audit Rule Pack v1.
 
 ## Policy-driven execution extension
 
 Version 0.3.0 adds AuditPolicy, Detector SDK and explicit registry while preserving
 these snapshot contracts and the legacy health API. See [Detector SDK](DETECTOR-SDK.md)
 for the current execution lifecycle, provenance layout, partial-error semantics and
-logical result hash. No business detectors are implemented.
+logical result hash. [Audit Rule Pack v1](AUDIT-RULE-PACK.md) adds one business detector using these contracts.

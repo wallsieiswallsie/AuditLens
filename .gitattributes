@@ -1,0 +1,2 @@
+# Snapshot JSONL hashes cover exact bytes; do not translate line endings on checkout.
+audit-engine/fixtures/**/snapshots/**/*.jsonl -text
