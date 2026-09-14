@@ -1,0 +1,5 @@
+{
+  "policy_json": "{\"allow_partial_results\":false,\"contract_version\":\"1\",\"description\":\"Checks controlled integer document references in the offline fixture only.\",\"detector_configuration\":{\"business.sequence_gap\":{\"allow_duplicates\":true,\"id_field\":\"id\",\"maximum_value\":null,\"minimum_value\":null,\"sequence_field\":\"reference\",\"table\":\"invoices\"}},\"disabled_detectors\":[],\"enabled_detectors\":[\"business.sequence_gap\"],\"fail_on_detector_error\":true,\"minimum_confidence\":0.0,\"minimum_severity\":\"info\",\"name\":\"Sequence Gap Offline Example\",\"policy_id\":\"business.sequence-gap.example\",\"policy_version\":\"auditlens-policy-v1\"}",
+  "config_json": "{\"values\":{\"allow_duplicates\":true,\"id_field\":\"id\",\"maximum_value\":null,\"minimum_value\":null,\"sequence_field\":\"reference\",\"table\":\"invoices\"}}",
+  "hash": "e418c5716fa9907a4b87023d7c3ebb4a689ef5f582ae6e75a71a7c9d4d159f32"
+}

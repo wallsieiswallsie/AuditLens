@@ -1,0 +1,22 @@
+{
+  "contract_version": "1",
+  "policy_id": "business.duplicate-payment.example",
+  "policy_version": "auditlens-policy-v1",
+  "name": "Duplicate Payment Example",
+  "description": "Detects exact duplicate payments using a configured composite key.",
+  "enabled_detectors": ["business.duplicate_payment"],
+  "disabled_detectors": [],
+  "minimum_severity": "info",
+  "minimum_confidence": 0.0,
+  "fail_on_detector_error": true,
+  "allow_partial_results": false,
+  "detector_configuration": {
+    "business.duplicate_payment": {
+      "table": "payments",
+      "id_field": "id",
+      "match_fields": ["invoice_id", "amount", "currency", "reference"],
+      "ignore_if_any_match_field_empty": true,
+      "case_sensitive_strings": true
+    }
+  }
+}

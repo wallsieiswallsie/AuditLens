@@ -1,7 +1,7 @@
 # Audit Policy and Detector SDK
 
 Framework version: **0.3.0**. The explicit registry contains `framework.health`,
-`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, `business.missing_required_field`, and `business.sequence_gap`.
+`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, `business.missing_required_field`, `business.sequence_gap`, and `business.duplicate_payment`.
 See [Audit Rule Pack v1](AUDIT-RULE-PACK.md) for business rule semantics.
 
 ```mermaid

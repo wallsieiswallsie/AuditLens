@@ -80,6 +80,32 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     from audit_engine.policy import load_policy
     detector, config = validate_policy(load_policy(sequence_policy), DEFAULT_DETECTORS)[0]
     assert compatibility(one, resolve_requirements(detector, config)) is None
+    # Payments have an actual obligation, amount/currency and payment reference.
+    payment_policy = policy_path.with_name('duplicate-payment.json')
+    payment_metadata = json.loads(cli('detectors', 'inspect', 'business.duplicate_payment'))
+    assert payment_metadata['detector_version'] == '1.0.0'
+    cli('policy', 'validate', str(payment_policy))
+    detector, config = validate_policy(load_policy(payment_policy), DEFAULT_DETECTORS)[0]
+    assert compatibility(one, resolve_requirements(detector, config)) is None
+    fields = config.values['match_fields']
+    from audit_engine.execution import canonical_json
+    expected_payments = {}
+    for row in one.tables['payments']:
+        values = [row[field] for field in fields]
+        if any(value is None or value == '' for value in values):
+            continue
+        expected_payments.setdefault(canonical_json(values), set()).add(row['id'])
+    expected_payments = {key: ids for key, ids in expected_payments.items() if len(ids) > 1}
+    prior_runs = {p.name for p in (Path(directory) / 'runs').iterdir()}
+    cli('run', '--snapshot', ids[0], '--policy', str(payment_policy),
+        env={**os.environ, 'AUDIT_SOURCE_DATABASE_URL': 'unusable', 'DATABASE_URL': 'unusable'})
+    payment_run = next(p.name for p in (Path(directory) / 'runs').iterdir() if p.name not in prior_runs)
+    payment = json.loads(cli('result', 'inspect', payment_run))
+    assert payment['detector_id'] == 'business.duplicate_payment'
+    assert payment['finding_count'] == len(expected_payments)
+    assert payment['status'] == ('findings' if expected_payments else 'passed')
+    assert {canonical_json(f['evidence'][0]['context']['normalized_match_values']):
+            {e['source_record_id']['id'] for e in f['evidence']} for f in payment['findings']} == expected_payments
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -97,7 +123,9 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 11, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 12, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
+                      'duplicate_payment_findings': payment['finding_count'],
+                      'payment_match_fields': list(fields),
                       'snapshot_hash': one.snapshot.snapshot_hash,
-                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, sequence registration/policy/schema compatibility only (positive sequence detection uses offline fixture), secret exclusion, tamper rejection'}))
+                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, sequence registration/policy/schema compatibility only (positive sequence detection uses offline fixture), payment registration/policy/schema/execution and exact group evidence, secret exclusion, tamper rejection'}))

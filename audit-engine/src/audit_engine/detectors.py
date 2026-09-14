@@ -192,7 +192,8 @@ class SnapshotIntegrityDetector:
 from audit_engine.rules.duplicate_transaction_reference import DuplicateTransactionReferenceDetector
 from audit_engine.rules.missing_required_field import MissingRequiredFieldDetector
 from audit_engine.rules.sequence_gap import SequenceGapDetector
+from audit_engine.rules.duplicate_payment import DuplicatePaymentDetector
 
 DEFAULT_DETECTORS = DetectorRegistry((FrameworkHealthDetector(), SnapshotIntegrityDetector(),
                                      DuplicateTransactionReferenceDetector(), MissingRequiredFieldDetector(),
-                                     SequenceGapDetector()))
+                                     SequenceGapDetector(), DuplicatePaymentDetector()))

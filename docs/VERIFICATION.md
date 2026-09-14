@@ -1,5 +1,70 @@
 # Verification record
 
+
+## Duplicate payment rule - 2026-09-15 Asia/Jakarta (current)
+
+Added only `business.duplicate_payment` 1.0.0, category payment_integrity, using
+existing list[string] configuration and requirements_for. Framework remains 0.3.0.
+No SDK/config primitive, frozen contract, hash algorithm, artifact layout, source
+schema, default policy or existing business policy changed. See
+[payment semantics and examples](AUDIT-RULE-PACK.md#payment-control-businessduplicate_payment).
+
+| Executed check | Result |
+| --- | --- |
+| New payment tests | PASS: 53 tests; initial focused run 42.63s |
+| `audit-engine/.venv/Scripts/python.exe -m pytest` | PASS: 261 passed in 186.19s; all 208 prior tests retained plus 53 new tests |
+| Final CLI/fixture assertions | PASS: 10 passed, 43 deselected in 47.63s after adding explicit CLI logical-hash checks |
+| `npm test` | PASS: 17 passed, 0 failed |
+| `$env:API_URL='http://localhost:3001'; npm run build` | PASS: Vite production build, 26 modules |
+| CLI no arguments, health, detector inspection | PASS: actual commands; legacy health returns ok, Pandas 3.0.5 |
+| Payment policy validation/run/result inspection | PASS: positive, unique, reordered, case-sensitive/insensitive, empty ignored/participating, invalid config and missing requirement subprocess cases |
+| Requirements and configuration | PASS: at least two unique fields; malformed types/names; missing table/ID/match fields before analysis, including empty tables |
+| Exact value semantics | PASS: scalar type distinction, Unicode casefold, whitespace preservation, null versus empty, space/zero/false/arrays/objects are not empty; nested object order and array order |
+| Grouping and evidence | PASS: one finding per group, all participating records, canonical order, original values and no unrelated columns |
+| Reproducibility | PASS: direct reordered frozen context and snapshot executions; record/key order, run/snapshot artifact IDs, timestamps, operator and artifact root invariance |
+| Hash sensitivity | PASS: match values, participating IDs, ordered fields, both boolean settings, version, finding and evidence mutations |
+| `$env:PG_BIN='C:/Program Files/PostgreSQL/17/bin'; npm run test:db` | PASS after broader-process retry: PostgreSQL 17.5, report 2026-09-14T23:21:58.293Z UTC |
+| PostgreSQL framework acceptance | PASS: 12 checks, 11 tables, 19,654 records |
+| PostgreSQL payment control | PASS: registration, policy, schema and offline execution from exported snapshot; 0 actual duplicate groups for invoice_id + amount + currency + reference |
+| PostgreSQL constraints and reader boundary | PASS: seven constraints, SELECT and seventeen denials; all source hashes unchanged, audit schema empty |
+| Disposable cluster shutdown | PASS: runner stopped the cluster; temporary diagnostics retained |
+| `npm run docs:check` | PASS: schema parity, 48 Markdown files, 173 relative links, 15 Mermaid diagrams |
+| `git diff --check` | PASS: final check |
+
+The approved payments table has invoice_id, amount, currency and reference, but no
+vendor_id. Currency is included to avoid comparing equal amounts in different
+currencies. The real 2,400-payment dataset had zero exact composite duplicates;
+this is not a claim of positive PostgreSQL duplicate findings. The controlled offline
+fixture has three payments, ten empty tables, one duplicate group and two evidence
+items. It uses the existing snapshot inventory and canonical money strings.
+
+A sequence golden was captured before detector registration changed and protects its
+policy/config JSON and logical hash. Existing health/default, snapshot-integrity,
+duplicate-reference and completeness goldens and tests remain intact. No old tests
+were removed or weakened. A payment logical golden additionally protects reordered
+CLI output. The checked-in example uses fixed snapshot/run identities and timestamps.
+
+Initial failure and correction: restricted execution of initdb failed with Windows
+restricted-token errors 87/3 and a directory-creation error before acceptance ran.
+The same existing disposable runner passed with broader process permissions. It
+ignores existing DATABASE_URL targets, creates a private temporary cluster and stops
+it afterward. No database permissions were weakened. No detector test failures were
+observed. During artifact review the example's transient snapshot ID was replaced
+with the controlled fixture ID; logical content and its hash were unaffected.
+
+Matching uses hash-map construction, approximately O(n × f) for bounded values plus
+canonical sorting, never pairwise O(n²). Nested JSON cost depends on value size and
+object-key sorting. Execution still passes only frozen AuditContext and validated
+DetectorConfig; no database, filesystem, network, credential or subprocess access
+was added. Python and Node secret-sentinel checks remain in coverage.
+
+Phase status: Phase 0 verified locally; Phase 1 verified on disposable PostgreSQL;
+Local CLI Audit Framework, Audit Policy + Detector SDK, Rule Pack v1 foundation,
+duplicate-reference, completeness, sequence integrity and duplicate payment complete. Advanced/statistical rules not started;
+Production/Railway unverified. Recommend only business.amount_outlier next, after
+specifying its deterministic algorithm, population, monetary arithmetic, thresholds,
+ties and minimum sample size. No commits or deployments executed.
+
 ## Sequence integrity rule - 2026-09-15 Asia/Jakarta (current)
 
 Resumed and reviewed the existing workspace implementation; no restart or redesign.

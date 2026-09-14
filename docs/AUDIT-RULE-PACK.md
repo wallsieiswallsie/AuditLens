@@ -2,7 +2,7 @@
 
 ## Purpose and control objective
 
-The pack contains duplicate-reference, required-field completeness and numeric sequence controls. A reference expected to identify
+The pack contains duplicate-reference, required-field completeness, numeric sequence and exact composite payment controls. A reference expected to identify
 one business transaction should not occur on multiple records. A finding identifies
 a repeated value for review; it does not establish fraud or a duplicate payment.
 
@@ -443,3 +443,154 @@ requirements apply. Snapshot checksums are unsigned and hashes cover the entire
 snapshot. Trusted in-process execution receives only AuditContext and validated
 DetectorConfig; no new filesystem, source adapter, credential, network or process
 capability is added. Production/Railway verification remains outstanding.
+
+
+## Payment control: business.duplicate_payment
+
+### Objective and identity
+
+A payment should not be processed more than once for the same business obligation
+or payment identity. This generic control flags potential duplicates for review;
+matching is not proof of duplicate settlement or misconduct.
+
+| Attribute | Value |
+| --- | --- |
+| Detector / version | `business.duplicate_payment` / `1.0.0` |
+| Category / rule | `payment_integrity` / `DUPLICATE_PAYMENT` |
+| Severity / confidence | `high` / `1.0` (certainty of exact matching) |
+| Entity type | `payment_match_group` |
+| Framework | `0.3.0`, unchanged |
+
+### Configuration and requirements
+
+| Key | Type | Default |
+| --- | --- | --- |
+| table | string | payments |
+| id_field | string | id |
+| match_fields | list[string] | invoice_id, amount, currency, reference (in that order) |
+| ignore_if_any_match_field_empty | boolean | true |
+| case_sensitive_strings | boolean | true |
+
+`match_fields` must contain at least two unique field names. Empty lists, one-field
+lists, repeated fields, invalid identifiers, unknown keys and incorrect types fail
+policy validation before analysis or run artifacts. Configuration order is preserved
+and is hash-significant. Names use the SDK identifier syntax documented above.
+The existing `requirements_for(config)` declares the configured table, identity field
+and every match field. Missing schema requirements produce `missing_table` or
+`missing_field` skipped results and a failed run before analysis, including empty
+tables. Record identities must be unique non-empty strings, as in existing business
+rules; invalid identities produce a sanitized detector error, not business findings.
+
+The approved `payments` schema contains invoice_id, amount, currency and reference;
+it has no vendor_id. The example uses payment obligation plus exact monetary value,
+currency and payment reference. All names remain configurable; no business-specific
+logic, joins or source access is embedded in the detector.
+
+### Exact matching
+
+All configured fields must compare equal. Canonical JSON of the ordered composite
+values is the hash-map key. Null, strings, integers and booleans preserve type identity:
+`1`, `true` and `"1"` differ. No conversion to floats or between scalar types occurs.
+Money has already been normalized by the existing snapshot loader (for example
+`100` becomes `"100.00"`); the detector uses that exact snapshot representation.
+
+Strings compare exactly by default. When `case_sensitive_strings=false`, only
+field-level strings use Python `str.casefold()`: `Straße` and `STRASSE` match.
+Whitespace is never trimmed: `PAY-001` and ` PAY-001 ` differ. No locale-dependent
+transformation, Unicode composition normalization or tolerance is applied.
+Original values remain in evidence.
+
+Empty means exactly null or `""`. With the default true flag, any empty match field
+excludes the record. With false, empty values participate: two identical null-bearing
+composites match, but null differs from `""`. Space, zero, false, arrays and objects
+are not empty. Snapshot-supported arrays and objects compare structurally through
+canonical JSON: object key order is irrelevant; array order and nested scalar types
+are significant. Nested strings and object keys remain exact even in case-insensitive
+mode; casefold applies only when the configured field value itself is a string.
+
+### Grouped finding and evidence
+
+Each group of two or more matching records yields one finding, not all record pairs.
+Three identical keys yield one finding with three evidence items. The entity ID is
+SHA-256 of canonical detector ID, rule ID, table, ordered match field names and
+normalized composite values. It excludes record IDs, evidence order and run metadata.
+The existing execution layer generates content IDs and sorts findings canonically.
+
+The frozen Finding contract has no arbitrary content property. The deterministic
+message reports the group size; minimal evidence context carries structured fields,
+original values, normalized ordered values and duplicate count. Each participating
+record supplies exactly one Evidence with `field=null` and `observed_value=null`.
+No unrelated columns or full rows are copied. Evidence sorts by canonical record
+identity, both directly in the detector and through existing result normalization.
+
+Example finding description:
+`Potential duplicate payment detected: 2 records share the configured payment match key.`
+
+Example evidence item (content ID omitted here; generated by existing execution):
+
+```json
+{
+  "source_table": "payments",
+  "source_record_id": {"id": "00000000-0000-4000-a000-000000000001"},
+  "field": null,
+  "observed_value": null,
+  "context": {
+    "match_fields": ["invoice_id", "amount", "currency", "reference"],
+    "match_values": {"invoice_id": "I1", "amount": "100.00", "currency": "IDR", "reference": "P1"},
+    "normalized_match_values": ["I1", "100.00", "IDR", "P1"],
+    "duplicate_count": 2
+  }
+}
+```
+
+The complete canonical finding/result is in the
+[example artifact](../audit-engine/fixtures/duplicate-payment/example-result.json).
+The controlled fixture uses three payment rows and ten empty tables in the existing
+snapshot format. Its symbolic invoice IDs represent controlled matching values,
+not a relationally complete production dataset.
+
+### Runnable policy and fixture
+
+The [complete example policy](../audit-engine/policies/duplicate-payment.json) enables
+only this rule, with the defaults above, info minimum severity, confidence 0.0,
+fail-on-error true and partial results false. It leaves all existing policies intact.
+
+```powershell
+$py='audit-engine/.venv/Scripts/python.exe'
+$root='audit-engine/fixtures/duplicate-payment'
+& $py -m audit_engine policy validate audit-engine/policies/duplicate-payment.json
+& $py -m audit_engine --artifacts-dir $root run --snapshot 00000000-0000-4000-a000-000000000400 --policy audit-engine/policies/duplicate-payment.json
+# Use the printed Audit Run ID:
+& $py -m audit_engine --artifacts-dir $root result inspect <audit-run-id>
+```
+
+### Determinism, cost and boundaries
+
+Tests vary record/dictionary order, run ID, snapshot artifact identity, timestamps,
+operator and artifact root and require identical logical results/hashes. Mutating
+match values, participating IDs, ordered match configuration, either boolean option,
+detector version, finding content or evidence content changes the logical hash.
+Existing health, inventory and all three prior business rule golden hashes remain
+protected. The logical hash still covers the whole snapshot, not just selected fields.
+
+Hash-map construction is approximately O(n × f) for bounded-size field values.
+Canonicalization also scales with value size and sorts nested object keys. Evidence
+sorting adds O(n log n) identity comparisons in the worst case, and group sorting adds
+O(g log g), where g is the number of duplicate groups. Memory is O(n × f) for bounded
+values plus output. There are no pairwise O(n²) comparisons, new dependencies, threads,
+caches or external storage.
+
+The detector receives only frozen AuditContext and validated DetectorConfig. Existing
+trusted in-process execution and secret-sentinel coverage remain intact; no adapter,
+credential, filesystem, network or subprocess capability is added. PostgreSQL acceptance
+checks actual schema, registration, policy and execution and independently compares
+real exact groups; positive behavior is always exercised by the controlled fixture.
+
+Limitations: exact single-table matching only; no date windows, amount tolerance,
+fuzzy reference matching, cross-table matching, approved-exception lists, statistical
+scoring or ML. Currency must be included when relevant to the configured control.
+Production/Railway verification remains unverified.
+
+Recommended next rule: `business.amount_outlier`, not implemented. Before implementation,
+specify a deterministic statistical algorithm, population/grouping, exact monetary
+arithmetic, thresholds, minimum sample size, tie handling and evidence semantics.

@@ -3,7 +3,7 @@
 
 An educational full-stack project exploring how system data supports traceable internal control testing.
 
-**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; policy-driven framework detectors and duplicate-reference, completeness and sequence-gap controls are implemented. Authentication is not implemented. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
+**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; policy-driven framework detectors and duplicate-reference, completeness, sequence-gap and duplicate-payment controls are implemented. Authentication is not implemented. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
 
 ## Problem and planned capabilities
 Permissions, transactions and activity logs can hide control weaknesses when reviewed separately. AuditLens will connect repeatable testing with evidence and human-reviewed findings.
@@ -162,4 +162,4 @@ The local framework now supports explicit versioned detector registration and im
 JSON policies. Default execution remains `framework.health`; select
 `audit-engine/policies/examples.json` to run both non-business framework detectors.
 See [Detector SDK](docs/DETECTOR-SDK.md) and [ADR-010](docs/adr/ADR-010-detector-sdk-and-audit-policy.md).
-Audit Rule Pack v1 now includes `business.duplicate_transaction_reference`, `business.missing_required_field` and `business.sequence_gap`. See [rule semantics and offline example](docs/AUDIT-RULE-PACK.md). No production deployment changes are included.
+Audit Rule Pack v1 now includes `business.duplicate_transaction_reference`, `business.missing_required_field`, `business.sequence_gap` and `business.duplicate_payment`. See [rule semantics and offline example](docs/AUDIT-RULE-PACK.md). No production deployment changes are included.
