@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { requireDatabaseUrl } from '../apps/api/src/config/env.js';
+import { requireDatabaseUrl } from '../src/config/env.js';
 
 export default {
   client: 'pg',

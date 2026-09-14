@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "migrate" : "knex migrate:latest --knexfile ../../knexfile.js",
+    "migrate" : "knex migrate:latest --knexfile database/knexfile.js",
     "start": "npm run migrate && node src/index.js"
   },
   "dependencies": {
