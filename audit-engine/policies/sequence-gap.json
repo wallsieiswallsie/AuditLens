@@ -1,0 +1,25 @@
+{
+  "allow_partial_results": false,
+  "contract_version": "1",
+  "description": "Checks controlled integer document references in the offline fixture only.",
+  "detector_configuration": {
+    "business.sequence_gap": {
+      "table": "invoices",
+      "id_field": "id",
+      "sequence_field": "reference",
+      "minimum_value": null,
+      "maximum_value": null,
+      "allow_duplicates": true
+    }
+  },
+  "disabled_detectors": [],
+  "enabled_detectors": [
+    "business.sequence_gap"
+  ],
+  "fail_on_detector_error": true,
+  "minimum_confidence": 0.0,
+  "minimum_severity": "info",
+  "name": "Sequence Gap Offline Example",
+  "policy_id": "business.sequence-gap.example",
+  "policy_version": "auditlens-policy-v1"
+}

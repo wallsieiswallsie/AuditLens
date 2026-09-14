@@ -1,7 +1,7 @@
 # Audit Policy and Detector SDK
 
 Framework version: **0.3.0**. The explicit registry contains `framework.health`,
-`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, and `business.missing_required_field`.
+`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, `business.missing_required_field`, and `business.sequence_gap`.
 See [Audit Rule Pack v1](AUDIT-RULE-PACK.md) for business rule semantics.
 
 ```mermaid
@@ -70,7 +70,7 @@ IDs, and never replaces a registration. `get(id, expected_version)` checks versi
 metadata stability. `list()` sorts by ID. No imports are derived from policy text or
 user paths. Only explicitly registered, reviewed repository modules are supported.
 
-`ConfigField` supports exactly boolean, integer, string and list[string] values. Booleans do not count as integers. Unknown keys and incorrect types
+`ConfigField` supports exactly boolean, integer, optional_integer, string and list[string] values. Booleans do not count as integers. Unknown keys and incorrect types
 are rejected. Defaults are deterministic; `DetectorConfig.values` is deeply frozen.
 String support is used for configured snapshot table/field names. There is no
 arbitrary JSON configuration, connection capability or environment interpolation.
@@ -236,3 +236,19 @@ python -m pytest audit-engine/tests -v
 Install test tooling with `python -m pip install -e './audit-engine[test]'` when needed.
 Production runtime dependencies are unchanged. PostgreSQL acceptance additionally runs
 the two-detector policy against a real validated snapshot while source settings are invalid.
+
+## Optional integer configuration and sequence ranges
+
+`optional_integer` accepts exactly an integer or JSON null; booleans, strings,
+floats and nested values are rejected. Null is a real unset bound, with no sentinel.
+Existing types, defaults and serialized effective configurations are unchanged.
+Cross-field constraints (sequence minimum <= maximum) use `requirements_for` and
+fail policy validation before analysis or run artifact creation.
+
+The existing Finding contract has no free-form content property. Sequence findings
+store canonical JSON range content in the string `entity_id` (scope, start, end,
+count), and repeat it in at most two boundary evidence contexts. This keeps range
+content available even for empty evidence, without adding fields to old artifacts.
+The executor orders this detector's findings by numeric start/end; all other
+finding ordering and hash serialization stay unchanged. See the
+[sequence control](AUDIT-RULE-PACK.md#sequence-control-businesssequence_gap).

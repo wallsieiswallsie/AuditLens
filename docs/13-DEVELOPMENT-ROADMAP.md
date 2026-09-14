@@ -1,14 +1,14 @@
 # Development roadmap
 
-Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 remains NOT STARTED. Audit Rule Pack v1 has one implemented business detector; the broader business detector phases remain incomplete. Railway runtime remains separately unverified.
+Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 remains NOT STARTED. Audit Rule Pack v1 has three implemented business detectors; the broader business detector phases remain incomplete. Railway runtime remains separately unverified.
 
 ## Immediate next milestone
 
-Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Completeness control `business.missing_required_field` is implemented. Recommended next incremental rule: `business.sequence_gap` (not started).
+Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Completeness control `business.missing_required_field` is implemented. Sequence integrity control `business.sequence_gap` is implemented. Recommended next incremental rule: `business.duplicate_payment` (not started).
 
 Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
 
-Delivered after stabilization: typed contracts, restricted read-only extraction, deterministic JSONL snapshots/hashes, independent integrity validation, explicit operator provenance, central versions, immutable context, CLI lifecycle and local results. Policy-driven framework detectors and duplicate transaction reference detection now run through the existing frozen-context SDK. Authentication/RBAC is required before remote audit access; database result writer and retention service remain deferred. See [framework](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
+Delivered after stabilization: typed contracts, restricted read-only extraction, deterministic JSONL snapshots/hashes, independent integrity validation, explicit operator provenance, central versions, immutable context, CLI lifecycle and local results. Policy-driven framework detectors and duplicate-reference, completeness and sequence-gap detection now run through the existing frozen-context SDK. Authentication/RBAC is required before remote audit access; database result writer and retention service remain deferred. See [framework](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
 
 ## Phase 0: Architecture & Documentation
 
@@ -36,7 +36,7 @@ Delivered after stabilization: typed contracts, restricted read-only extraction,
 
 ## Phase 3: Audit Framework
 
-- Current local milestone: COMPLETE and locally verified; snapshots, CLI, provenance, result contracts, Audit Policy and Detector SDK. The first business rule is available in Audit Rule Pack v1; no database result tables exist.
+- Current local milestone: COMPLETE and locally verified; snapshots, CLI, provenance, result contracts, Audit Policy and Detector SDK. Three business rules are available in Audit Rule Pack v1; no database result tables exist.
 
 - Objective: Execute reproducible validated runs.
 - Deliverables: Extraction snapshots, manifests, versioned tests, results/evidence and CLI orchestration.

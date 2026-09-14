@@ -1,6 +1,6 @@
 # Audit engine foundation
 
-The local CLI creates deterministic PostgreSQL snapshots and executes policy-selected detectors against frozen context. The default remains framework.health; Audit Rule Pack v1 adds duplicate transaction reference and required-field completeness detection. No source writes exist. Models, repositories and analyzers retain their existing package boundaries. See the [framework guide](../docs/AUDIT-FRAMEWORK.md) for contracts, connection setup, CLI commands, artifact integrity and limitations.
+The local CLI creates deterministic PostgreSQL snapshots and executes policy-selected detectors against frozen context. The default remains framework.health; Audit Rule Pack v1 adds duplicate transaction reference, required-field completeness and sequence-gap detection. No source writes exist. Models, repositories and analyzers retain their existing package boundaries. See the [framework guide](../docs/AUDIT-FRAMEWORK.md) for contracts, connection setup, CLI commands, artifact integrity and limitations.
 
 From this directory:
 ```powershell

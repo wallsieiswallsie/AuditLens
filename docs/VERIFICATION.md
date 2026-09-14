@@ -1,5 +1,67 @@
 # Verification record
 
+## Sequence integrity rule - 2026-09-15 Asia/Jakarta (current)
+
+Resumed and reviewed the existing workspace implementation; no restart or redesign.
+Added only `business.sequence_gap` 1.0.0, category sequence_integrity. Framework remains
+0.3.0. SDK addition is `optional_integer` (exact integer or null; excludes boolean).
+Frozen snapshot/result/policy shapes, artifact layout and provenance are unchanged.
+See [sequence semantics, policy and result](AUDIT-RULE-PACK.md#sequence-control-businesssequence_gap).
+
+| Executed check | Result |
+| --- | --- |
+| `audit-engine/.venv/Scripts/python.exe -m pytest` | PASS: final rerun 208 passed in 98.94s; previous 148 tests retained, 60 sequence regressions added |
+| `npm test` | PASS: 17 passed, 0 failed, including browser and server secret-sentinel checks |
+| `$env:API_URL='http://localhost:3001'; npm run build` | PASS: Vite production build, 26 modules |
+| `python -m audit_engine --help`, no arguments, `health`, `detectors list`, `detectors inspect business.sequence_gap` | PASS: actual subprocess commands; five explicit registrations, legacy health unchanged |
+| `python -m audit_engine policy validate audit-engine/policies/sequence-gap.json` | PASS: actual normal policy CLI |
+| Sequence CLI `run --snapshot ... --policy ...` and `result inspect ...` | PASS: positive, complete, explicit bounds, invalid bounds, boolean/string values, duplicate forbidden, billion-wide range; expected error exits verified |
+| Reordered offline fixture CLI | PASS: same logical result/hash and checked-in canonical result; two ranges (3 and 5-7) |
+| Requirements and input validation | PASS: missing table/ID/sequence field before analysis; invalid config before artifacts; bool/float/string/nested rejection; deterministic sanitized errors |
+| Empty populations and bounds | PASS: no bounds or one bound yields zero findings; both bounds yield full-range finding with empty evidence; equal/negative/clipped bounds covered |
+| Boundary evidence | PASS: nearest before/after records; smallest canonical identity for duplicate boundaries; at most two evidence items, no copied rows |
+| Large-range memory | PASS: 1 and 1,000,000,000 yield one range 2-999999999; measured detector peak allocations below 1 MB |
+| Reproducibility | PASS: record/key order, run/snapshot artifact IDs, timestamp, operator and root invariance; direct shuffled context and reordered CLI tested |
+| Hash sensitivity | PASS: observed values, gap range, minimum, maximum, allow_duplicates, detector version, finding and evidence changes |
+| Compatibility | PASS: default/health, snapshot-integrity, duplicate-reference and completeness golden hashes; old scalar/list config serialization; legacy CLI, prior policies and old example artifacts |
+| `$env:PG_BIN='C:/Program Files/PostgreSQL/17/bin'; npm run test:db` | PASS after broader-process retry: PostgreSQL 17.5, report 2026-09-14T22:54:12.503Z UTC |
+| PostgreSQL framework acceptance | PASS: 11 checks, 11 tables, 19,654 records; source hashes unchanged after extraction |
+| PostgreSQL constraints and permissions | PASS: seven constraint cases, SELECT and seventeen permission denials; source hashes unchanged and audit schema empty |
+| Disposable cluster shutdown | PASS: runner reported Disposable cluster stopped; diagnostic files retained in its temporary directory |
+| `npm run docs:check` | PASS: schema parity, 48 Markdown files, 170 relative links and 15 Mermaid diagrams |
+| `git diff --check` | PASS after correcting documentation line endings |
+
+PostgreSQL scope for the sequence rule is registration, policy validation and schema
+compatibility. Its real reference column contains strings, so this is not claimed as
+positive numeric business-sequence detection. Controlled offline integer references
+use the approved snapshot contract; the committed fixture has four invoices and ten
+empty tables. Positive detection, errors and reordered hashes are verified through
+the normal CLI without adding a sequence-specific command.
+
+The completeness golden was captured before changing SDK/execution code. It protects
+policy JSON, effective list/scalar configuration JSON and the logical run hash.
+Existing default/boolean/integer and duplicate-reference golden tests remain intact.
+No prior tests were removed or weakened. Both full Python runs passed at 208 tests.
+
+Initial failures and corrections: the first PostgreSQL invocation failed in initdb
+with Windows restricted-token errors 87/3 (and directory creation failure), before
+acceptance ran. The same disposable runner succeeded with broader process permissions;
+application permissions and source-reader restrictions were not weakened. An initial
+documentation edit encountered a legacy non-UTF-8 multiplication byte, then a diff
+check detected doubled carriage returns/trailing whitespace. The rule guide was
+re-encoded correctly with normal line endings and its original Unicode retained.
+These were documentation editing issues; no detector test failed.
+
+Security remains trusted in-process execution with only frozen AuditContext and
+validated DetectorConfig passed to the detector. No database, credentials, environment,
+filesystem, network, shell, subprocess or dynamic loading capability was added.
+
+Phase status: Phase 0 verified locally; Phase 1 verified on disposable PostgreSQL;
+Local CLI Audit Framework, Audit Policy + Detector SDK, Rule Pack v1 foundation,
+duplicate-reference, completeness and sequence integrity complete. Advanced business
+rules are not started. Production/Railway remains unverified. Recommended next rule:
+`business.duplicate_payment`; not implemented. No Git commits were executed.
+
 ## Completeness rule — 2026-09-15 Asia/Jakarta (current)
 
 Added only `business.missing_required_field` 1.0.0, category data_completeness.

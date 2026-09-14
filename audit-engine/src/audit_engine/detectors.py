@@ -13,6 +13,10 @@ class ConfigField(Contract):
 
     def validate(self, value):
         # Deliberately small schema; extend only when an actual detector needs it.
+        if self.type == 'optional_integer':
+            if value is not None and type(value) is not int:
+                raise ValueError('Invalid detector configuration type')
+            return
         if self.type == 'list[string]':
             # Policy/default construction freezes JSON arrays to tuples.
             if type(value) not in (list, tuple) or any(type(item) is not str for item in value):
@@ -187,6 +191,8 @@ class SnapshotIntegrityDetector:
 
 from audit_engine.rules.duplicate_transaction_reference import DuplicateTransactionReferenceDetector
 from audit_engine.rules.missing_required_field import MissingRequiredFieldDetector
+from audit_engine.rules.sequence_gap import SequenceGapDetector
 
 DEFAULT_DETECTORS = DetectorRegistry((FrameworkHealthDetector(), SnapshotIntegrityDetector(),
-                                     DuplicateTransactionReferenceDetector(), MissingRequiredFieldDetector()))
+                                     DuplicateTransactionReferenceDetector(), MissingRequiredFieldDetector(),
+                                     SequenceGapDetector()))

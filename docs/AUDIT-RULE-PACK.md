@@ -2,7 +2,7 @@
 
 ## Purpose and control objective
 
-The pack contains duplicate-reference and required-field completeness controls. A reference expected to identify
+The pack contains duplicate-reference, required-field completeness and numeric sequence controls. A reference expected to identify
 one business transaction should not occur on multiple records. A finding identifies
 a repeated value for review; it does not establish fraud or a duplicate payment.
 
@@ -40,7 +40,7 @@ declarations; snapshot compatibility is checked during `run`.
 | ignore_empty | boolean | true | Exclude null and empty string |
 | case_sensitive | boolean | true | Exact strings; false uses Unicode casefold |
 
-SDK configuration supports exactly boolean, integer, string and list[string]; bool is not an integer.
+SDK configuration supports exactly boolean, integer, optional_integer, string and list[string]; bool is not an integer.
 Unknown keys and wrong types fail policy validation before run artifacts or analysis.
 Resolved table/field names follow the existing metadata identifier syntax:
 `[a-z][a-z0-9_.-]{0,99}`. Defaults are frozen and recorded in effective configuration.
@@ -281,7 +281,7 @@ content and evidence content and require different logical hashes. A pre-edit go
 baseline protects duplicate-reference policy/config serialization and its run hash;
 the earlier default/boolean/integer golden baselines are retained.
 
-Evaluation and evidence construction cost O(n × f), plus O(f log f) field sorting
+Evaluation and evidence construction cost O(n Ã— f), plus O(f log f) field sorting
 and the framework's canonical finding/evidence sorting. Memory is O(n + m), where m
 is emitted evidence/content size. No workers, caches or dependencies were added.
 
@@ -291,5 +291,155 @@ cross-table or format validation. Invalid custom IDs produce sanitized detector
 errors. The trusted in-process boundary, unsigned checksums, whole-snapshot hashing
 and unverified production deployment limitations described above also apply.
 
-Recommended next rule: `business.sequence_gap`, adding ordering/continuity control
-without probabilistic or statistical auditing. It is not implemented in this phase.
+Recommended next rule: `business.duplicate_payment`, combining multiple-field matching,
+monetary semantics, temporal/business scoping and grouped evidence. It is not implemented.
+
+## Sequence control: business.sequence_gap
+
+### Objective and identity
+
+Records expected to follow a continuous numerical sequence should not contain
+unexplained gaps. This generic control supports document numbering continuity;
+a gap is a review signal, not proof of wrongdoing. Detector version is **1.0.0**,
+category `sequence_integrity`, rule `SEQUENCE_GAP`, severity `medium`, confidence
+1.0 (certainty of the observed gap), entity type `sequence_range`.
+It uses the same frozen-context SDK, policy validation, registry, canonical result
+and provenance pipeline. Framework version stays **0.3.0**.
+
+### Configuration and requirements
+
+| Key | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| table | string | transactions | Source table |
+| id_field | string | id | Unique non-empty string identity |
+| sequence_field | string | sequence_number | Numeric sequence field |
+| minimum_value | optional_integer | null | Inclusive lower bound; otherwise observed minimum |
+| maximum_value | optional_integer | null | Inclusive upper bound; otherwise observed maximum |
+| allow_duplicates | boolean | true | Permit repeated sequence values |
+
+`requirements_for(config)` resolves the configured table and both fields. Missing
+schema produces the existing skipped `missing_table`/`missing_field` result and a
+failed run before analysis, including for empty tables. Invalid types, names, unknown
+configuration or explicit minimum > maximum fail policy validation before analysis.
+Equal bounds are valid. Defaults are conceptual; the approved loader inventory
+requires an explicitly configured table/field, as with the other business rules.
+
+### Sequence and bound semantics
+
+- Only exact integers and null are valid. Booleans, floating point, stringified
+  integers and nested values are never coerced. The snapshot loader already rejects
+  floats; direct detector input also rejects them.
+- Nulls are ignored, including for duplicate detection; completeness is a separate rule.
+- Every row must have a unique non-empty string ID, even when its sequence is null.
+- With duplicates allowed, evaluate distinct sequence values. With false, any repeated
+  non-null sequence value causes sanitized `detector_error`, failed run and CLI exit 1.
+  Invalid inputs are checked throughout the table, including outside configured bounds,
+  before any findings are constructed. Duplicate values are never gap findings.
+- Unset bounds use observed extrema. Explicit bounds clip the expected population;
+  values outside it are not reported as missing. They may substantiate nearby boundaries.
+- No observations and no bounds yield zero findings. Two explicit bounds with no
+  observations yield one whole-range finding. One bound without observations cannot
+  establish a finite range, so yields zero findings. If an inferred opposite bound
+  makes the interval empty, there are zero findings. Explicit reversed bounds are errors.
+- Integers can be zero or negative. There is no assumed start at 1 and no implied
+  missing values beyond the finite expected interval.
+
+### Findings and evidence
+
+Each contiguous missing range is one finding: `1,2,6` yields `3-5`, whereas `1,3,5`
+yields separate `2` and `4` findings. This represents the control exception compactly
+without emitting one finding per missing number. Messages are deterministic, e.g.
+`Sequence gap detected in invoices.reference: 5-7.`
+
+The frozen Finding contract has no content property. Its string `entity_id` contains
+canonical JSON with the structured scope/range below. This is deterministic semantic
+identity, independent of run IDs, paths or timestamps; the framework derives finding
+and evidence SHA-256 IDs as usual. Content remains available when evidence is empty.
+
+```json
+{
+  "table": "invoices",
+  "id_field": "id",
+  "sequence_field": "reference",
+  "missing_start": 5,
+  "missing_end": 7,
+  "missing_count": 3
+}
+```
+
+At most two real boundary records are evidence. Each item contains the configured
+record key, field, observed integer, `sequence_role`, range content, and configured
+minimum/maximum in context; no full row is copied.
+
+| Example | Gap | Evidence |
+| --- | --- | --- |
+| Observed 2,6 | 3-5 | 2 before_gap; 6 after_gap |
+| Minimum 1; first observed 3 | 1-2 | 3 after_gap |
+| Last observed 8; maximum 10 | 9-10 | 8 before_gap |
+| No observations; explicit 1..10 | 1-10 | Empty evidence; no source record exists |
+
+Nearest observations are selected from the full validated sequence population.
+If several records have a boundary value, choose the canonically smallest JSON
+record identity, matching the framework's canonical evidence ordering. Source order
+never selects a boundary. Evidence order follows the existing canonical record-key
+sort; `sequence_role` indicates whether it is before or after the gap.
+
+### Offline policy and example result
+
+There is no suitable numeric business sequence in the disposable PostgreSQL source.
+The fixture deliberately supplies integer document references in the approved
+`invoices.reference` column. It is controlled offline data, not a claim that real
+string references or arbitrary UUIDs are numerical sequences. It preserves the
+existing eleven-table snapshot contract and supplies four records with references
+`1,2,4,8`; the other tables are empty. Findings are `3` and `5-7`.
+
+The runnable [policy](../audit-engine/policies/sequence-gap.json) selects only
+`business.sequence_gap`, with this effective configuration:
+
+```json
+{
+  "table": "invoices",
+  "id_field": "id",
+  "sequence_field": "reference",
+  "minimum_value": null,
+  "maximum_value": null,
+  "allow_duplicates": true
+}
+```
+
+The [example result](../audit-engine/fixtures/sequence-gap/example-result.json)
+is a complete existing AuditResult artifact. Run from the repository root:
+
+```powershell
+$python = 'audit-engine/.venv/Scripts/python.exe'
+$root = Join-Path $env:TEMP ('auditlens-sequence-' + [guid]::NewGuid())
+New-Item -ItemType Directory -Path $root | Out-Null
+Copy-Item -Recurse audit-engine/fixtures/sequence-gap/snapshots $root
+& $python -m audit_engine policy validate audit-engine/policies/sequence-gap.json
+& $python -m audit_engine --artifacts-dir $root run --snapshot 00000000-0000-4000-a000-000000000300 --policy audit-engine/policies/sequence-gap.json
+# Use the printed Audit Run ID with result inspect.
+```
+
+PostgreSQL acceptance verifies registration, policy validation and schema compatibility
+for this rule. Positive gap detection is verified separately using offline snapshots.
+
+### Determinism, complexity and limitations
+
+Findings sort by numeric missing start, then end, including negative and multi-digit
+values. Tests vary row/key order, snapshot/run identity, time, operator and artifact
+root and require equal logical results/hashes. Sequence values, gaps, either bound,
+duplicate configuration, detector version, finding and evidence mutations change
+hashes. Existing framework, duplicate and completeness golden hashes remain protected.
+
+Collection and boundary representative selection are O(n); sorting and boundary
+lookup give O(n log n) total work and O(n + g) memory, for n observed records and g
+gaps. There is no iteration over expected integers. The billion-wide regression
+emits `2-999999999` and measures detector peak allocations below 1 MB.
+
+Limitations: one whole-table sequence per execution; no grouping by entity/period,
+resetting counters, prefixes, permitted-gap lists or explanation workflow. Integers
+must already be represented as integers. Current approved schema and string-ID
+requirements apply. Snapshot checksums are unsigned and hashes cover the entire
+snapshot. Trusted in-process execution receives only AuditContext and validated
+DetectorConfig; no new filesystem, source adapter, credential, network or process
+capability is added. Production/Railway verification remains outstanding.

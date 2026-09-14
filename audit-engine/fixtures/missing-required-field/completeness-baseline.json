@@ -1,0 +1,5 @@
+{
+  "policy_json": "{\"allow_partial_results\":false,\"contract_version\":\"1\",\"description\":\"Checks completeness of configured invoice fields.\",\"detector_configuration\":{\"business.missing_required_field\":{\"id_field\":\"id\",\"required_fields\":[\"reference\",\"vendor_id\"],\"table\":\"invoices\",\"treat_empty_string_as_missing\":true}},\"disabled_detectors\":[],\"enabled_detectors\":[\"business.missing_required_field\"],\"fail_on_detector_error\":true,\"minimum_confidence\":0.0,\"minimum_severity\":\"info\",\"name\":\"Missing Required Field Example\",\"policy_id\":\"business.missing-required-field.example\",\"policy_version\":\"auditlens-policy-v1\"}",
+  "config_json": "{\"values\":{\"id_field\":\"id\",\"required_fields\":[\"reference\",\"vendor_id\"],\"table\":\"invoices\",\"treat_empty_string_as_missing\":true}}",
+  "hash": "94bb367f9275c41334c353df328a44928be30b79371624b84c4ad7a6a81db1ec"
+}

@@ -70,6 +70,16 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     assert completeness['finding_count'] == len(expected_missing)
     assert completeness['status'] == ('findings' if expected_missing else 'passed')
     assert {f['entity_id']: [e['field'] for e in f['evidence']] for f in completeness['findings']} == expected_missing
+    # Production-shaped references are strings, not numeric document sequences.
+    # Check registration/policy/schema compatibility only; positive detection is offline.
+    sequence_policy = policy_path.with_name('sequence-gap.json')
+    sequence = json.loads(cli('detectors', 'inspect', 'business.sequence_gap'))
+    assert sequence['detector_version'] == '1.0.0'
+    cli('policy', 'validate', str(sequence_policy))
+    from audit_engine.detectors import DEFAULT_DETECTORS, validate_policy, compatibility, resolve_requirements
+    from audit_engine.policy import load_policy
+    detector, config = validate_policy(load_policy(sequence_policy), DEFAULT_DETECTORS)[0]
+    assert compatibility(one, resolve_requirements(detector, config)) is None
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -87,7 +97,7 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 10, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 11, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
                       'snapshot_hash': one.snapshot.snapshot_hash,
-                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, secret exclusion, tamper rejection'}))
+                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, sequence registration/policy/schema compatibility only (positive sequence detection uses offline fixture), secret exclusion, tamper rejection'}))

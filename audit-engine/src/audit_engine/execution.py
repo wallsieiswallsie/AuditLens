@@ -57,7 +57,13 @@ def normalize_result(result, metadata, context, config, policy, identifier, star
                           audit_run_id=identifier, snapshot_id=context.snapshot.snapshot_id)
         if list(Severity).index(finding.severity) >= list(Severity).index(policy.minimum_severity) and finding.confidence >= policy.minimum_confidence:
             findings.append(finding)
-    findings.sort(key=lambda f: (-list(Severity).index(f.severity), f.rule_id, f.entity_type, f.entity_id, f.finding_id))
+    def finding_order(f):
+        entity = f.entity_id
+        if metadata.detector_id == 'business.sequence_gap':
+            content = json.loads(entity)
+            entity = (content['missing_start'], content['missing_end'])
+        return (-list(Severity).index(f.severity), f.rule_id, f.entity_type, entity, f.finding_id)
+    findings.sort(key=finding_order)
     status = result.status
     if status in (ResultStatus.PASSED, ResultStatus.FINDINGS):
         status = ResultStatus.FINDINGS if findings else ResultStatus.PASSED
