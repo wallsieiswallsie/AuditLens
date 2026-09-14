@@ -170,4 +170,12 @@ respect the context-only architecture; an OS-level malicious plugin sandbox is a
 future concern. Reader grant drift requires renewed privilege acceptance. Railway
 runtime and production reader provisioning require separate verification.
 
-Next: Audit Policy + Detector SDK, before implementing any business detector.
+The subsequent Audit Policy + Detector SDK milestone is implemented in version 0.3.0;
+see the extension below. Business detectors remain a future milestone.
+
+## Policy-driven execution extension
+
+Version 0.3.0 adds AuditPolicy, Detector SDK and explicit registry while preserving
+these snapshot contracts and the legacy health API. See [Detector SDK](DETECTOR-SDK.md)
+for the current execution lifecycle, provenance layout, partial-error semantics and
+logical result hash. No business detectors are implemented.

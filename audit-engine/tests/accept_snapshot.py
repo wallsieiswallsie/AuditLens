@@ -29,6 +29,13 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     run_id = next((Path(directory) / 'runs').iterdir()).name
     result = json.loads(cli('result', 'inspect', run_id))
     assert result['status'] == 'passed' and result['finding_count'] == 0
+    policy_path = Path(__file__).resolve().parents[1] / 'policies' / 'examples.json'
+    cli('run', '--snapshot', ids[0], '--policy', str(policy_path),
+        env={**os.environ, 'AUDIT_SOURCE_DATABASE_URL': 'unusable', 'DATABASE_URL': 'unusable'})
+    multi_id = next(p.name for p in (Path(directory) / 'runs').iterdir() if p.name != run_id)
+    results = json.loads(cli('result', 'inspect', multi_id))
+    assert [r['detector_id'] for r in results] == ['framework.health', 'framework.snapshot_integrity']
+    assert results[1]['finding_count'] == 1 and len(results[1]['findings'][0]['evidence']) == 11
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -46,7 +53,7 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 7, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 8, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
                       'snapshot_hash': one.snapshot.snapshot_hash,
-                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, secret exclusion, tamper rejection'}))
+                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, secret exclusion, tamper rejection'}))

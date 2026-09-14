@@ -18,12 +18,19 @@ def main(argv=None):
     snapshot = commands.add_parser('snapshot', help='Create or validate a snapshot')
     snapshot.add_argument('action', nargs='?', choices=['inspect'])
     snapshot.add_argument('snapshot_id', nargs='?')
-    run = commands.add_parser('run', help='Execute framework.health on a frozen snapshot')
+    run = commands.add_parser('run', help='Execute policy-selected detectors on a frozen snapshot')
     run.add_argument('--snapshot', required=True)
+    run.add_argument('--policy', help='JSON policy; default: framework.default (health only)')
     run.add_argument('--operator', default=os.environ.get('AUDIT_OPERATOR') or 'local')
     result = commands.add_parser('result', help='Inspect a local framework result')
     result.add_argument('action', choices=['inspect'])
     result.add_argument('audit_run_id')
+    detectors = commands.add_parser('detectors', help='Explicit registered detector metadata')
+    detectors.add_argument('action', choices=['list', 'inspect'])
+    detectors.add_argument('detector_id', nargs='?')
+    policy = commands.add_parser('policy', help='Validate JSON policy and detector configuration')
+    policy.add_argument('action', choices=['validate'])
+    policy.add_argument('path')
     args = parser.parse_args(argv)
     try:
         if args.command in (None, 'health'):
@@ -38,17 +45,40 @@ def main(argv=None):
                 value = create_snapshot(extract(), args.artifacts_dir)
                 print(f'Snapshot created\nSnapshot ID: {value.snapshot_id}\nTables: {len(value.manifest)}\nRecords: {sum(value.record_counts.values())}\nSHA256: {value.snapshot_hash}')
         elif args.command == 'run':
-            from audit_engine.execution import execute
-            value, result = execute(args.snapshot, args.artifacts_dir, args.operator)
-            print(f'Audit run completed\nAudit Run ID: {value.audit_run_id}\nSnapshot: {value.snapshot_id}\nFramework: {value.framework_version}\nPolicy: {value.policy_version}\nResults: 1 ({result.status.value}; framework smoke only)')
-        else:
-            path = location(args.artifacts_dir, 'results', args.audit_run_id) / 'framework.health.json'
-            if path.is_symlink():
-                raise ValueError('Result link rejected')
-            value = AuditResult.from_json(path.read_bytes())
-            if value.audit_run_id != args.audit_run_id:
-                raise ValueError('Result identity mismatch')
+            from audit_engine.execution import execute_policy
+            value, results = execute_policy(args.snapshot, args.artifacts_dir, args.operator, args.policy)
+            print(f'Audit run {value.status.value}\nAudit Run ID: {value.audit_run_id}\nSnapshot: {value.snapshot_id}\nFramework: {value.framework_version}\nPolicy: {value.policy_version}\nResults: {len(results)} (framework smoke only)')
+            return 1 if value.status.value == 'failed' else 0
+        elif args.command == 'detectors':
+            from audit_engine.detectors import DEFAULT_DETECTORS
+            if args.action == 'inspect':
+                print(DEFAULT_DETECTORS.get(args.detector_id).metadata().to_json())
+            else:
+                print(json.dumps([item.to_dict() for item in DEFAULT_DETECTORS.list()], sort_keys=True))
+        elif args.command == 'policy':
+            from audit_engine.policy import load_policy
+            from audit_engine.detectors import DEFAULT_DETECTORS, validate_policy
+            value = load_policy(args.path)
+            validate_policy(value, DEFAULT_DETECTORS)
             print(value.to_json())
+        else:
+            directory = location(args.artifacts_dir, 'results', args.audit_run_id)
+            values = []
+            for path in sorted(directory.iterdir()):
+                if path.is_symlink() or not path.is_file() or path.suffix != '.json':
+                    raise ValueError('Result inventory rejected')
+                value = AuditResult.from_json(path.read_bytes())
+                if value.audit_run_id != args.audit_run_id or path.name != value.detector_id + '.json':
+                    raise ValueError('Result identity mismatch')
+                values.append(value.to_dict())
+            from audit_engine.models.contracts import AuditRun
+            run_path = location(args.artifacts_dir, 'runs', args.audit_run_id) / 'run.json'
+            if run_path.is_symlink():
+                raise ValueError('Run link rejected')
+            audit_run = AuditRun.from_json(run_path.read_bytes())
+            if audit_run.audit_run_id != args.audit_run_id or set(audit_run.detector_versions) != {v['detector_id'] for v in values}:
+                raise ValueError('Incomplete result inventory')
+            print(json.dumps(values[0] if len(values) == 1 else values, sort_keys=True))
         return 0
     except (ValueError, OSError, TypeError, KeyError, ArithmeticError):
         # No raw exception details: filesystem paths and source values can be private.

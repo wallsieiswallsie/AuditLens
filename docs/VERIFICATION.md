@@ -1,6 +1,44 @@
 # Verification record
 
-## Local CLI Audit Framework — 2026-09-15 Asia/Jakarta (current)
+## Audit Policy + Detector SDK — 2026-09-15 Asia/Jakarta (current)
+
+Completed incrementally on the existing working tree, framework version 0.3.0.
+No business detectors, production migrations, authentication or Railway changes.
+Continuation added deterministic policy-validation order, explicit finding-hash
+mutation, artifact-root/operator/snapshot-identity equivalence and CLI secret-sentinel
+tests; prior SDK, lifecycle, contracts and documentation were retained.
+
+| Executed check | Result | Evidence |
+| --- | --- | --- |
+| Python: .venv Python -m pytest audit-engine/tests -v | PASS: 79 passed, 0 failed | Also 15 unittest subtests passed; all 30 original tests retained |
+| npm test | PASS: 17 passed, 0 failed | Full existing Node suite rerun |
+| npm run build --workspace @auditlens/web | PASS | API_URL=http://localhost:3001; Vite production assets built |
+| CLI help / no arguments / health | PASS | Existing health JSON retained |
+| detectors list / inspect | PASS | Two explicit versioned framework detectors |
+| policy validate default.json | PASS | Explicit health-only default policy |
+| End-to-end execution | PASS | Supported snapshot CLI, snapshot inspect, legacy health run/result and two-detector policy run/result on disposable PostgreSQL |
+| npm run test:db | PASS | PostgreSQL 17.5; report 2026-09-14T22:05:37.269Z UTC |
+| Framework acceptance | PASS: 8 checks | 11 tables, 19,654 records; multi-detector evidence and offline source isolation |
+| Source integrity and privilege denials | PASS | Existing source hashes unchanged; audit schema empty; existing constraints/reader denials pass |
+| npm run docs:check | PASS | 46 Markdown files, 152 relative links, 15 Mermaid diagrams |
+| git diff --check | PASS | No whitespace errors |
+
+The initial sandboxed PostgreSQL attempt failed because initdb could not create a
+Windows restricted process token. The same disposable-only runner succeeded with
+broader process permissions; continuation reran that successful mechanism. No
+application security settings were relaxed and no external target was used.
+The runner shuts down its private cluster and retains temporary diagnostic files.
+The first web build attempt lacked API_URL; subsequent explicit local-URL builds
+passed. pytest was installed only into the project virtual environment; it is an
+optional test extra, not a new runtime dependency or global installation.
+
+The logical result checksum is unsigned and is not automatically recomputed by
+result inspect. Detectors remain trusted in-process modules with a frozen argument
+boundary, not OS isolation. See [Detector SDK](DETECTOR-SDK.md) and
+[ADR-010](adr/ADR-010-detector-sdk-and-audit-policy.md) for actual limitations.
+Business Detectors: Not started. Production/Railway verification: Unverified.
+
+## Local CLI Audit Framework — 2026-09-15 Asia/Jakarta (historical)
 
 Implemented and locally verified: typed extraction/snapshot/run/provenance/result/
 finding/evidence/context contracts; eleven-table read-only extraction; canonical

@@ -155,3 +155,11 @@ A deterministic synthetic source dataset, business migrations, manifests and fix
 "AuditLens is an educational portfolio project designed to demonstrate digital audit, internal control, system analysis, and software engineering concepts using synthetic data. It does not represent or reproduce any proprietary audit methodology."
 
 Licensed under [MIT](LICENSE).
+
+## Audit Policy + Detector SDK (0.3.0)
+
+The local framework now supports explicit versioned detector registration and immutable
+JSON policies. Default execution remains `framework.health`; select
+`audit-engine/policies/examples.json` to run both non-business framework detectors.
+See [Detector SDK](docs/DETECTOR-SDK.md) and [ADR-010](docs/adr/ADR-010-detector-sdk-and-audit-policy.md).
+Business detectors are not started; no production deployment changes are included.
