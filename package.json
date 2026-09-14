@@ -1,0 +1,39 @@
+{
+  "name": "auditlens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w @auditlens/api\" \"npm run dev -w @auditlens/web\"",
+    "dev:api": "npm run dev -w @auditlens/api",
+    "dev:web": "npm run dev -w @auditlens/web",
+    "build": "npm run build -w @auditlens/web",
+    "test": "node --test tests/*.test.js",
+    "db:check": "node scripts/check-database.js",
+    "db:migrate": "knex --knexfile database/knexfile.js migrate:latest",
+    "db:rollback": "knex --knexfile database/knexfile.js migrate:rollback",
+    "docs:check": "node scripts/document-schema.js --check && node scripts/check-docs.js",
+    "db:generate": "node scripts/generate-dataset.js",
+    "db:seed": "node scripts/dataset-database.js seed",
+    "db:reset": "node scripts/dataset-database.js reset",
+    "db:validate-data": "node scripts/dataset-database.js validate",
+    "db:status": "node scripts/dataset-database.js status",
+    "docs:schema": "node scripts/document-schema.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "knex": "^3.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "mermaid": "^11.12.0",
+    "jsdom": "^26.1.0"
+  }
+}

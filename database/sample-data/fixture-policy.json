@@ -1,0 +1,759 @@
+{
+  "version": "fixture-policy-1",
+  "asOf": "2026-09-14T10:00:00.000Z",
+  "timezone": "Asia/Jakarta",
+  "businessHours": "Monday-Friday 09:00 inclusive to 17:00 exclusive; no holidays in fixture calendar",
+  "dormancyDays": 90,
+  "allowedRoles": {
+    "0caa7292-be6e-42d0-ac70-75b3aac7ff44": [
+      "invoice_creator"
+    ],
+    "26136c18-160b-4604-a94a-27bb7c692b74": [
+      "invoice_creator"
+    ],
+    "07db7316-d4d5-4273-a69d-022dd1d527b6": [
+      "invoice_creator"
+    ],
+    "f263169d-489e-4ee2-a14f-b4a420e493c2": [
+      "invoice_creator"
+    ],
+    "05a1131e-da2c-4b54-aa04-c3cdd0859813": [
+      "invoice_creator"
+    ],
+    "f6e2bfdf-e467-4a4a-a4b8-4b9c7f9c35cc": [
+      "invoice_creator"
+    ],
+    "6a5e0617-ac51-47e2-a83b-e9206f845d05": [
+      "invoice_creator"
+    ],
+    "1de4c5c1-1719-4a0d-a4b5-f52f58b7c788": [
+      "invoice_creator"
+    ],
+    "7b4e98f2-d34b-4b08-a0a6-7ba109a9240d": [
+      "invoice_creator"
+    ],
+    "4eabbdbc-1fad-4d5b-a486-becbe5be216d": [
+      "invoice_creator"
+    ],
+    "4066e9d8-9754-425e-a876-f4e91c8150cf": [
+      "invoice_creator"
+    ],
+    "0a01061c-46fe-402d-ad12-9af5ecfb6535": [
+      "invoice_creator"
+    ],
+    "a63f62d2-2261-41eb-a797-2a10068fff76": [
+      "invoice_creator"
+    ],
+    "1eb41de8-f212-4a95-ad9d-2da398090a64": [
+      "invoice_creator"
+    ],
+    "8ee1e04a-5a35-4fdd-a493-09df39cf3ddf": [
+      "invoice_creator"
+    ],
+    "c0335a47-f8d7-4c36-ad2c-2f5f2318a8bf": [
+      "invoice_creator"
+    ],
+    "25eb8226-6f9f-438c-a922-1b3594807b22": [
+      "invoice_creator"
+    ],
+    "ef6981e4-cbef-44b7-ab7f-10658bfe5eba": [
+      "invoice_creator"
+    ],
+    "37ed53b4-42bc-43f0-a01b-f2a0d9a34194": [
+      "invoice_creator"
+    ],
+    "c3500d15-51bc-4323-a529-0a6b11a1c89e": [
+      "invoice_creator"
+    ],
+    "e4147ece-b4f6-47ec-abce-93625246d5f5": [
+      "invoice_creator"
+    ],
+    "e246b531-9192-441e-aadc-f6e319965e0c": [
+      "invoice_creator"
+    ],
+    "ded95ed0-5eed-4fc5-a338-225ae33d2474": [
+      "invoice_creator"
+    ],
+    "4e5207f4-cf30-41d9-ab6f-089956353c5d": [
+      "invoice_creator"
+    ],
+    "0e111cc9-bef8-42e8-a397-3526cc20f31a": [
+      "invoice_creator"
+    ],
+    "a3fba9d4-0ab0-4b40-a55e-293233cb424b": [
+      "invoice_creator"
+    ],
+    "49065ee0-5d95-4682-acaf-7b9382abacfd": [
+      "invoice_creator"
+    ],
+    "2356a149-1788-428f-aedf-f4bb022335a9": [
+      "invoice_creator"
+    ],
+    "7ff40656-1ec1-4e05-a143-b2c9a5dfe752": [
+      "invoice_creator"
+    ],
+    "0165e47f-306c-4f2d-ad47-217e0dc28e88": [
+      "invoice_creator"
+    ],
+    "c2f0a6d5-fc96-47b8-aff7-14657b932831": [
+      "invoice_creator"
+    ],
+    "17be13b5-5e0b-4459-aae6-e5e37ee6f462": [
+      "invoice_creator"
+    ],
+    "768ab306-9f05-4980-afba-10daa99a47f5": [
+      "invoice_creator"
+    ],
+    "bb8c06a5-74e7-4979-adda-b2112c0998e1": [
+      "invoice_creator"
+    ],
+    "f5525770-47a2-46ba-a7cb-42793dccb05a": [
+      "invoice_creator"
+    ],
+    "f61ab4be-13a8-42a5-a87c-8a56cdc51563": [
+      "invoice_creator"
+    ],
+    "aa1bf49a-a9f8-4ce2-ae7e-8d452cc94fc2": [
+      "invoice_creator"
+    ],
+    "1aecbee0-9b55-42ed-a184-37b07c3d7f39": [
+      "invoice_creator"
+    ],
+    "0998dfa2-b24d-49e2-a1db-a529af26f5b8": [
+      "invoice_creator"
+    ],
+    "ad429648-20a5-41d1-a2e3-4f5da9971119": [
+      "invoice_creator"
+    ],
+    "6e44a475-6853-4663-ab3d-79123e7768ed": [
+      "invoice_creator"
+    ],
+    "7ba4be7f-4865-4cbe-a261-51b774d017ae": [
+      "invoice_creator"
+    ],
+    "99966dfd-c556-4b5f-a93f-4046caabb829": [
+      "invoice_creator"
+    ],
+    "b8f9a19e-1ee1-4419-acb8-86f3f350a52b": [
+      "invoice_creator"
+    ],
+    "803eac38-dc02-4e86-ad85-dee12d2e3104": [
+      "invoice_creator"
+    ],
+    "1737c8c8-add5-4a00-ac6e-63eea8b07f99": [
+      "invoice_creator"
+    ],
+    "a902a4e9-4916-4e3a-a30f-2ba05465450b": [
+      "invoice_creator"
+    ],
+    "5c1e7c58-365b-422e-a468-99067bd0835e": [
+      "invoice_creator"
+    ],
+    "1935016e-cdd5-4dd6-acca-7591965e3338": [
+      "invoice_creator"
+    ],
+    "a50c3f4d-fcd8-4bc5-af17-a2bb103429a5": [
+      "invoice_creator"
+    ],
+    "9192141b-3111-44da-ae20-f8234fb945b9": [
+      "invoice_approver"
+    ],
+    "2b3fb5c7-f6dd-4a69-a3b9-d09cf1919541": [
+      "invoice_approver"
+    ],
+    "2e2f3232-08f7-451e-afc0-569c1dbc13bf": [
+      "invoice_approver"
+    ],
+    "fa1a6258-8dd4-418c-a1e4-4ccd112f3281": [
+      "invoice_approver"
+    ],
+    "49b110dc-9f89-458b-ab88-9d72822e8bf3": [
+      "invoice_approver"
+    ],
+    "a81d1bb8-6fa1-48b8-abe9-353685d06bcb": [
+      "invoice_approver"
+    ],
+    "1edbf0f3-8a84-462d-a688-07334089cc71": [
+      "invoice_approver"
+    ],
+    "de33c215-a93e-434c-a2fe-979adde5568f": [
+      "invoice_approver"
+    ],
+    "6d641c9b-f3ce-4ac6-a2f7-7141fef08e1d": [
+      "invoice_approver"
+    ],
+    "e2407a87-d9b4-4e8b-a41c-5b0b010e5ade": [
+      "invoice_approver"
+    ],
+    "a9384fb3-3fab-4d37-a557-a3aa9ffc80d4": [
+      "invoice_approver"
+    ],
+    "f405b914-89b0-4f4d-ab58-9d40d837bcdb": [
+      "invoice_approver"
+    ],
+    "5306496c-7b96-46cb-a716-9d9c04590fff": [
+      "invoice_approver"
+    ],
+    "f558e2f4-445f-47e1-aa88-c3387d6c9cd1": [
+      "invoice_approver"
+    ],
+    "ac73d0f4-8db0-4138-acdf-d034cb6dce27": [
+      "invoice_approver"
+    ],
+    "61318ad7-4dd4-40e5-a273-9cd1695127c8": [
+      "invoice_approver"
+    ],
+    "6616e7be-7c0f-49df-aa82-b4776fd549a2": [
+      "invoice_approver"
+    ],
+    "0e46f0f2-c7f1-4dfe-a108-d34efc809d00": [
+      "invoice_approver"
+    ],
+    "b10c3281-c056-4725-addd-80cee4c05c88": [
+      "invoice_approver"
+    ],
+    "0759aec0-6129-4ad9-af1a-630f64c8661c": [
+      "invoice_approver"
+    ],
+    "e7d51c4c-6436-4584-a01d-f4465ee4eb74": [
+      "invoice_approver"
+    ],
+    "4ed91fb1-98d1-49d1-a63f-5d62be8f659d": [
+      "invoice_approver"
+    ],
+    "31d2b7d0-ff17-4965-a987-3545bd63374f": [
+      "invoice_approver"
+    ],
+    "9b488e85-0909-4aad-ac9c-38ade58347d1": [
+      "invoice_approver"
+    ],
+    "d16cbf3c-72c5-4d01-a0f3-48ece7f9c3cd": [
+      "invoice_approver"
+    ],
+    "d0352c4e-c8ab-4ed7-af17-1b38d37ddaf8": [
+      "invoice_approver"
+    ],
+    "84a36410-31b6-46b8-a51e-9a5318abd149": [
+      "invoice_approver"
+    ],
+    "96badd23-7005-4404-a9fc-b73fce0e7a13": [
+      "invoice_approver"
+    ],
+    "6f5a17f4-b8c7-4a99-ab67-c7e3fe021539": [
+      "invoice_approver"
+    ],
+    "1d5b5d86-fefa-4bb8-a065-2cbf2e7d57d0": [
+      "invoice_approver"
+    ],
+    "fb70b7c5-7291-49ae-adcb-381802a22731": [
+      "invoice_approver"
+    ],
+    "2b5aa0ef-3673-4491-abfb-f8453d4d52ec": [
+      "invoice_approver"
+    ],
+    "7f8c88be-24a3-4d67-a9d1-7ec0231865cd": [
+      "invoice_approver"
+    ],
+    "69e0a369-27d2-4cf3-ab26-18e657d7ba14": [
+      "invoice_approver"
+    ],
+    "8f930475-78b6-4882-a4e8-e50ac7aff3c7": [
+      "invoice_approver"
+    ],
+    "308203e7-8b7a-4983-ae5a-7975326b8b80": [
+      "invoice_approver"
+    ],
+    "fe09e6c3-073c-40e2-a351-d17098d2c77d": [
+      "invoice_approver"
+    ],
+    "d5d288c6-ccd5-400d-a0c2-386db3fb96dd": [
+      "invoice_approver"
+    ],
+    "2b6b4ee1-0523-413c-a598-79ab74a7283c": [
+      "invoice_approver"
+    ],
+    "36056574-ef83-44ed-a337-1a7369ec8801": [
+      "invoice_approver"
+    ],
+    "6198f71f-2772-4d81-a3dc-16e517066384": [
+      "invoice_approver"
+    ],
+    "a1b1cfbe-c052-4be6-ae5e-1978fca9f77b": [
+      "invoice_approver"
+    ],
+    "d8fbcd6f-e319-4507-abbc-4f2c746357ad": [
+      "invoice_approver"
+    ],
+    "23c0c4cf-7f9d-4dbe-a475-7588ad36cb80": [
+      "invoice_approver"
+    ],
+    "9536122f-b3de-4e5f-ad8d-5bf824fc0a69": [
+      "invoice_approver"
+    ],
+    "8933f2fd-14ea-49e3-ad26-40a6a1b49aae": [
+      "invoice_approver"
+    ],
+    "03bce0eb-fa67-4442-ad83-d6739e92aae4": [
+      "invoice_approver"
+    ],
+    "1dc5e1ed-a81c-4ac5-a961-cd6b024650ed": [
+      "invoice_approver"
+    ],
+    "062661da-b989-4324-a214-e4ec9a35139a": [
+      "invoice_approver"
+    ],
+    "5b72bcd8-d178-4535-ad7c-ad9de4e2add5": [
+      "invoice_approver"
+    ],
+    "dd542519-a6fd-4406-ada0-068d333332f7": [
+      "payment_creator"
+    ],
+    "96fd56a1-cef2-485c-a862-8f31a7af7423": [
+      "payment_creator"
+    ],
+    "0189ee96-dec7-4264-a0a1-06d7f8a0e1d1": [
+      "payment_creator"
+    ],
+    "a6a5d531-e617-4198-ae95-f580d9698e26": [
+      "payment_creator"
+    ],
+    "757a484c-ba1b-4682-a2ca-01af4356f4ab": [
+      "payment_creator"
+    ],
+    "72f98aa8-a59f-4318-a6f4-833cf16a7135": [
+      "payment_creator"
+    ],
+    "6ce4ce78-e26f-47e0-a93c-61edf54dddd2": [
+      "payment_creator"
+    ],
+    "e0dd9172-a529-48af-a16b-251a0e68e54e": [
+      "payment_creator"
+    ],
+    "5dbea58c-965b-488f-a768-0ac98f034e22": [
+      "payment_creator"
+    ],
+    "98ad3682-640d-4c05-a786-6dda623e0b6f": [
+      "payment_creator"
+    ],
+    "7c5105a6-eb75-4cc5-a49b-96dc6540b724": [
+      "payment_creator"
+    ],
+    "fa188d88-9177-405c-acfa-5ea9520a11b8": [
+      "payment_creator"
+    ],
+    "b58676a1-fb98-47a0-ac52-b5e68db144e7": [
+      "payment_creator"
+    ],
+    "eabff2b8-df40-46cf-a4be-b3442c047a07": [
+      "payment_creator"
+    ],
+    "8f6aaaf8-19aa-40f7-a081-c8b84a1df096": [
+      "payment_creator"
+    ],
+    "a6d6e07a-f952-4ffc-ab86-db230c2f3d3b": [
+      "payment_creator"
+    ],
+    "52d65c9e-df27-4710-af57-9562205cd721": [
+      "payment_creator"
+    ],
+    "3a743a72-3fed-411a-ae79-eaea9dee689b": [
+      "payment_creator"
+    ],
+    "fdf6a82e-ae80-42d5-a82b-df3e7692453a": [
+      "payment_creator"
+    ],
+    "dda92105-cdd5-430f-ab41-aaaff83e8a63": [
+      "payment_creator"
+    ],
+    "629406a7-f81c-4548-af26-f4a498f3bc00": [
+      "payment_creator"
+    ],
+    "d5526084-115f-4931-a773-8ef772baa76a": [
+      "payment_creator"
+    ],
+    "00db5871-b7ce-4d07-a061-545fbeafd86b": [
+      "payment_creator"
+    ],
+    "3e9a7e87-f02e-498c-adea-1a9fc0a8fdde": [
+      "payment_creator"
+    ],
+    "7ddc3c36-e938-414e-a47d-eccd063a6e0e": [
+      "payment_creator"
+    ],
+    "4318d839-4c7e-4492-a8f0-2966b8ea4544": [
+      "payment_creator"
+    ],
+    "31d72f7a-438c-429b-acd7-335784f63669": [
+      "payment_creator"
+    ],
+    "9ef5dab8-68f5-46d3-a446-dd745aa5bc74": [
+      "payment_creator"
+    ],
+    "6424b84c-e660-45f8-aae3-5c74d2854d28": [
+      "payment_creator"
+    ],
+    "844c30e8-0916-4065-aa22-6519ee348213": [
+      "payment_creator"
+    ],
+    "dde28b81-9f83-4411-a525-a8b699f7a8e1": [
+      "payment_creator"
+    ],
+    "11b3e06e-2014-472e-a3dc-1dd775fa8dae": [
+      "payment_creator"
+    ],
+    "11a39e7d-74d5-4f1e-a4af-7cb0ee8fce30": [
+      "payment_creator"
+    ],
+    "74de82d7-1eee-4692-a0ef-435e1f13e8fe": [
+      "payment_creator"
+    ],
+    "860334cb-bdf4-42f2-a21a-76c37ccfe92d": [
+      "payment_creator"
+    ],
+    "ea9002f5-572f-4b4d-a37b-8b9554e70688": [
+      "payment_creator"
+    ],
+    "5e563ec0-f43e-4e58-a022-65e65f61d619": [
+      "payment_creator"
+    ],
+    "7992ce83-81e2-4203-a5cb-44b4f68435f9": [
+      "payment_creator"
+    ],
+    "310192e0-aa5c-4325-acda-0448d5cc822f": [
+      "payment_creator"
+    ],
+    "c0014017-9dbb-4267-ad24-3cc29473e65d": [
+      "payment_creator"
+    ],
+    "da9d183a-d72a-4466-a491-b5e7626b9854": [
+      "payment_creator"
+    ],
+    "d357fe3c-e97b-4a4d-a3b6-f17950639f49": [
+      "payment_creator"
+    ],
+    "ba7781a3-dcc8-4157-a24a-85cd87dfc562": [
+      "payment_creator"
+    ],
+    "b0265dc7-5877-4b9b-ae29-e0d3ff542a64": [
+      "payment_creator"
+    ],
+    "30068a69-9f03-4180-ac97-8e0a464b03ef": [
+      "payment_creator"
+    ],
+    "e5d32eda-e6b8-414e-aff4-63d2bb656294": [
+      "payment_creator"
+    ],
+    "aed20ea5-69ba-43f4-ada9-9da21f575e5f": [
+      "payment_creator"
+    ],
+    "7890b9c4-8e54-4023-a962-98f3d9b68cb4": [
+      "payment_creator"
+    ],
+    "e0dd3b77-c549-4dad-a73b-19186f483ba3": [
+      "payment_creator"
+    ],
+    "7b9093f2-2373-4b65-aa2c-8efec79658ba": [
+      "payment_creator"
+    ],
+    "8118a0b9-682d-4183-ab8b-36b698b0576c": [
+      "payment_confirmer"
+    ],
+    "706b82db-1cd4-49cd-a7e8-b047fafa6696": [
+      "payment_confirmer"
+    ],
+    "0026d881-71dd-44a5-afa9-9a7e3ba2c8ae": [
+      "payment_confirmer"
+    ],
+    "836f8475-307f-4a48-a383-86e4582b6168": [
+      "payment_confirmer"
+    ],
+    "f8643d63-f467-448f-a430-2a3d76eaf991": [
+      "payment_confirmer"
+    ],
+    "2ffc278b-7f5d-4d65-ad3b-892900d76740": [
+      "payment_confirmer"
+    ],
+    "0ffaf618-b15b-4abe-a9c1-4f4711a1af34": [
+      "payment_confirmer"
+    ],
+    "661bd06f-45ff-4252-a324-117ccada1664": [
+      "payment_confirmer"
+    ],
+    "bd3a0d50-3163-4c6f-a894-08463ccca119": [
+      "payment_confirmer"
+    ],
+    "8b8e9723-1c70-4a7d-aff8-9f59402a38fc": [
+      "payment_confirmer"
+    ],
+    "9efb069b-fbdb-435e-a627-9d5c7f88d777": [
+      "payment_confirmer"
+    ],
+    "598f5fe2-d9b3-4e42-aa07-0905bd08302d": [
+      "payment_confirmer"
+    ],
+    "98c9b44b-064e-44ca-a077-2d653e365b04": [
+      "payment_confirmer"
+    ],
+    "cdf077bb-da29-4683-a1fe-8225d328fea0": [
+      "payment_confirmer"
+    ],
+    "2911d600-e9c3-4f6c-aa4e-5f92c0afaf20": [
+      "payment_confirmer"
+    ],
+    "6569da70-04b4-4f97-a78b-a729d598a9e8": [
+      "payment_confirmer"
+    ],
+    "2d90a428-accf-432b-a6c9-42a33c16ba76": [
+      "payment_confirmer"
+    ],
+    "5f69da48-f553-4c6d-a48e-08d63191b74b": [
+      "payment_confirmer"
+    ],
+    "c224ea71-105f-48bc-a14b-5560457e6ab3": [
+      "payment_confirmer"
+    ],
+    "0db5e1a2-3cbe-4c17-a393-203123264517": [
+      "payment_confirmer"
+    ],
+    "77b570b0-b188-440b-a802-0fe442594552": [
+      "payment_confirmer"
+    ],
+    "d3335206-af5e-436c-ac1c-f6acb00e92e2": [
+      "payment_confirmer"
+    ],
+    "029a6f96-8444-4c46-a4a8-834e1ee64f02": [
+      "payment_confirmer"
+    ],
+    "0b7074fd-6491-4303-a96f-71e2e812b323": [
+      "payment_confirmer"
+    ],
+    "fc533aad-6519-4a1b-ab10-a4faa9e985e2": [
+      "payment_confirmer"
+    ],
+    "4ae5440e-89c3-4993-a8d7-f4811047c1f6": [
+      "payment_confirmer"
+    ],
+    "a3bb6be4-8e8d-4f66-af58-fb34fdab3441": [
+      "payment_confirmer"
+    ],
+    "2a6c0e35-ae65-416a-ae11-446c16663913": [
+      "payment_confirmer"
+    ],
+    "87111999-546f-408f-af91-ba4734eab50d": [
+      "payment_confirmer"
+    ],
+    "5e5ef18e-04ae-40eb-a176-15f818a0e594": [
+      "payment_confirmer"
+    ],
+    "53e208e6-7f80-4453-ae5b-a51d93c8012f": [
+      "payment_confirmer"
+    ],
+    "5279fdfc-dc27-47e4-a875-dc412da31dd6": [
+      "payment_confirmer"
+    ],
+    "2b83cf40-d7e0-4c5f-ace9-d7b7af6e4102": [
+      "payment_confirmer"
+    ],
+    "df0c9f83-62ee-45b6-a5fb-386ae8387c8c": [
+      "payment_confirmer"
+    ],
+    "dc59b120-8a3b-4e92-a4b1-3d591fdcfb41": [
+      "payment_confirmer"
+    ],
+    "6076caf0-de6a-484c-ac91-a3f4ec7d1b05": [
+      "payment_confirmer"
+    ],
+    "7111af33-5fd6-4537-ad7a-2c33167f1ad4": [
+      "payment_confirmer"
+    ],
+    "6346076c-2cd0-4947-a7bd-9a72f7fb7105": [
+      "payment_confirmer"
+    ],
+    "3c8d551a-e648-429d-a453-23247f49f0d4": [
+      "payment_confirmer"
+    ],
+    "c44ccdfc-181a-4135-a282-abfa0fe7ecbf": [
+      "payment_confirmer"
+    ],
+    "700c6521-cefa-42f5-af15-d67e0fc364eb": [
+      "payment_confirmer"
+    ],
+    "47ad941c-2d82-4787-aa5e-30c4e413fcdb": [
+      "payment_confirmer"
+    ],
+    "51984604-30e5-4de2-acc5-f292cd1bb983": [
+      "payment_confirmer"
+    ],
+    "e1c53c4d-b7e7-41fa-af86-63d1da66c05c": [
+      "payment_confirmer"
+    ],
+    "06698351-0e0f-432f-af2b-d35226fd6346": [
+      "payment_confirmer"
+    ],
+    "c4b3938d-35ab-4c89-ac6c-a6224de880f0": [
+      "payment_confirmer"
+    ],
+    "315d716a-4cfa-46ea-ad92-630630cb85a4": [
+      "payment_confirmer"
+    ],
+    "67b961ef-2260-416a-a34f-6075114a0be6": [
+      "payment_confirmer"
+    ],
+    "9aeebcce-c15e-4ca8-a83a-95e8b4cefbfc": [
+      "payment_confirmer"
+    ],
+    "821eaa8d-d87f-4dba-a322-8c577f0c7ace": [
+      "payment_confirmer"
+    ],
+    "e5df1ea3-96d0-4516-a677-5635bad1a033": [
+      "administrator"
+    ],
+    "17cc30ae-2f7d-417d-af0c-c2ce9b352146": [
+      "administrator"
+    ],
+    "a2972c34-32d0-40d5-ac90-859745202a24": [
+      "operations_manager"
+    ],
+    "9efad16b-3edf-46b6-a3a2-c0ee51635505": [
+      "operations_manager"
+    ],
+    "a20e0e2f-18b4-4f8d-a117-e878332542c1": [
+      "operations_manager"
+    ],
+    "6793edba-54fb-4d96-a3ab-8a4ec621ce1b": [
+      "auditor_viewer"
+    ],
+    "98797ccc-e4a4-42e4-a373-0dbf8e739673": [
+      "auditor_viewer"
+    ],
+    "2785cc00-1229-47f3-aa4e-dbe80e685639": [
+      "auditor_viewer"
+    ],
+    "0b808c20-0fd5-4781-a7d5-22a2134a9d57": [
+      "auditor_viewer"
+    ],
+    "21128962-040e-49bb-adc1-b1d94f94e703": [
+      "auditor_viewer"
+    ],
+    "3dfd5e59-1125-4e50-a34e-98b213e6d016": [
+      "operations_staff"
+    ],
+    "3e12e8cb-119d-4bcf-a3ae-d3ca007c6727": [
+      "operations_staff"
+    ],
+    "46b38329-722d-48e1-a27e-d6d30b0f5aac": [
+      "operations_staff"
+    ],
+    "ff0b17d9-38b6-4ed5-a356-6ab0660ba854": [
+      "operations_staff"
+    ],
+    "34852b50-c666-4e4c-a410-f2425417a171": [
+      "operations_staff"
+    ],
+    "b74a05ad-d2fb-41d9-ad31-2b7041a8aea4": [
+      "operations_staff"
+    ],
+    "6d71e5b6-d89d-4707-a0f2-a8412ea97ed1": [
+      "operations_staff"
+    ],
+    "ac287de5-3acf-4cb0-a016-ed16a45b5eb1": [
+      "operations_staff"
+    ],
+    "bcca3cda-3756-4721-a527-bb8bd6db4b64": [
+      "operations_staff"
+    ],
+    "8f4ca714-01ee-4ac7-a33e-bb18f6dca5bb": [
+      "operations_staff"
+    ],
+    "b09ffc89-bbb1-48f8-ad64-bc69990d9d7e": [
+      "operations_staff"
+    ],
+    "b63ce707-6f22-4934-a5b0-68cff6815ddc": [
+      "operations_staff"
+    ],
+    "c4d25a8c-0898-4afe-a922-d15e0b80266e": [
+      "operations_staff"
+    ],
+    "8b766539-3b36-4d9a-adfe-3262ac501d57": [
+      "operations_staff"
+    ],
+    "347b730f-c844-4999-a69f-1f900eb8175a": [
+      "operations_staff"
+    ],
+    "3acecaec-02ea-44d8-aeed-1b240e97d164": [
+      "operations_staff"
+    ],
+    "6b843ea0-ffae-4d4b-a1e0-8dfa64903886": [
+      "operations_staff"
+    ],
+    "b8198d06-dc3e-4216-ab2a-cd84ab50cd08": [
+      "operations_staff"
+    ],
+    "7174047d-564c-4435-a31f-b17a1bb042a5": [
+      "operations_staff"
+    ],
+    "1c22dae9-6b4d-4a4d-a0bb-638dbe99a3f1": [
+      "operations_staff"
+    ],
+    "1f4120f3-cfd8-4050-abcf-da53ab79a275": [
+      "operations_staff"
+    ],
+    "4baa266f-fca8-47b7-ac13-f77fdece8cab": [
+      "operations_staff"
+    ],
+    "1128b8a2-7a63-41d5-a096-0ae6ced60a9b": [
+      "operations_staff"
+    ],
+    "8cd0e109-aa9c-4659-a79c-e1186d62a61f": [
+      "operations_staff"
+    ],
+    "fdd9c715-cdc8-4943-a240-5d9429193de3": [
+      "operations_staff"
+    ],
+    "196f15bc-d3f6-4391-a5bf-d706694d8496": [
+      "operations_staff"
+    ],
+    "2862ff51-50da-490d-a585-078238b9266f": [
+      "operations_staff"
+    ],
+    "db43ddc7-595d-4a94-a072-5f6276fb7195": [
+      "operations_staff"
+    ],
+    "7c5a1a64-c7ca-4641-a2cf-68f289931d5f": [
+      "operations_staff"
+    ],
+    "a39c08dd-ea1b-4d76-a041-a635c3d43857": [
+      "operations_staff"
+    ],
+    "5c1447d2-9080-46e1-ace8-489bec87ad82": [
+      "operations_staff"
+    ],
+    "621e1246-967d-4208-a6ea-214307cfee03": [
+      "operations_staff"
+    ],
+    "4fb53ddc-5589-479f-a1fa-f72f00cb2d95": [
+      "operations_staff"
+    ],
+    "01ed9e4a-8ab5-4430-a9db-725f9c7d27cd": [
+      "operations_staff"
+    ],
+    "fe6fdf4f-820f-42f7-ab56-aa426e3ed8d2": [
+      "operations_staff"
+    ],
+    "4c12c9ec-2078-4bda-a6cd-320c115b6a7e": [
+      "operations_staff"
+    ],
+    "e8737a7e-1c5e-4aad-a076-3c864650183c": [
+      "operations_staff"
+    ],
+    "dc063cbb-4172-40bb-af4f-91bb2b58e2ad": [
+      "operations_staff"
+    ],
+    "eec849e9-ffb3-4303-abf6-89094eaf0af7": [
+      "operations_staff"
+    ],
+    "7918b37c-1fa5-4c62-a717-1d1bb019fd65": [
+      "operations_staff"
+    ]
+  }
+}

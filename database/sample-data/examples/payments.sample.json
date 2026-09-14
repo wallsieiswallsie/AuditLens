@@ -1,0 +1,41 @@
+[
+  {
+    "id": "93439682-0101-4cb8-a36d-8af3b40b2e08",
+    "created_at": "2026-08-03T04:00:00.000Z",
+    "updated_at": "2026-08-03T04:30:00.000Z",
+    "invoice_id": "392fad23-450b-43ff-a86c-9116ca94a1d5",
+    "reference": "PAY-1",
+    "amount": "23110.50",
+    "currency": "IDR",
+    "status": "confirmed",
+    "created_by": "dd542519-a6fd-4406-ada0-068d333332f7",
+    "confirmed_by": "8118a0b9-682d-4183-ab8b-36b698b0576c",
+    "confirmed_at": "2026-08-03T04:30:00.000Z"
+  },
+  {
+    "id": "ccef83f8-f633-453d-a21c-38726dde7538",
+    "created_at": "2026-08-03T05:00:00.000Z",
+    "updated_at": "2026-08-03T05:30:00.000Z",
+    "invoice_id": "392fad23-450b-43ff-a86c-9116ca94a1d5",
+    "reference": "PAY-2",
+    "amount": "23110.50",
+    "currency": "IDR",
+    "status": "confirmed",
+    "created_by": "dd542519-a6fd-4406-ada0-068d333332f7",
+    "confirmed_by": "8118a0b9-682d-4183-ab8b-36b698b0576c",
+    "confirmed_at": "2026-08-03T05:30:00.000Z"
+  },
+  {
+    "id": "6f6be98f-c491-4d85-a849-c7c086173b98",
+    "created_at": "2026-08-04T04:00:00.000Z",
+    "updated_at": "2026-08-04T04:30:00.000Z",
+    "invoice_id": "35a925e2-cc1c-4b46-a947-169043f9f42e",
+    "reference": "PAY-3",
+    "amount": "25880.50",
+    "currency": "IDR",
+    "status": "confirmed",
+    "created_by": "96fd56a1-cef2-485c-a862-8f31a7af7423",
+    "confirmed_by": "706b82db-1cd4-49cd-a7e8-b047fafa6696",
+    "confirmed_at": "2026-08-04T04:30:00.000Z"
+  }
+]

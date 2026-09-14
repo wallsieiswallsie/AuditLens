@@ -1,0 +1,362 @@
+{
+  "datasetVersion": "1.0.0",
+  "seed": 20260914,
+  "generatedAt": "2026-09-14T10:00:00.000Z",
+  "policyVersion": "fixture-policy-1",
+  "anomalies": {
+    "AC-001": {
+      "expectedCount": 8,
+      "unit": "account",
+      "table": "business.users",
+      "recordIds": [
+        "b09ffc89-bbb1-48f8-ad64-bc69990d9d7e",
+        "b63ce707-6f22-4934-a5b0-68cff6815ddc",
+        "c4d25a8c-0898-4afe-a922-d15e0b80266e",
+        "8b766539-3b36-4d9a-adfe-3262ac501d57",
+        "347b730f-c844-4999-a69f-1f900eb8175a",
+        "3acecaec-02ea-44d8-aeed-1b240e97d164",
+        "6b843ea0-ffae-4d4b-a1e0-8dfa64903886",
+        "b8198d06-dc3e-4216-ab2a-cd84ab50cd08"
+      ]
+    },
+    "AC-002": {
+      "expectedCount": 12,
+      "unit": "account",
+      "table": "business.users",
+      "recordIds": [
+        "17cc30ae-2f7d-417d-af0c-c2ce9b352146",
+        "a2972c34-32d0-40d5-ac90-859745202a24",
+        "9efad16b-3edf-46b6-a3a2-c0ee51635505",
+        "a20e0e2f-18b4-4f8d-a117-e878332542c1",
+        "6793edba-54fb-4d96-a3ab-8a4ec621ce1b",
+        "98797ccc-e4a4-42e4-a373-0dbf8e739673",
+        "2785cc00-1229-47f3-aa4e-dbe80e685639",
+        "0b808c20-0fd5-4781-a7d5-22a2134a9d57",
+        "21128962-040e-49bb-adc1-b1d94f94e703",
+        "6d71e5b6-d89d-4707-a0f2-a8412ea97ed1",
+        "ac287de5-3acf-4cb0-a016-ed16a45b5eb1",
+        "bcca3cda-3756-4721-a527-bb8bd6db4b64"
+      ]
+    },
+    "AC-003": {
+      "expectedCount": 6,
+      "unit": "account",
+      "table": "business.users",
+      "recordIds": [
+        "3dfd5e59-1125-4e50-a34e-98b213e6d016",
+        "3e12e8cb-119d-4bcf-a3ae-d3ca007c6727",
+        "46b38329-722d-48e1-a27e-d6d30b0f5aac",
+        "ff0b17d9-38b6-4ed5-a356-6ab0660ba854",
+        "34852b50-c666-4e4c-a410-f2425417a171",
+        "b74a05ad-d2fb-41d9-ad31-2b7041a8aea4"
+      ]
+    },
+    "SOD-001": {
+      "expectedCount": 10,
+      "unit": "observed self-approval invoice",
+      "table": "business.invoices",
+      "recordIds": [
+        "392fad23-450b-43ff-a86c-9116ca94a1d5",
+        "35a925e2-cc1c-4b46-a947-169043f9f42e",
+        "d6c325f0-26e6-4c6c-aa8e-59bf704c0e8e",
+        "8e389fd6-94a8-4279-aa55-02ffdb878fc6",
+        "62c95cab-99d4-48a0-ab45-faa2a576bab2",
+        "793fec73-d03d-420e-a152-34d86ed45206",
+        "23c28989-998d-46b4-a75e-e507523e0dd4",
+        "5014f2be-d1be-4a1a-a4de-868e7591b268",
+        "75b95f6b-0a75-40a5-ac10-9c52e7a16c45",
+        "e472db2d-02d5-437a-ad08-cbbac8bfb3b8"
+      ]
+    },
+    "SOD-002": {
+      "expectedCount": 8,
+      "unit": "observed self-confirmation payment",
+      "table": "business.payments",
+      "recordIds": [
+        "a2a95dbd-0135-4e7b-a835-d69c21795148",
+        "b7c9e452-9c4c-4f25-a8fa-faf31311e0ba",
+        "b49da057-c78b-453d-adc0-460f98575b5a",
+        "c6ee941e-61e9-4e27-a94c-f21799151078",
+        "5254a2ad-1026-4ae2-ab36-ba7b24df767a",
+        "0bd47b91-ab9d-423f-a0c3-c0445ae5e5cb",
+        "4e48b6a6-cd2b-4013-a65c-42633f649562",
+        "fd30d4c1-4cfa-4645-ade7-aaae48065d15"
+      ]
+    },
+    "TX-001": {
+      "expectedCount": 10,
+      "unit": "duplicate group",
+      "table": "business.invoices",
+      "recordIds": [
+        "7ef7c360-94f1-4f90-a770-bba988d7d546",
+        "ee0ccaba-a22d-47d4-a37f-33cabbc11f64",
+        "f6e3bbfa-13e5-43ae-aa38-21f401234a57",
+        "f1467f55-3409-42ec-a0a9-b74de44bc2e8",
+        "4aeb4d4d-befc-456b-a96f-53b48952af4a",
+        "e89e708c-e669-43c6-a126-bcb8fc7be732",
+        "958a843b-9968-4a26-a0b7-5f34b95921ab",
+        "84e392be-40bf-47ee-adea-43c93e4ef2d5",
+        "a8b2b43e-a046-4762-a43e-450836cc4c7b",
+        "285bf323-78e1-4cfd-a4a3-e248e6b04ed7",
+        "2164c508-fce3-4808-aa22-29e7e235a084",
+        "87cae64a-3e12-4b0a-a1f7-7204261b1f1d",
+        "e84cdeb2-094d-421e-a980-99f612d68bb8",
+        "ba02db85-5625-4154-a02a-318e688a283e",
+        "d7db89ae-11bd-4bae-a957-ade8d547cf76",
+        "9c7d6e26-c9ef-4b24-a22d-0f6ac42187b9",
+        "3a4037f3-f33d-4442-a862-e82542464837",
+        "eac9a160-2e2a-44fa-ae66-9327ee1e9bfa",
+        "8c3b4fd1-2948-42fc-a965-2ede24b22a3b",
+        "bbe5d736-ebe3-4461-a05e-9db7e4a2451d"
+      ],
+      "groups": [
+        [
+          "7ef7c360-94f1-4f90-a770-bba988d7d546",
+          "ee0ccaba-a22d-47d4-a37f-33cabbc11f64"
+        ],
+        [
+          "f6e3bbfa-13e5-43ae-aa38-21f401234a57",
+          "f1467f55-3409-42ec-a0a9-b74de44bc2e8"
+        ],
+        [
+          "4aeb4d4d-befc-456b-a96f-53b48952af4a",
+          "e89e708c-e669-43c6-a126-bcb8fc7be732"
+        ],
+        [
+          "958a843b-9968-4a26-a0b7-5f34b95921ab",
+          "84e392be-40bf-47ee-adea-43c93e4ef2d5"
+        ],
+        [
+          "a8b2b43e-a046-4762-a43e-450836cc4c7b",
+          "285bf323-78e1-4cfd-a4a3-e248e6b04ed7"
+        ],
+        [
+          "2164c508-fce3-4808-aa22-29e7e235a084",
+          "87cae64a-3e12-4b0a-a1f7-7204261b1f1d"
+        ],
+        [
+          "e84cdeb2-094d-421e-a980-99f612d68bb8",
+          "ba02db85-5625-4154-a02a-318e688a283e"
+        ],
+        [
+          "d7db89ae-11bd-4bae-a957-ade8d547cf76",
+          "9c7d6e26-c9ef-4b24-a22d-0f6ac42187b9"
+        ],
+        [
+          "3a4037f3-f33d-4442-a862-e82542464837",
+          "eac9a160-2e2a-44fa-ae66-9327ee1e9bfa"
+        ],
+        [
+          "8c3b4fd1-2948-42fc-a965-2ede24b22a3b",
+          "bbe5d736-ebe3-4461-a05e-9db7e4a2451d"
+        ]
+      ]
+    },
+    "TX-002": {
+      "expectedCount": 12,
+      "unit": "duplicate group",
+      "table": "business.payments",
+      "recordIds": [
+        "795d8eb1-a27c-483e-a9e9-c9497be61cf0",
+        "5a3dde7f-8d1a-426a-a47f-91d2c675bc1d",
+        "9ecc249e-4bbf-4fde-a48e-c0825233ef33",
+        "f4b00e20-987c-495e-a370-13f7a0bab957",
+        "d6e3c4d1-e22c-4a49-ac44-92e9cbabf9b5",
+        "5b98417c-c551-45b8-aa10-5535c1cf5da1",
+        "40e2e995-106e-4ea7-ad2b-dac815d21f17",
+        "38d6ceae-447a-4479-adfa-89851a8d67df",
+        "eeef7923-c446-4fc4-a9d1-1aef85f3fcd7",
+        "b3861c27-2d0e-4574-a0fd-b89b8fe21456",
+        "34b947ad-30fb-47e9-a235-1e33dd4d77c7",
+        "4b30a3ec-9cf8-4766-a8e0-d329b37c7536",
+        "503678b0-e24c-434e-a804-ff9affd1bf94",
+        "e1321e39-b378-424d-a6e4-76fc42e7cdcc",
+        "7eb29b44-775f-40a3-a7a9-a386480d3e70",
+        "beb05b28-ca9d-4dc9-a030-5dbe56b03814",
+        "21be5d01-0dc4-4369-a78c-e574b8f5b508",
+        "3d67acfa-9c2d-442d-a72a-6f31a989b8a2",
+        "7873dd71-dc99-433e-a823-ee7101fa3617",
+        "85bcf4f2-e70f-40ca-a682-ce2e9e1b7a08",
+        "0c7483be-8b37-4fe0-af88-fc25c32ff80a",
+        "3cf10e5a-6261-4fb6-ad10-e04c45fd8824",
+        "cee8ee4c-6255-4b94-aadd-d808a83b6f79",
+        "05cd6639-4f48-433d-a6dd-62d638d8a32d"
+      ],
+      "groups": [
+        [
+          "795d8eb1-a27c-483e-a9e9-c9497be61cf0",
+          "5a3dde7f-8d1a-426a-a47f-91d2c675bc1d"
+        ],
+        [
+          "9ecc249e-4bbf-4fde-a48e-c0825233ef33",
+          "f4b00e20-987c-495e-a370-13f7a0bab957"
+        ],
+        [
+          "d6e3c4d1-e22c-4a49-ac44-92e9cbabf9b5",
+          "5b98417c-c551-45b8-aa10-5535c1cf5da1"
+        ],
+        [
+          "40e2e995-106e-4ea7-ad2b-dac815d21f17",
+          "38d6ceae-447a-4479-adfa-89851a8d67df"
+        ],
+        [
+          "eeef7923-c446-4fc4-a9d1-1aef85f3fcd7",
+          "b3861c27-2d0e-4574-a0fd-b89b8fe21456"
+        ],
+        [
+          "34b947ad-30fb-47e9-a235-1e33dd4d77c7",
+          "4b30a3ec-9cf8-4766-a8e0-d329b37c7536"
+        ],
+        [
+          "503678b0-e24c-434e-a804-ff9affd1bf94",
+          "e1321e39-b378-424d-a6e4-76fc42e7cdcc"
+        ],
+        [
+          "7eb29b44-775f-40a3-a7a9-a386480d3e70",
+          "beb05b28-ca9d-4dc9-a030-5dbe56b03814"
+        ],
+        [
+          "21be5d01-0dc4-4369-a78c-e574b8f5b508",
+          "3d67acfa-9c2d-442d-a72a-6f31a989b8a2"
+        ],
+        [
+          "7873dd71-dc99-433e-a823-ee7101fa3617",
+          "85bcf4f2-e70f-40ca-a682-ce2e9e1b7a08"
+        ],
+        [
+          "0c7483be-8b37-4fe0-af88-fc25c32ff80a",
+          "3cf10e5a-6261-4fb6-ad10-e04c45fd8824"
+        ],
+        [
+          "cee8ee4c-6255-4b94-aadd-d808a83b6f79",
+          "05cd6639-4f48-433d-a6dd-62d638d8a32d"
+        ]
+      ]
+    },
+    "TX-003": {
+      "expectedCount": 8,
+      "unit": "invoice with cumulative overpayment",
+      "table": "business.invoices",
+      "recordIds": [
+        "d5173b0a-99ea-4824-ae1f-6912713a4cdc",
+        "0e0f22f5-b38e-4063-a470-a5670d267aa6",
+        "5a0c0a8b-bdf2-4988-a346-ada2639ab62a",
+        "90cf1d2d-93de-4bd4-aa0b-729ef7d7b718",
+        "3e3fe73f-5c92-436d-a6ae-f0c758e652cf",
+        "481fbf8c-220d-4614-a547-d4366b8e2758",
+        "6a594969-bbc6-48cf-ad24-9ada2345d7e6",
+        "cd2aeeb9-d4f4-4f7c-aab1-64fd33cf3211"
+      ]
+    },
+    "TX-004": {
+      "expectedCount": 10,
+      "unit": "invoice",
+      "table": "business.invoices",
+      "recordIds": [
+        "db59a501-7fe3-4f9b-ad45-82011b6c4370",
+        "4107ba5a-2a09-43de-a883-9add8c304882",
+        "6f78af1b-26c5-435f-af9d-1f5ec4673a3b",
+        "442c752d-1294-447e-ad09-c4b4054293b1",
+        "8bb9423b-33b0-4902-a5b9-7924eec7dc08",
+        "2c935e08-46a0-4ad1-abb9-433962710730",
+        "19167346-14ee-45a2-a5af-edcad0a00244",
+        "b40084fa-f754-4669-ae6b-6bcf5a80ab6f",
+        "4948a57d-36ba-4bf4-abcd-f57d13eb083e",
+        "2331556b-f78e-40ea-a7eb-87849405e494"
+      ]
+    },
+    "TX-005": {
+      "expectedCount": 8,
+      "unit": "creation event after employee ended_at",
+      "table": "business.audit_logs",
+      "recordIds": [
+        "04b21e08-e542-439c-a874-339853cbc27e",
+        "798c73c6-0dfd-4a19-ae44-0b9263e9a56d",
+        "c7cfb565-bf64-4b34-a158-ea2846a55696",
+        "038962b5-52e5-47ba-aede-8661094c0867",
+        "ea509d39-7b13-4633-a673-f85e098c7373",
+        "8e093191-a101-4443-adb6-3fda8527508c",
+        "16589972-bcff-40b8-a593-e0ffdb1e7eaf",
+        "57e82fe5-5f97-447e-abaa-90153353592b"
+      ]
+    },
+    "TX-006": {
+      "expectedCount": 20,
+      "unit": "out-of-hours creation event",
+      "table": "business.audit_logs",
+      "recordIds": [
+        "a1a4e73d-45c5-4984-ada4-bdd218a112eb",
+        "98c12657-aac6-4882-ae2e-4e8e123a02d2",
+        "ee7f4bca-f2e3-48cb-a2f1-ccd2eaad9fe3",
+        "27e609e2-d8ce-47e7-a64c-6765783d6652",
+        "1d425572-82a8-4193-ad3d-d4d274799d5e",
+        "ef7221ba-7b7f-4fcb-ad4e-9c818f44fe0c",
+        "00a89222-ef50-4b4a-a5db-15cbaac1ef30",
+        "0c67a99e-c6c1-4e4e-a4b5-fa0600f57a64",
+        "82bbd1c6-0d78-4323-a244-b6cc7184ed82",
+        "c505e5c6-5beb-4290-a84e-66807091c2aa",
+        "06871ddd-502a-4a1a-ac8d-4810f4f6d6f5",
+        "2c44dd38-6390-4b3e-a326-d8bed4c75e2b",
+        "27612170-cdde-4d68-a4b2-445a20295838",
+        "f7cc35d6-3ce2-4533-ad3d-ac3e6c665150",
+        "5f8a0e61-19a8-4bee-a661-c8044f33b5e7",
+        "855ddbed-3f95-46d4-ac97-e9a18866208e",
+        "788bad7d-b497-4f47-a939-c11f5dc6c6fe",
+        "e64431e5-4b1a-4bd8-a699-4f2544cbfe45",
+        "d3a1359f-44ca-480d-af99-e4212184497b",
+        "a765b963-47fb-4ccb-aed4-13c0a0f99479"
+      ]
+    },
+    "LOG-001": {
+      "expectedCount": 10,
+      "unit": "material change event",
+      "table": "business.audit_logs",
+      "recordIds": [
+        "10016c71-ee5e-466f-af11-b55f56974db2",
+        "2e123278-e8ac-46b0-a3f0-7a7f4c2fc0c7",
+        "6b30ba65-2a3e-43f5-a76d-55c6544ad13e",
+        "d19f597b-f645-45a7-ac48-65feda5d7150",
+        "19a475d8-a671-4df3-a205-4076d9eb66ed",
+        "ea123fc7-9447-4018-a8aa-eab8af6bc7b6",
+        "9856243f-c30e-47db-a7d7-13d712504b3a",
+        "a6812790-383e-4162-a29a-9cd5348ef4d7",
+        "049a90a8-c25a-494e-a8c6-8252a13b2218",
+        "7e6d9f0a-fb16-4d55-a788-64350e90c766"
+      ]
+    },
+    "LOG-002": {
+      "expectedCount": 8,
+      "unit": "override event",
+      "table": "business.audit_logs",
+      "recordIds": [
+        "322d66be-8246-4cd4-a956-07b798f5df47",
+        "a672b2de-fe79-4bc7-aee1-73bf8c706a2a",
+        "4fccf24d-c278-4c48-a2be-735913f48763",
+        "c51c2fd8-9f5a-4d93-a855-4c4ed8c0751f",
+        "f4df8127-447d-48ed-a60f-3db2a13fc33f",
+        "fd31d08c-4029-4860-a53f-c97c086b00fd",
+        "8c5a78d0-71c9-4742-a86a-ed260d146b02",
+        "b450db7c-74e6-4d8c-a153-31fe10a65d26"
+      ]
+    },
+    "LOG-003": {
+      "expectedCount": 12,
+      "unit": "unapproved role change event",
+      "table": "business.audit_logs",
+      "recordIds": [
+        "80603399-6d61-4879-a688-dd54e49dd9da",
+        "fd7d9cf4-769b-4503-a8bb-9c2baced7e48",
+        "ad020dbd-0f93-4f02-a723-e980deb683cc",
+        "fb5718bf-5adb-49b3-aee4-05408db04290",
+        "d169f421-6d30-418f-a5d7-8d96224aa8fa",
+        "21da80f2-2ceb-4391-a9a6-8fd7ce56aec7",
+        "1e32b8a9-90c5-4439-a07d-5c8c4f817445",
+        "8ec3ec32-347f-43b8-a5a4-6082cbf734ef",
+        "855158d5-d0d4-40af-adbb-129d327aa249",
+        "1f63fe4e-7d1d-47c2-a79d-d0297a50810b",
+        "2d5e489e-1cab-45a7-afa4-2484c830e42c",
+        "9ab5f1e4-462a-4d17-a734-818b42769de5"
+      ]
+    }
+  }
+}

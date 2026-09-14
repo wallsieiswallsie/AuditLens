@@ -1,0 +1,32 @@
+[
+  {
+    "id": "0caa7292-be6e-42d0-ac70-75b3aac7ff44",
+    "created_at": "2026-01-05T02:00:00.000Z",
+    "updated_at": "2026-09-11T03:00:00.000Z",
+    "employee_id": "805f49a5-aadd-4739-aea4-69f474c01d63",
+    "email": "employee1@example.test",
+    "account_type": "human",
+    "status": "active",
+    "last_login_at": "2026-09-11T03:00:00.000Z"
+  },
+  {
+    "id": "26136c18-160b-4604-a94a-27bb7c692b74",
+    "created_at": "2026-01-05T02:00:00.000Z",
+    "updated_at": "2026-09-11T03:00:00.000Z",
+    "employee_id": "59ac88e6-f9e2-410e-ad31-54d743340b23",
+    "email": "employee2@example.test",
+    "account_type": "human",
+    "status": "active",
+    "last_login_at": "2026-09-11T03:00:00.000Z"
+  },
+  {
+    "id": "07db7316-d4d5-4273-a69d-022dd1d527b6",
+    "created_at": "2026-01-05T02:00:00.000Z",
+    "updated_at": "2026-09-11T03:00:00.000Z",
+    "employee_id": "51edef06-69aa-41bb-aa4b-93f828d958ec",
+    "email": "employee3@example.test",
+    "account_type": "human",
+    "status": "active",
+    "last_login_at": "2026-09-11T03:00:00.000Z"
+  }
+]

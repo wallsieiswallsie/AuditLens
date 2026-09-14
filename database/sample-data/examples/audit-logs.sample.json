@@ -1,0 +1,44 @@
+[
+  {
+    "id": "286cb4a7-304f-4e0c-a6d8-c07400edc12a",
+    "actor_id": "e5df1ea3-96d0-4516-a677-5635bad1a033",
+    "action": "user.role_assigned",
+    "entity_type": "user",
+    "entity_id": "0caa7292-be6e-42d0-ac70-75b3aac7ff44",
+    "before_data": null,
+    "after_data": {
+      "role_id": "469893b0-6574-40e4-ad46-a88e5de664de",
+      "change_reference": "sample://access/1"
+    },
+    "occurred_at": "2026-01-05T02:00:00.000Z",
+    "created_at": "2026-01-05T02:00:00.000Z"
+  },
+  {
+    "id": "c17b67d1-5c7b-4e6a-a073-a7869eced357",
+    "actor_id": "e5df1ea3-96d0-4516-a677-5635bad1a033",
+    "action": "user.role_assigned",
+    "entity_type": "user",
+    "entity_id": "26136c18-160b-4604-a94a-27bb7c692b74",
+    "before_data": null,
+    "after_data": {
+      "role_id": "469893b0-6574-40e4-ad46-a88e5de664de",
+      "change_reference": "sample://access/2"
+    },
+    "occurred_at": "2026-01-05T02:00:00.000Z",
+    "created_at": "2026-01-05T02:00:00.000Z"
+  },
+  {
+    "id": "eb46337d-9750-4603-a9b6-fe04f2fa7900",
+    "actor_id": "e5df1ea3-96d0-4516-a677-5635bad1a033",
+    "action": "user.role_assigned",
+    "entity_type": "user",
+    "entity_id": "07db7316-d4d5-4273-a69d-022dd1d527b6",
+    "before_data": null,
+    "after_data": {
+      "role_id": "469893b0-6574-40e4-ad46-a88e5de664de",
+      "change_reference": "sample://access/3"
+    },
+    "occurred_at": "2026-01-05T02:00:00.000Z",
+    "created_at": "2026-01-05T02:00:00.000Z"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "392fad23-450b-43ff-a86c-9116ca94a1d5",
+    "created_at": "2026-08-03T02:00:00.000Z",
+    "updated_at": "2026-08-03T05:30:00.000Z",
+    "vendor_id": "4d751393-9767-4f6e-a467-b4dcf3905987",
+    "reference": "INV-000001",
+    "amount": "46221.00",
+    "currency": "IDR",
+    "status": "paid",
+    "created_by": "0caa7292-be6e-42d0-ac70-75b3aac7ff44",
+    "supporting_reference": "sample://invoice/1"
+  },
+  {
+    "id": "35a925e2-cc1c-4b46-a947-169043f9f42e",
+    "created_at": "2026-08-04T02:00:00.000Z",
+    "updated_at": "2026-08-04T05:30:00.000Z",
+    "vendor_id": "bc804d7d-7926-4c47-a789-8b4eeeaa80a1",
+    "reference": "INV-000002",
+    "amount": "51761.00",
+    "currency": "IDR",
+    "status": "paid",
+    "created_by": "26136c18-160b-4604-a94a-27bb7c692b74",
+    "supporting_reference": "sample://invoice/2"
+  },
+  {
+    "id": "d6c325f0-26e6-4c6c-aa8e-59bf704c0e8e",
+    "created_at": "2026-08-05T02:00:00.000Z",
+    "updated_at": "2026-08-05T05:30:00.000Z",
+    "vendor_id": "8b0ef21d-0aa5-4ece-a6f0-fc25286687d4",
+    "reference": "INV-000003",
+    "amount": "31644.00",
+    "currency": "IDR",
+    "status": "paid",
+    "created_by": "07db7316-d4d5-4273-a69d-022dd1d527b6",
+    "supporting_reference": "sample://invoice/3"
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "datasetVersion": "1.0.0",
+  "seed": 20260914,
+  "generatedAt": "2026-09-14T10:00:00.000Z",
+  "asOf": "2026-09-14T10:00:00.000Z",
+  "policyVersion": "fixture-policy-1",
+  "counts": {
+    "employees": 250,
+    "users": 250,
+    "roles": 8,
+    "permissions": 17,
+    "user_roles": 250,
+    "role_permissions": 27,
+    "vendors": 100,
+    "invoices": 2000,
+    "invoice_approvals": 1840,
+    "payments": 2400,
+    "audit_logs": 12512
+  },
+  "expectedAnomalyCounts": {
+    "AC-001": 8,
+    "AC-002": 12,
+    "AC-003": 6,
+    "SOD-001": 10,
+    "SOD-002": 8,
+    "TX-001": 10,
+    "TX-002": 12,
+    "TX-003": 8,
+    "TX-004": 10,
+    "TX-005": 8,
+    "TX-006": 20,
+    "LOG-001": 10,
+    "LOG-002": 8,
+    "LOG-003": 12
+  },
+  "tableHashes": {
+    "employees": "8b047724015bdf5d7843c0c25c0cfc6f417cd1e1c9ffb34218799ffec062f67a",
+    "users": "fe4b6bae6b235dc862e4c9d0a0ebe49051d488fee5ee5e912bc74494de70908f",
+    "roles": "7d2856f67ac0c57d0ceabe123602df8e3c44f81d33c032b8167c4334546b3492",
+    "permissions": "777d68ba2f50e62974bdc84dcde4f75dc1a908a3d5947781afdbed46505f781d",
+    "user_roles": "4985761f5289b06960f2659d0294944a0682f46e7c3051930e3c7984681972b7",
+    "role_permissions": "a692c8849cf42b98b6447c5bb3e48e2a1d3dcdab9be032f90c7663f28632ae5a",
+    "vendors": "4f5f7df4e4a7ac848edd099aa2be51d050590faee3fcfa0277530fe0c8c02c45",
+    "invoices": "25695a655a46c9cbff6f345f0098b74bc365b414ce0b30794b0cbb5e419fd616",
+    "invoice_approvals": "f5fc613940b5e66bd99b21ce9e566069c109364bd2d4a1b5d3603212fc1c02f6",
+    "payments": "698ab6139f8a8292b77e0684f8455bf2c55fe3152bc9b9ddfe9da3be4cfeecb2",
+    "audit_logs": "52ab82ac2f998fd612dc90d9211204b41ee29f1903970e6398a1981ce25829bb"
+  },
+  "logicalSha256": "ce8a804cea5a71bba995530d06dab875433d61faf149ac2bf9ab298284a906f2"
+}

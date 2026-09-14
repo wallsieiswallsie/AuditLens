@@ -1,0 +1,22 @@
+# Glossary
+
+- **Digital Audit:** Use of system data and repeatable analysis to support audit work.
+- **Internal Control:** An action or process intended to reduce risk and support objectives.
+- **IT Control:** A control over technology access, operation, changes or information.
+- **Risk:** The possibility of an event that adversely affects an objective.
+- **Control:** A safeguard intended to prevent, detect or correct an unwanted condition.
+- **Audit Procedure:** A defined method of obtaining and evaluating evidence.
+- **Evidence:** Information supporting an observation or conclusion, with traceable provenance.
+- **Exception:** A detected deviation that requires review; not automatically a finding.
+- **Finding:** A reviewed, supported conclusion about a condition against expectations.
+- **Recommendation:** A proposed action to address a finding or its cause.
+- **RBAC:** Role-based access control: permissions assigned through roles.
+- **Segregation of Duties:** Separating incompatible responsibilities to reduce error or misuse.
+- **Privileged Account:** An account with powerful administrative or sensitive capabilities.
+- **Dormant Account:** An account unused beyond a defined period.
+- **Audit Trail:** A chronological record of actions and changes.
+- **Data Integrity:** Accuracy, completeness and consistency of data across its lifecycle.
+- **Least Privilege:** Granting only the access needed for an assigned responsibility.
+- **Synthetic Data:** Artificial records created for safe demonstration and testing.
+- **False Positive:** A flagged case that does not represent the intended deviation.
+- **False Negative:** A relevant deviation that a test fails to flag.
