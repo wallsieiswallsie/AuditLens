@@ -106,6 +106,47 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     assert payment['status'] == ('findings' if expected_payments else 'passed')
     assert {canonical_json(f['evidence'][0]['context']['normalized_match_values']):
             {e['source_record_id']['id'] for e in f['evidence']} for f in payment['findings']} == expected_payments
+    # Inspect the actual monetary population; currency is an approved payment
+    # dimension. Default 1.5 multiplier is never tuned to manufacture findings.
+    from decimal import Decimal, localcontext
+    amount_policy = policy_path.with_name('amount-outlier.json')
+    cli('policy', 'validate', str(amount_policy))
+    populations = {}
+    for row in one.tables['payments']:
+        assert type(row['amount']) is str
+        populations.setdefault(row['currency'], []).append(row)
+    eligible_groups = sum(len(rows) >= 8 for rows in populations.values())
+    expected_outliers = set()
+    with localcontext() as decimal_context:
+        decimal_context.prec = 80  # Actual source NUMERIC(18,2), multiplier 1.5.
+        for rows in populations.values():
+            if len(rows) < 8:
+                continue
+            values = sorted(Decimal(row['amount']) for row in rows)
+            middle = len(values) // 2
+            halves = (values[:middle], values[middle + len(values) % 2:])
+            q1, q3 = [half[len(half)//2] if len(half) % 2 else
+                      (half[len(half)//2 - 1] + half[len(half)//2]) / Decimal(2) for half in halves]
+            if q3 == q1:
+                continue
+            upper = q3 + Decimal('1.5') * (q3 - q1)
+            expected_outliers.update(row['id'] for row in rows if Decimal(row['amount']) > upper)
+    prior_runs = {p.name for p in (Path(directory) / 'runs').iterdir()}
+    cli('run', '--snapshot', ids[0], '--policy', str(amount_policy),
+        env={**os.environ, 'AUDIT_SOURCE_DATABASE_URL': 'unusable', 'DATABASE_URL': 'unusable'})
+    amount_run = next(p.name for p in (Path(directory) / 'runs').iterdir() if p.name not in prior_runs)
+    amount_result = json.loads(cli('result', 'inspect', amount_run))
+    assert amount_result['detector_id'] == 'business.amount_outlier'
+    assert amount_result['status'] == ('findings' if expected_outliers else 'passed')
+    assert {f['entity_id'] for f in amount_result['findings']} == expected_outliers
+    assert amount_result['finding_count'] == len(expected_outliers)
+    for f in amount_result['findings']:
+        assert len(f['evidence']) == 1
+        evidence = f['evidence'][0]
+        assert evidence['source_record_id'] == {'id': f['entity_id']}
+        row = next(row for row in one.tables['payments'] if row['id'] == f['entity_id'])
+        assert evidence['observed_value'] == row['amount']
+        assert evidence['context']['group_values'] == [row['currency']]
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -123,9 +164,13 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 12, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 13, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
                       'duplicate_payment_findings': payment['finding_count'],
                       'payment_match_fields': list(fields),
+                      'amount_outlier': {'records_evaluated': len(one.tables['payments']),
+                          'eligible_records': sum(len(rows) for rows in populations.values()),
+                          'groups': len(populations), 'groups_meeting_minimum_sample_size': eligible_groups,
+                          'findings': amount_result['finding_count'], 'group_by_fields': ['currency'], 'iqr_multiplier': '1.5'},
                       'snapshot_hash': one.snapshot.snapshot_hash,
                       'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, sequence registration/policy/schema compatibility only (positive sequence detection uses offline fixture), payment registration/policy/schema/execution and exact group evidence, secret exclusion, tamper rejection'}))

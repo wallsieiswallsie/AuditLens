@@ -1,7 +1,7 @@
 # Audit Policy and Detector SDK
 
 Framework version: **0.3.0**. The explicit registry contains `framework.health`,
-`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, `business.missing_required_field`, `business.sequence_gap`, and `business.duplicate_payment`.
+`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, `business.missing_required_field`, `business.sequence_gap`, `business.duplicate_payment`, and `business.amount_outlier`.
 See [Audit Rule Pack v1](AUDIT-RULE-PACK.md) for business rule semantics.
 
 ```mermaid
@@ -252,3 +252,18 @@ content available even for empty evidence, without adding fields to old artifact
 The executor orders this detector's findings by numeric start/end; all other
 finding ordering and hash serialization stay unchanged. See the
 [sequence control](AUDIT-RULE-PACK.md#sequence-control-businesssequence_gap).
+
+## Decimal statistical configuration
+
+Amount outlier uses the existing `string` configuration type for `iqr_multiplier`.
+Its `requirements_for(config)` hook validates positive canonical plain decimals,
+minimum sample size, distinct grouping fields and at least one enabled direction.
+No generic float type or new configuration primitive was added. Old configuration
+serialization, result contracts, normalization and hashes are unchanged.
+
+The detector uses a fresh explicitly sized Decimal context for exact arithmetic,
+independent of caller precision, rounding and traps. Its minimal record evidence
+context holds quartiles, fences and population summary because Finding has no
+structured content field. Record identity remains the primary entity. Methodology,
+serialization and limitations are part of the versioned
+[amount outlier rule contract](AUDIT-RULE-PACK.md#statistical-control-businessamount_outlier).

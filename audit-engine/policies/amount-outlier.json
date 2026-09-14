@@ -1,0 +1,31 @@
+{
+  "contract_version": "1",
+  "policy_id": "business.amount-outlier.example",
+  "policy_version": "auditlens-policy-v1",
+  "name": "Amount Outlier Example",
+  "description": "Detects unusual payment amounts using deterministic Tukey IQR fences.",
+  "enabled_detectors": [
+    "business.amount_outlier"
+  ],
+  "disabled_detectors": [],
+  "minimum_severity": "info",
+  "minimum_confidence": 0.0,
+  "fail_on_detector_error": true,
+  "allow_partial_results": false,
+  "detector_configuration": {
+    "business.amount_outlier": {
+      "amount_field": "amount",
+      "detect_lower_outliers": false,
+      "detect_upper_outliers": true,
+      "group_by_fields": [
+        "currency"
+      ],
+      "id_field": "id",
+      "ignore_negative": false,
+      "ignore_zero": false,
+      "iqr_multiplier": "1.5",
+      "minimum_sample_size": 8,
+      "table": "payments"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Audit engine foundation
 
-The local CLI creates deterministic PostgreSQL snapshots and executes policy-selected detectors against frozen context. The default remains framework.health; Audit Rule Pack v1 adds duplicate transaction reference, required-field completeness, sequence-gap and duplicate-payment detection. No source writes exist. Models, repositories and analyzers retain their existing package boundaries. See the [framework guide](../docs/AUDIT-FRAMEWORK.md) for contracts, connection setup, CLI commands, artifact integrity and limitations.
+The local CLI creates deterministic PostgreSQL snapshots and executes policy-selected detectors against frozen context. The default remains framework.health; Audit Rule Pack v1 adds duplicate transaction reference, required-field completeness, sequence-gap, duplicate-payment and Decimal-only Tukey IQR amount-outlier detection. No source writes exist. Models, repositories and analyzers retain their existing package boundaries. See the [framework guide](../docs/AUDIT-FRAMEWORK.md) for contracts, connection setup, CLI commands, artifact integrity and limitations.
 
 From this directory:
 ```powershell
@@ -22,3 +22,11 @@ repository root. `run --policy audit-engine/policies/examples.json --snapshot <i
 executes both framework examples. See [Audit Rule Pack v1](../docs/AUDIT-RULE-PACK.md) for business policies and offline snapshot fixtures.
 Tests use `python -m pytest audit-engine/tests -v`; install the optional `[test]` extra
 if pytest is unavailable. Existing framework unittest tests remain supported.
+
+## Amount outlier control
+
+Validate `audit-engine/policies/amount-outlier.json` with the normal policy CLI. The
+controlled snapshot is `00000000-0000-4000-a000-000000000500` under
+`audit-engine/fixtures/amount-outlier`; it produces one upper payment outlier. See
+[statistics, population semantics and runnable commands](../docs/AUDIT-RULE-PACK.md#statistical-control-businessamount_outlier).
+Framework remains 0.3.0. The new detector is 1.0.0; dependencies are unchanged.

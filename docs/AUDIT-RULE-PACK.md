@@ -2,7 +2,7 @@
 
 ## Purpose and control objective
 
-The pack contains duplicate-reference, required-field completeness, numeric sequence and exact composite payment controls. A reference expected to identify
+The pack contains duplicate-reference, required-field completeness, numeric sequence, exact composite payment and statistical amount-outlier controls. A reference expected to identify
 one business transaction should not occur on multiple records. A finding identifies
 a repeated value for review; it does not establish fraud or a duplicate payment.
 
@@ -291,8 +291,8 @@ cross-table or format validation. Invalid custom IDs produce sanitized detector
 errors. The trusted in-process boundary, unsigned checksums, whole-snapshot hashing
 and unverified production deployment limitations described above also apply.
 
-Recommended next rule: `business.duplicate_payment`, combining multiple-field matching,
-monetary semantics, temporal/business scoping and grouped evidence. It is not implemented.
+The duplicate-payment section below specifies the implemented exact composite
+matching control; temporal scoping remains outside its version 1.0.0.
 
 ## Sequence control: business.sequence_gap
 
@@ -591,6 +591,186 @@ fuzzy reference matching, cross-table matching, approved-exception lists, statis
 scoring or ML. Currency must be included when relevant to the configured control.
 Production/Railway verification remains unverified.
 
-Recommended next rule: `business.amount_outlier`, not implemented. Before implementation,
-specify a deterministic statistical algorithm, population/grouping, exact monetary
-arithmetic, thresholds, minimum sample size, tie handling and evidence semantics.
+The amount outlier control below adds the first statistical rule. Recommended next
+phase: Rule Pack v1 integration and production-readiness verification.
+
+## Statistical control: business.amount_outlier
+
+Identity: `business.amount_outlier` **1.0.0**, category `monetary_anomaly`, rule
+`AMOUNT_OUTLIER`, severity `medium`, confidence 1.0 for deterministic rule matching.
+Confidence is not a probability of fraud. Framework remains **0.3.0**.
+
+### Audit objective and exact algorithm
+
+Identify unusually large or small monetary records relative to their configured
+single-table population. The only algorithm is **Tukey IQR**, with explicit
+**median-of-halves quartiles**, **Decimal arithmetic**, and **strict fence comparisons**.
+
+Sort eligible Decimal values ascending once per evaluated group. Split an even
+population into equal halves. For an odd population, exclude the overall median
+from both halves. Q1 is the lower-half median; Q3 is the upper-half median. For any
+even-sized half, median is `(a + b) / 2` using exact Decimal arithmetic.
+
+```text
+IQR = Q3 - Q1
+lower_fence = Q1 - multiplier * IQR
+upper_fence = Q3 + multiplier * IQR
+lower outlier: value < lower_fence, if enabled
+upper outlier: value > upper_fence, if enabled
+```
+
+For values 1 through 8: halves are `[1,2,3,4]` and `[5,6,7,8]`; Q1=2.50,
+Q3=6.50, IQR=4.00. With multiplier 1.5 the fences are -3.50 and 12.50.
+For 1 through 9, exclude 5: Q1=2.50, Q3=7.50, IQR=5.00; fences -5.00 and 15.00.
+Values exactly on either fence are never findings.
+
+### Configuration and requirements
+
+| Field | Existing SDK type | Default | Validation/meaning |
+| --- | --- | --- | --- |
+| table | string | payments | Valid configured table identifier |
+| id_field | string | id | Valid identifier; unique non-empty string record IDs |
+| amount_field | string | amount | Valid identifier; exact plain decimal strings or null |
+| group_by_fields | list[string] | [] | Distinct valid field identifiers, in configured order |
+| iqr_multiplier | string | "1.5" | Positive canonical decimal string |
+| minimum_sample_size | integer | 8 | At least 4; booleans rejected |
+| detect_lower_outliers | boolean | false | Enable strict lower fence comparison |
+| detect_upper_outliers | boolean | true | Enable strict upper fence comparison |
+| ignore_zero | boolean | false | Exclude exact zero if true |
+| ignore_negative | boolean | false | Exclude amounts less than zero if true |
+
+At least one direction must be enabled. Multiplier grammar accepts `1.5`, `2`,
+`2.25`, `0.125`; rejects zero, negatives, NaN, Infinity, exponents, locale commas,
+leading plus/zeros, whitespace and redundant fractional zeros such as `1.50`.
+Validation uses the existing string type and `requirements_for(config)`; no new
+SDK primitive or nested configuration was necessary. Unknown keys and wrong types
+fail before analysis/run creation. Requirements include table, ID, amount and every
+grouping field. Missing schema requirements are stable compatibility skips in a
+failed run, never business findings, including for an empty table.
+
+### Monetary representation and population semantics
+
+The current approved payment snapshot normalizes money to fixed two-decimal strings
+and rejects null payment amounts and non-cent precision. That loader is unchanged.
+The detector directly parses plain exact strings (`0`, `100`, `100.00`, `-50.25`)
+to Decimal, with no float conversion. Other configured fields can carry null or
+higher-precision strings supported by the general snapshot scalar contract.
+Booleans, integers, objects, arrays, arbitrary text, exponent strings and non-finite
+strings fail with the existing sanitized `detector_error`; invalid values are checked
+even in a population too small for statistics. Snapshot violations fail earlier.
+
+Null values are ignored by the detector. Missing values belong to
+`business.missing_required_field`; no completeness finding is duplicated here.
+`ignore_zero=true` removes exact zero, including signed decimal zero. Neither 0.01
+nor -0.01 is zero. `ignore_negative=true` removes all values less than zero from
+both statistics and findings. Otherwise negatives participate normally, supporting
+refunds/credits without declaring them invalid transactions.
+
+Empty grouping fields mean the entire eligible table is one population. Configured
+groups use ordered values encoded with the framework's type-safe canonical JSON,
+just as composite matching does. Null, empty string, zero, false and string "0"
+remain distinct; null group keys never exclude a row. Nested snapshot JSON retains
+array order and canonical object keys. No case folding or whitespace trimming occurs.
+Use currency where mixed currencies would make one monetary population meaningless.
+Payments include currency and invoice_id, but no vendor_id; requirements reject
+vendor_id on that table. Composite grouping is configurable, never hardcoded.
+
+Each group independently needs `minimum_sample_size` eligible values **after**
+null/zero/negative filtering. Seven values with minimum eight produce zero findings;
+eight are evaluated. Small populations are not errors. **If IQR=0, emit zero findings**,
+even if a minority of records differ. The selected rule has no useful spread for its
+fence; it never switches to another algorithm. This is an explicit detection limitation.
+
+### Decimal serialization and precision
+
+Statistics serialize in plain notation with at least two fractional places, preserving
+the snapshot money convention and retaining any necessary sub-cent digits:
+`Decimal("100.00") -> "100.00"`, `Decimal("2.5") -> "2.50"`,
+`Decimal("0.0150") -> "0.015"`, negative zero -> `"0.00"`.
+No exponent, locale formatting, float conversion or context-sensitive `normalize()`
+is used. Original amount spelling stays in evidence; multiplier retains its validated
+canonical configuration string, e.g. `"1.5"`.
+
+A fresh Decimal Context sizes precision from integer and fractional spans of the
+population and multiplier, with room for products, carries and division by two.
+It fixes exponent bounds and does not inherit caller precision, rounding or traps.
+Tests cover 0.10/0.20/0.30, sub-cent quartiles, high-precision configured strings,
+999999999999999999.99 and hostile ambient Decimal settings. No new numerical library
+is used. Existing legacy Pandas dependency health remains unchanged; this rule does
+not import or use it.
+
+### Findings and minimal evidence
+
+Each outlier record produces exactly one finding, entity_type=configured table and
+entity_id=configured record ID. Statistical group identity never replaces record
+identity. The existing Finding contract has no content property, so its single
+evidence item's context holds the structured statistical summary. It contains no
+full sample, unrelated columns or quartile-boundary records.
+
+Example evidence for the fixture (generated evidence ID omitted):
+
+```json
+{
+  "source_table": "payments",
+  "source_record_id": {"id": "00000000-0000-4000-a000-000000000008"},
+  "field": "amount",
+  "observed_value": "100.00",
+  "context": {
+    "amount_field": "amount", "amount": "100.00", "direction": "upper",
+    "q1": "11.50", "q3": "15.50", "iqr": "4.00", "iqr_multiplier": "1.5",
+    "lower_fence": "5.50", "upper_fence": "21.50", "sample_size": 8,
+    "group_by_fields": ["currency"], "group_values": ["IDR"]
+  }
+}
+```
+
+The [complete canonical example result](../audit-engine/fixtures/amount-outlier/example-result.json)
+contains one finding for 100.00 among `[10,11,12,13,14,15,16,100]`.
+The fixture uses eight payments and ten empty tables in the existing approved
+snapshot inventory; it is a controlled statistical fixture, not a relational seed.
+
+### Runnable policy and normal CLI
+
+The [complete example policy](../audit-engine/policies/amount-outlier.json) enables
+only amount outlier with all defaults except `group_by_fields=["currency"]`. It uses
+minimum severity info, confidence 0.0, fail-on-error true and partial results false.
+Existing policies and the default health selection are unchanged.
+
+```powershell
+$py='audit-engine/.venv/Scripts/python.exe'
+$root='audit-engine/fixtures/amount-outlier'
+& $py -m audit_engine policy validate audit-engine/policies/amount-outlier.json
+& $py -m audit_engine --artifacts-dir $root run --snapshot 00000000-0000-4000-a000-000000000500 --policy audit-engine/policies/amount-outlier.json
+# Use the printed Audit Run ID:
+& $py -m audit_engine --artifacts-dir $root result inspect <audit-run-id>
+```
+
+### Determinism, performance, boundaries and limitations
+
+Finding/evidence IDs use existing canonical content hashing. Amount, record identity,
+group and statistics affect findings; effective configuration, version and the whole
+snapshot affect the logical hash. Row/dictionary order, run ID, timestamp, operator,
+artifact root and snapshot artifact ID do not. Tests retain all prior detector
+goldens and a pre-change duplicate-payment policy/config/hash baseline.
+
+Population construction is O(n × f) for bounded grouping values. Sorting costs
+sum O(ng log ng) across evaluated groups; only one amount sort per group occurs.
+Quartiles and scanning are linear, with O(n × f) memory plus findings; canonical
+finding ordering adds O(k log k). Decimal arithmetic cost depends on digit count,
+and nested grouping JSON cost depends on its size. No pairwise record comparisons
+or repeated full-sample evidence copies exist.
+
+Only frozen AuditContext and validated DetectorConfig reach this trusted in-process
+detector. It adds no database/credential, environment, filesystem, network, subprocess
+or dynamic-import capability. No ML, external analytics or dependencies were added.
+
+Limitations: IQR only; exact configured single-table populations; no seasonal
+adjustment, peer benchmarking, contextual/fuzzy detection, cross-table context or
+fallback for zero-IQR/small populations. Statistical outliers are review candidates,
+not proof of error or fraud. Production/Railway remains unverified.
+
+ADR practices were inspected: existing ADRs govern architectural boundaries and
+contracts. This rule adds no such boundary. Its versioned statistical methodology
+and serialization are specified here rather than creating an implementation ADR.
+Recommend Rule Pack v1 integration and production-readiness next: representative
+reference, completeness, sequence, payment and statistical controls now exist.

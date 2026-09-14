@@ -193,7 +193,8 @@ from audit_engine.rules.duplicate_transaction_reference import DuplicateTransact
 from audit_engine.rules.missing_required_field import MissingRequiredFieldDetector
 from audit_engine.rules.sequence_gap import SequenceGapDetector
 from audit_engine.rules.duplicate_payment import DuplicatePaymentDetector
+from audit_engine.rules.amount_outlier import AmountOutlierDetector
 
 DEFAULT_DETECTORS = DetectorRegistry((FrameworkHealthDetector(), SnapshotIntegrityDetector(),
                                      DuplicateTransactionReferenceDetector(), MissingRequiredFieldDetector(),
-                                     SequenceGapDetector(), DuplicatePaymentDetector()))
+                                     SequenceGapDetector(), DuplicatePaymentDetector(), AmountOutlierDetector()))

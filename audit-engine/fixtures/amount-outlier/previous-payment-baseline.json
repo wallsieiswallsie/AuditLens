@@ -1,0 +1,5 @@
+{
+  "hash": "371fd9dba0a759877b8f42cdfba0d55cae87794e27ff663895c597334e926f7d",
+  "policy_json": "{\"allow_partial_results\":false,\"contract_version\":\"1\",\"description\":\"Detects exact duplicate payments using a configured composite key.\",\"detector_configuration\":{\"business.duplicate_payment\":{\"case_sensitive_strings\":true,\"id_field\":\"id\",\"ignore_if_any_match_field_empty\":true,\"match_fields\":[\"invoice_id\",\"amount\",\"currency\",\"reference\"],\"table\":\"payments\"}},\"disabled_detectors\":[],\"enabled_detectors\":[\"business.duplicate_payment\"],\"fail_on_detector_error\":true,\"minimum_confidence\":0.0,\"minimum_severity\":\"info\",\"name\":\"Duplicate Payment Example\",\"policy_id\":\"business.duplicate-payment.example\",\"policy_version\":\"auditlens-policy-v1\"}",
+  "config_json": "{\"values\":{\"case_sensitive_strings\":true,\"id_field\":\"id\",\"ignore_if_any_match_field_empty\":true,\"match_fields\":[\"invoice_id\",\"amount\",\"currency\",\"reference\"],\"table\":\"payments\"}}"
+}

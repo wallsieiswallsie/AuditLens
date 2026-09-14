@@ -1,7 +1,82 @@
 # Verification record
 
+## Amount outlier rule - 2026-09-15 Asia/Jakarta (current)
 
-## Duplicate payment rule - 2026-09-15 Asia/Jakarta (current)
+Added only `business.amount_outlier` 1.0.0, category `monetary_anomaly`, rule
+`AMOUNT_OUTLIER`, medium severity. Framework remains 0.3.0. Existing string/list/
+integer/boolean configuration, requirements_for, frozen contracts, normal policy CLI
+and canonical normalization/hashing are reused. No schema, dependency, previous
+policy or security boundary changed. The [statistical contract](AUDIT-RULE-PACK.md#statistical-control-businessamount_outlier)
+is Decimal-only Tukey median-of-halves IQR, strict comparisons, and zero findings
+for small or zero-IQR groups. Existing ADR boundary/contract practices were inspected;
+this versioned rule convention belongs in the rule guide, without a new ADR.
+
+| Executed check | Result |
+| --- | --- |
+| Initial focused amount-outlier tests | 95 passed, 1 failed in 66.33s; fixture correction below |
+| `audit-engine/.venv/Scripts/python.exe -m pytest` | PASS: 357 passed in 199.32s; all 261 previous tests plus 96 new cases |
+| New normal CLI subprocess cases | PASS: 11 scenarios covering policy validation/run/result inspection, upper/lower, reordered, sample-size, zero-IQR, null, zero, negative, exact decimals and invalid amount/config |
+| Separate grouped CLI exercise | PASS: two findings, independent IDR/USD populations of eight records each |
+| `npm test` | PASS: 17 passed, 0 failed |
+| `$env:API_URL='http://localhost:3001'; npm run build` | PASS: production build, 26 modules |
+| CLI no arguments, health, detector inspection | PASS: actual commands; legacy Pandas health 3.0.5 unchanged |
+| Population/input/config tests | PASS: full-table, currency/composite grouping, null/empty/zero/false distinction, per-group minimum, requirements and sanitized errors |
+| Decimal tests | PASS: exact odd/even quartiles, serializer, cent/sub-cent statistics, high precision, huge amounts, hostile ambient precision/rounding/traps |
+| Separate large shifted-cent calculation | PASS: exact sub-cent quartiles near 999999999999999999.00 with caller precision 3 and Inexact trap |
+| Determinism and secret sentinels | PASS: row/key order, run/snapshot IDs, timestamps, operator/root invariance; environment sentinel absent from artifacts |
+| Hash sensitivity | PASS: amount/record ID, grouping, multiplier, minimum sample, zero/negative/direction flags, version, finding/evidence mutations |
+| All six previous detector goldens | PASS: health, snapshot integrity, reference, completeness, sequence and duplicate payment |
+| `$env:PG_BIN='C:/Program Files/PostgreSQL/17/bin'; npm run test:db` | PASS after broader-process retry; PostgreSQL 17.5; report 2026-09-14T23:37:12.307Z UTC |
+| PostgreSQL framework acceptance | PASS: 13 checks, 11 tables, 19,654 records |
+| PostgreSQL amount control | PASS: 2,400 evaluated/eligible records, one currency group, one group meeting minimum eight, 122 upper findings at multiplier 1.5 |
+| Independent PostgreSQL expected IDs | PASS: separately calculated quartiles/fences match all 122 records and their minimal evidence |
+| Source/reader boundary | PASS: unchanged source hashes, seven constraints, SELECT and seventeen denials; audit schema empty |
+| Disposable cluster shutdown | PASS: runner stopped its private cluster; diagnostics retained |
+| `npm run docs:check` | PASS final rerun: schema parity, 48 Markdown files, 178 relative links, 15 Mermaid diagrams |
+| `git diff --check` | PASS final rerun |
+
+Initial failures and corrections: the boundary fixture initially included 4 in its
+upper half, making the actual fences -2.75 and 7.25 rather than intended -2 and 6.
+Both equality and just-outside fixtures were corrected to use 3, yielding Q1=1 and
+Q3=3. Exact boundaries then produce zero findings and one-cent crossings produce two.
+The focused diagnostic reproduced the same fixture error; no algorithm change was
+required. initdb initially failed with Windows restricted-token errors 87/3 before
+acceptance ran. The same disposable runner passed with broader process permissions;
+it ignores existing DATABASE_URL targets and creates/stops its own private cluster.
+No source grant or permission policy was weakened.
+
+The real approved exported payment population was inspected: all 2,400 monetary
+values were exact strings and eligible. Currency grouping avoids mixed denominations;
+the actual data has one group. The default multiplier was not tuned to produce the
+122 findings. These are statistical review candidates, not confirmed error or fraud.
+Real duplicate-payment findings remain zero. Sequence acceptance retains actual
+registration/policy/schema checks; positive numeric sequence evaluation is offline.
+
+The controlled amount fixture has eight payments, ten empty tables, one upper finding
+and one evidence item. Payment amounts retain the existing fixed two-decimal snapshot
+representation. The unchanged loader rejects null/non-cent payment amounts; nullable,
+high-precision and invalid detector inputs use a configurable reference field allowed
+by the existing scalar schema. Snapshot validation was not weakened. Statistics keep
+at least two decimal places and any necessary sub-cent digits; original money remains
+exact. The detector receives no new source, environment, network or storage authority.
+
+Before editing, the payment golden was rerun and captured with exact policy/config
+JSON. Its unchanged hash is
+`371fd9dba0a759877b8f42cdfba0d55cae87794e27ff663895c597334e926f7d`.
+The amount fixture logical hash is
+`cc201df7104ab2c7fc2ba2a0dd9505cf7419aa4064cbb61fab71a5cc4c21e50e`.
+All old tests remain intact. No Git commit was executed.
+
+Phase status: Phase 0 verified locally; Phase 1 verified on disposable PostgreSQL;
+Local CLI Audit Framework, SDK/policy, Rule Pack v1 foundation, duplicate reference,
+completeness, sequence integrity, duplicate payment and amount outlier complete for
+local acceptance. Advanced contextual rules not started; Production/Railway unverified.
+Recommend Rule Pack v1 integration and production-readiness; no follow-on detector
+or deployment was implemented.
+
+
+
+## Duplicate payment rule - 2026-09-15 Asia/Jakarta (previous phase)
 
 Added only `business.duplicate_payment` 1.0.0, category payment_integrity, using
 existing list[string] configuration and requirements_for. Framework remains 0.3.0.

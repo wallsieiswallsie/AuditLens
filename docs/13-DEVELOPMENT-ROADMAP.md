@@ -1,10 +1,10 @@
 # Development roadmap
 
-Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 remains NOT STARTED. Audit Rule Pack v1 has three implemented business detectors; the broader business detector phases remain incomplete. Railway runtime remains separately unverified.
+Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 remains NOT STARTED. Audit Rule Pack v1 has five implemented business detectors; the broader business detector phases remain incomplete. Railway runtime remains separately unverified.
 
 ## Immediate next milestone
 
-Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Completeness control `business.missing_required_field` is implemented. Sequence integrity control `business.sequence_gap` is implemented. Exact composite payment control `business.duplicate_payment` is implemented. Recommended next rule: `business.amount_outlier` (not started), after specifying its deterministic statistical algorithm, population, monetary arithmetic and thresholds.
+Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Completeness control `business.missing_required_field` is implemented. Sequence integrity control `business.sequence_gap` is implemented. Exact composite payment control `business.duplicate_payment` is implemented. Statistical amount control `business.amount_outlier` is implemented with Decimal-only Tukey median-of-halves IQR. Recommended next phase: Audit Rule Pack v1 integration and production-readiness verification. Advanced contextual rules remain not started.
 
 Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
 
