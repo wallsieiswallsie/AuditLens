@@ -13,8 +13,7 @@ Simple Compose setup with visible logical boundaries and transactional integrity
 Separate databases; SQLite; a single shared schema.
 
 ## Trade-offs and consequences
-Schemas are not protection against the database owner. Future least-privilege roles must be verified. Domain migrations are deferred until policy questions are resolved.
+Schemas are not protection against the database owner. Future least-privilege roles must be verified. Historical Phase 0 deferred domain migrations; Phase 1 subsequently implemented eleven business tables under apps/api/database/migrations. Audit-domain tables remain planned. See [ADR-007](ADR-007-api-database-and-independent-deployment.md) for current tooling ownership.
 
 ## Follow-up
 See [open questions](../OPEN-QUESTIONS.md) and [roadmap](../13-DEVELOPMENT-ROADMAP.md). Revisit through a superseding ADR if requirements change.
-

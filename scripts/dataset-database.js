@@ -1,20 +1,20 @@
 import knex from 'knex';
-import config from '../database/knexfile.js';
-import { generate } from '../database/generators/index.js';
-import { validate } from '../database/validation/validate.js';
-import { assertLocal,seedEmpty,resetData } from '../database/seeds/workflow.js';
-import { writeArtifacts } from '../database/generators/artifacts.js';
-import { TABLES } from '../database/generators/core.js';
+import config from '../apps/api/database/knexfile.js';
+import { generate } from '../apps/api/database/generators/index.js';
+import { validate } from '../apps/api/database/validation/validate.js';
+import { assertLocal,seedEmpty,resetData } from '../apps/api/database/seeds/workflow.js';
+import { writeArtifacts } from '../apps/api/database/generators/artifacts.js';
+import { TABLES } from '../apps/api/database/generators/core.js';
+import { inspectDatabase } from '../apps/api/database/inspect.js';
 const mode=process.argv[2];
 const db=knex(config);
 try {
   if(!['seed','reset','validate','status'].includes(mode)) throw new Error('Unknown database action');
   if(['seed','reset'].includes(mode)) assertLocal(config);
   if(mode==='status') {
-    const [done,pending]=await db.migrate.list();
-    for(const schema of ['business','audit']) if(!(await db.raw('SELECT 1 FROM information_schema.schemata WHERE schema_name=?',[schema])).rows.length) throw new Error(`Missing ${schema} schema`);
-    if(pending.length) throw new Error(`${pending.length} pending migrations`);
-    console.log(`Schemas business/audit and public.knex_migrations verified; ${done.length} migrations applied, none pending.`);
+    const result=await inspectDatabase(db);
+    console.log(JSON.stringify(result,null,2));
+    if(!result.ready) process.exitCode=1;
   } else if(mode==='reset') {await resetData(db); console.log('Local business rows deleted. Run db:seed next.');}
   else {
     const dataset=generate(Number(process.env.AUDITLENS_DATA_SEED||20260914));

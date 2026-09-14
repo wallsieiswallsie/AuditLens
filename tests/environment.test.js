@@ -21,13 +21,13 @@ test('database URL validation is required only for database access and errors om
 
 test('Knex receives the exact PostgreSQL URL', () => {
   const result = spawnSync(process.execPath, ['--input-type=module', '-e',
-    "import config from './database/knexfile.js'; import knex from 'knex'; const db=knex(config); if(config.connection!==process.env.DATABASE_URL || db.client.connectionSettings.host!=='127.0.0.1' || db.client.connectionSettings.database!=='auditlens' || db.client.connectionSettings.password!=='TEST_ONLY') process.exit(1); await db.destroy();"],
+    "import config from './apps/api/database/knexfile.js'; import knex from 'knex'; const db=knex(config); if(config.connection!==process.env.DATABASE_URL || db.client.connectionSettings.host!=='127.0.0.1' || db.client.connectionSettings.database!=='auditlens' || db.client.connectionSettings.password!=='TEST_ONLY') process.exit(1); await db.destroy();"],
     { cwd: root, env: { ...process.env, DATABASE_URL: connection }, encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 });
 
 test('all database command entry points fail clearly without the URL', () => {
-  for (const args of [['scripts/check-database.js'], ...['seed','reset','validate','status'].map(mode => ['scripts/dataset-database.js', mode]), ['node_modules/knex/bin/cli.js','--knexfile','database/knexfile.js','migrate:latest'], ['node_modules/knex/bin/cli.js','--knexfile','database/knexfile.js','migrate:rollback']]) {
+  for (const args of [['scripts/check-database.js'], ['scripts/inspect-database.js'], ['scripts/rollback-database.js'], ['scripts/provision-reader.js'], ...['seed','reset','validate','status'].map(mode => ['scripts/dataset-database.js', mode]), ['node_modules/knex/bin/cli.js','--knexfile','apps/api/database/knexfile.js','migrate:latest']]) {
     const result = spawnSync(process.execPath, args, { cwd: root, env: { ...process.env, DATABASE_URL: '' }, encoding: 'utf8' });
     assert.notEqual(result.status, 0);
     assert.match(result.stdout + result.stderr, /Missing required environment variable: DATABASE_URL/);

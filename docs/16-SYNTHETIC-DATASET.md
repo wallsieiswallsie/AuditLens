@@ -4,7 +4,7 @@ AuditLens uses artificial records to practice repeatable internal-control testin
 
 ## Structure and size
 
-The generator is split into core seed/ID utilities, reference data, ordinary transactions, anomaly injection, source activity logs, manifests and independent fixture QA under database/generators and database/validation. Knex migrates eleven source tables in business. The audit schema remains empty; no finding or test result is inserted into source records.
+The generator is split into core seed/ID utilities, reference data, ordinary transactions, anomaly injection, source activity logs, manifests and independent fixture QA under apps/api/database/generators and apps/api/database/validation. Knex migrates eleven source tables in business. The audit schema remains empty; no finding or test result is inserted into source records.
 
 | Table | Rows |
 | --- | ---: |
@@ -28,11 +28,11 @@ Among 4,650 account/invoice/payment entities, 152 are directly named by anomaly 
 
 Default AUDITLENS_DATA_SEED=20260914 accepts unsigned 32-bit integers. A seeded LCG varies amounts, and SHA-256 of version/seed/entity/ordinal produces stable UUID-shaped identifiers. No Math.random, randomUUID, wall clock, external data or Faker dependency is used. Dates are fixed UTC instants; generatedAt is the logical generation date, 2026-09-14T10:00:00.000Z, not the command execution time. Changing seed changes identifiers/amounts but preserves counts and business conventions.
 
-[Dataset metadata](../database/sample-data/dataset-manifest.json) records version, seed, logical date, counts, expected anomaly counts and per-table hashes. Hashes sort rows and object keys, normalize UTC timestamp strings, and preserve decimal strings. They prove consistency against a known fixture, not external tamper resistance.
+[Dataset metadata](../apps/api/database/sample-data/dataset-manifest.json) records version, seed, logical date, counts, expected anomaly counts and per-table hashes. Hashes sort rows and object keys, normalize UTC timestamp strings, and preserve decimal strings. They prove consistency against a known fixture, not external tamper resistance.
 
-[Ground truth](../database/sample-data/ground-truth.json) stores anomaly category, explicit unit, source table, exact source IDs and duplicate-group membership. Duplicate invoice count 10 means 10 pairs / 20 rows / 10 excess rows. Duplicate payment count 12 means 12 pairs / 24 rows / 12 excess rows. Partial duplicate payments retain their original half amounts, preventing additional overpayment matches. Source event categories identify event IDs; event targets provide invoice/payment/account lineage. No anomaly marker columns exist in business tables.
+[Ground truth](../apps/api/database/sample-data/ground-truth.json) stores anomaly category, explicit unit, source table, exact source IDs and duplicate-group membership. Duplicate invoice count 10 means 10 pairs / 20 rows / 10 excess rows. Duplicate payment count 12 means 12 pairs / 24 rows / 12 excess rows. Partial duplicate payments retain their original half amounts, preventing additional overpayment matches. Source event categories identify event IDs; event targets provide invoice/payment/account lineage. No anomaly marker columns exist in business tables.
 
-[Fixture policy](../database/sample-data/fixture-policy.json) records the versioned role baseline, clock, timezone and calendar. This is independent expected policy configuration. Ground truth is restricted to development, automated testing and benchmark validation. **Future detection logic must never read ground-truth.json or import generator/fixture QA code during analysis.**
+[Fixture policy](../apps/api/database/sample-data/fixture-policy.json) records the versioned role baseline, clock, timezone and calendar. This is independent expected policy configuration. Ground truth is restricted to development, automated testing and benchmark validation. **Future detection logic must never read ground-truth.json or import generator/fixture QA code during analysis.**
 
 ## Known anomalies and future procedures
 
@@ -67,7 +67,7 @@ Copy-Item .env.example .env
 docker compose up -d postgres
 npm run db:check
 npm run db:migrate
-npm run db:status
+npm run db:inspect
 npm run db:generate
 npm run db:seed
 npm run db:validate-data
@@ -90,8 +90,8 @@ Reset requires NODE_ENV=development, a loopback database host, database name aud
 
 Changing seed: set AUDITLENS_DATA_SEED, reset, seed and validate. Checked-in manifests/examples intentionally represent the default seed; restore that seed with db:generate before running default artifact tests or committing fixture artifacts. Do not keep two seeds' files mixed.
 
-On a disposable database, verify rollback before seeding: migrate, db:rollback, migrate again, then seed. Knex rolls back a batch, which may include both the domain and boundary migrations. The domain down migration drops source tables and their data; only use it on a disposable database. Reset is the preferred repeat-seed workflow.
+Only after setting AUDITLENS_ALLOW_LOCAL_RESET=YES on a confirmed disposable local database, verify rollback before seeding: migrate, db:rollback, migrate again, then seed. Knex rolls back a batch, which may include both the domain and boundary migrations. The domain down migration drops source tables and their data; only use it on a disposable database. Reset is the preferred repeat-seed workflow.
 
 ## Limitations and next use
 
-No actual source UI, immutable log enforcement, rehire history, approval delegation, refunds, FX, service-account population, real holidays or real supporting documents exists. No source-reader grants are provisioned; the existing real-role write-denial acceptance remains pending. Ground truth is not a substitute for independent future algorithms or real-world completeness checks. See [verification](VERIFICATION.md) for runtime blockers; Phase 1 is not declared fully complete. Next planned development phase is Phase 2 — Authentication & RBAC Foundation.
+No actual source UI, immutable log enforcement, rehire history, approval delegation, refunds, FX, service-account population, real holidays or real supporting documents exists. Reader provisioning is explicit and separately administered; disposable PostgreSQL acceptance verifies its SELECT-only application privileges. Fixture seed/reset/rollback, constraint rejections and canonical hashes passed on PostgreSQL 17.5; Phase 1 is verified locally. Remote Railway acceptance is separate. The next milestone is Local CLI Audit Framework. Ground truth remains QA/benchmark-only. See [verification](VERIFICATION.md) and [reader provisioning](../apps/api/database/security/README.md).

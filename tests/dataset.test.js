@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { generate } from '../database/generators/index.js';
-import { validate } from '../database/validation/validate.js';
-import { COUNTS,TABLES } from '../database/generators/core.js';
-import { assertLocal } from '../database/seeds/workflow.js';
+import { generate } from '../apps/api/database/generators/index.js';
+import { validate } from '../apps/api/database/validation/validate.js';
+import { COUNTS,TABLES } from '../apps/api/database/generators/core.js';
+import { assertLocal } from '../apps/api/database/seeds/workflow.js';
 import { migrationSql } from '../scripts/migration-sql.js';
 const fixture=generate();
 test('same seed yields identical complete records and metadata; another seed varies records',()=>{
@@ -18,7 +18,7 @@ test('full fixture QA: counts, all anomaly sets, normal negatives and no orphans
   assert.deepEqual(result.anomalies,COUNTS);
 });
 test('checked-in benchmark files match the default generator',async()=>{
-  for(const [file,key] of [['ground-truth','groundTruth'],['dataset-manifest','manifest'],['fixture-policy','policy']]) assert.deepEqual(JSON.parse(await readFile(new URL(`../database/sample-data/${file}.json`,import.meta.url),'utf8')),fixture[key]);
+  for(const [file,key] of [['ground-truth','groundTruth'],['dataset-manifest','manifest'],['fixture-policy','policy']]) assert.deepEqual(JSON.parse(await readFile(new URL(`../apps/api/database/sample-data/${file}.json`,import.meta.url),'utf8')),fixture[key]);
 });
 test('QA rejects unexpected duplicate, wrong SoD IDs, orphan, and accidental dormant account without relying on hashes',()=>{
   for(const change of [

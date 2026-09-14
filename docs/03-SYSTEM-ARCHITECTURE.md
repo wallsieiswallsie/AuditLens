@@ -1,6 +1,25 @@
 # System architecture
 
-Diagrams describe the target architecture unless labeled current. Phase 0 implemented the web shell, API health, schema boundaries and engine health CLI. Phase 1 adds business domain migrations, deterministic synthetic generation and fixture QA; PostgreSQL runtime verification remains pending.
+Diagrams describe the target architecture unless labeled current. Phase 0 implemented the web shell, API health, schema boundaries and engine health CLI. Phase 1 adds business domain migrations, deterministic synthetic generation and fixture QA; disposable local PostgreSQL runtime acceptance now passes (see VERIFICATION.md).
+
+The developer reports PostgreSQL connectivity and migrations working: **REPORTED AS WORKING**, not independently executed here. The [verification record](VERIFICATION.md) separates current local acceptance from unverified remote settings; the review is historical.
+
+## Current repository and deployment boundaries
+
+apps/api owns Hapi source and apps/api/database (Knex configuration, migrations, generators, seeds, validation and sample-data). Root scripts and tests orchestrate cross-component verification. audit-engine remains an independent Python package; docs remains repository documentation. Root npm workspaces delegate web/API development and web builds; root database commands point into API-owned tooling.
+
+```mermaid
+flowchart LR
+  Browser --> Web["@auditlens/web — apps/web"]
+  Web -->|"HTTPS / API_URL — future data calls"| API["@auditlens/api — apps/api"]
+  API -->|"DATABASE_URL — migration/tooling access"| DB["PostgreSQL: business + audit"]
+```
+
+Separate Railway services are an explicit requirement and REPORTED AS WORKING. No page currently invokes apiFetch; health is database-free. API start runs migrations before the server. Python is not a deployed service. Railway watch paths and service settings are not checked into the repository and have not been inspected remotely. See [deployment](DEPLOYMENT.md) and [ADR-007](adr/ADR-007-api-database-and-independent-deployment.md).
+
+## Database identities
+
+CURRENT: DATABASE_URL is the migration/admin identity also used by API startup. Explicit administration provisions auditlens_source_reader as a non-owner NOLOGIN permission group with business SELECT only. Acceptance authenticates a separate unprivileged test login and SET ROLE. No reader credential is needed for API health or Web. PLANNED: extraction login, least-privilege API runtime and a separate audit result writer. No audit-engine deployment, extraction or result tables exist. See [ADR-008](adr/ADR-008-database-privilege-separation.md) for PUBLIC/default-grant treatment and [verification](VERIFICATION.md) for runtime evidence.
 
 ## 1. System context
 ```mermaid
@@ -22,12 +41,12 @@ flowchart TB
   AuditRepo --> AuditDB["PostgreSQL audit schema"]
   Demo["Business module (planned)"] --> BizDB["PostgreSQL business schema"]
   CLI["Explicit run CLI (planned)"] --> Engine["Python / Pandas / SQL"]
-  BizDB -->|SELECT only| Reader["Source reader (planned)"]
+  BizDB -->|SELECT only| Reader["Provisioned source-reader role; extraction planned"]
   Reader --> Engine
   Engine --> Writer["Audit result writer (planned)"]
   Writer --> AuditDB
 ```
-The web is a Vite application. Hapi provides a single API with separated modules. PostgreSQL hosts two schemas. Python handles tabular analysis. Reader and writer use different credentials; no source-writing capability belongs to the reader. No queue, cache or additional service is required in Phase 0.
+The web is a Vite application. Hapi provides a single API with separated modules. PostgreSQL hosts two schemas. Python handles tabular analysis. The source-reader permission role has explicit provisioning; the future extraction login and result writer will use distinct credentials; no source-writing capability belongs to the reader. No queue, cache or additional service is required in Phase 0.
 
 ## 3. Audit data flow
 ```mermaid

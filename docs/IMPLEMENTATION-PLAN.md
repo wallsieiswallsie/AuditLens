@@ -1,5 +1,7 @@
 # Phase 0 implementation plan
 
+Historical plan, retained for context. This is not the current task list or repository status. Business domain migrations are now implemented under apps/api/database. See [current project review and next-phase implementation plan](PROJECT-REVIEW.md).
+
 1. Inspect the empty Git repository and available runtimes.
 2. Establish operational and audit boundaries and record decisions.
 3. Design a normalized proposed ERD and matching dictionary; defer domain migrations.

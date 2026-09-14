@@ -2,7 +2,7 @@
 
 ## IMPLEMENTED IN PHASE 1 — business source tables
 
-Generated from the Knex PostgreSQL DDL by `npm run docs:schema`. Column inventory, types, keys, checks and indexes below match the migration. PostgreSQL execution remains pending; see [verification](VERIFICATION.md). All data is fictional; sensitivity describes the analogous real-world field. No SQL defaults or automatic timestamp triggers exist: writers supply UUIDs and UTC timestamps. Foreign keys use ON DELETE RESTRICT. Primary keys imply NOT NULL. Approvals/logs are append-only by convention; runtime enforcement is deferred.
+Generated from the Knex PostgreSQL DDL by `npm run docs:schema`. Column inventory, types, keys, checks and indexes below match the migration. For current PostgreSQL runtime acceptance see [verification](VERIFICATION.md). All data is fictional; sensitivity describes the analogous real-world field. No SQL defaults or automatic timestamp triggers exist: writers supply UUIDs and UTC timestamps. Foreign keys use ON DELETE RESTRICT. Primary keys imply NOT NULL. Approvals/logs are append-only by convention; runtime enforcement is deferred.
 
 ### business.employees
 

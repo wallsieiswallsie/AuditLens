@@ -1,10 +1,18 @@
 # Development roadmap
 
-Phase 0 foundation delivered with infrastructure limitations recorded. Phase 1 source implementation and offline QA delivered; full completion remains blocked on PostgreSQL runtime and actual source-reader write-denial verification. Phases 2 onward are planned.
+Phase 0 is VERIFIED for the local foundation and deployment contract. Phase 1 is VERIFIED on disposable PostgreSQL 17.5: migration/reload, fixture QA, constraints and real source-reader denial all pass. Stabilization is COMPLETE for repository/local acceptance. Railway dashboard behavior remains NOT VERIFIABLE and must be checked before claiming remote deployment acceptance. Phases 2–9 remain NOT STARTED; Phase 10 has only documentation/license groundwork.
+
+## Immediate next milestone
+
+NEXT PHASE: Local CLI Audit Framework.
+
+Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
+
+Before framework implementation, decide the initial extraction/snapshot format, operator provenance, policy versioning, minimal evidence retention and result-writer identity. Then local CLI framework → User Access Review → authentication/RBAC before remote audit access. No detector, result persistence, authentication or queue was built during stabilization.
 
 ## Phase 0: Architecture & Documentation
 
-- Status: Delivered; original database runtime limitation remains recorded.
+- Status: VERIFIED locally; config, API/Web/Python and documentation checks pass. Railway manual validation is separate.
 - Objective: Define boundaries and runnable foundation.
 - Deliverables: Docs, diagrams, shell, health, schema tooling.
 - Dependencies: None.
@@ -12,7 +20,7 @@ Phase 0 foundation delivered with infrastructure limitations recorded. Phase 1 s
 
 ## Phase 1: Database Verification & Deterministic Synthetic Business Dataset
 
-- Status: Implementation and offline tests delivered; NOT fully complete.
+- Status: VERIFIED on disposable local PostgreSQL 17.5; no remote database acceptance claimed.
 - Objective: Model source processes.
 - Deliverables: Resolve Phase 1 questions, domain migrations, seed generator and truth manifest.
 - Dependencies: Phase 0.
@@ -23,14 +31,14 @@ Phase 0 foundation delivered with infrastructure limitations recorded. Phase 1 s
 
 - Objective: Protect platform access.
 - Deliverables: Hashing, JWT, refresh sessions, authorization matrix and activity events.
-- Dependencies: Identity model from Phase 1.
+- Dependencies: Separate AuditLens identity/session design and a verified database foundation; business.users is not the platform identity model.
 - Definition of done: 401/403/object-scope tests pass; no insecure bypass.
 
 ## Phase 3: Audit Framework
 
 - Objective: Execute reproducible validated runs.
 - Deliverables: Extraction snapshots, manifests, versioned tests, results/evidence and CLI orchestration.
-- Dependencies: Phases 1–2.
+- Dependencies: Verified Phase 1 source and SELECT-only extraction. Full application authentication is not required for a local CLI framework. Decide explicit CLI provenance before introducing the proposed audit_runs.requested_by FK; do not fabricate business-user identities. Phase 2 is required before exposing authenticated audit operations remotely.
 - Definition of done: A non-business harness verifies lifecycle, failures and immutable results.
 
 ## Phase 4: User Access Review
@@ -81,4 +89,3 @@ Phase 0 foundation delivered with infrastructure limitations recorded. Phase 1 s
 - Deliverables: Screenshots, walkthrough, CI and deployment assessment.
 - Dependencies: Prior phases.
 - Definition of done: Fresh-clone setup succeeds; synthetic-only demonstration reviewed.
-

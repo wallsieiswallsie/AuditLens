@@ -196,7 +196,7 @@ No rules are implemented. These are project-defined procedures, not professional
 
 ## Phase 1 source availability and fixture mapping
 
-No procedures are implemented. All fixtures refer to [ground-truth.json](../database/sample-data/ground-truth.json), accessible only to the test harness. The [fixture policy](../database/sample-data/fixture-policy.json) is independent expected configuration. Existing IDs retain their definitions; an observed transaction conflict is not the same unit as a permission entitlement conflict.
+No procedures are implemented. All fixtures refer to [ground-truth.json](../apps/api/database/sample-data/ground-truth.json), accessible only to the test harness. The [fixture policy](../apps/api/database/sample-data/fixture-policy.json) is independent expected configuration. Existing IDs retain their definitions; an observed transaction conflict is not the same unit as a permission entitlement conflict.
 
 | Planned test | Required business tables | Required fields / additional policy | Ground-truth fixture |
 | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Entity relationship design
 
-**Business tables are implemented in the Phase 1 migration; audit tables remain PLANNED.** Runtime PostgreSQL execution is unresolved. The design separates identity domains and preserves source evidence without cross-schema foreign keys.
+**Business tables are IMPLEMENTED in the Phase 1 migration; audit tables remain PLANNED.** Disposable local PostgreSQL 17.5 migration, constraint and fixture acceptance passed; Railway runtime remains separately unverified. See [verification](VERIFICATION.md). Migration source is under apps/api/database/migrations. The design separates identity domains and preserves source evidence without cross-schema foreign keys.
 
 ## Conceptual ERD
 ```mermaid
@@ -24,7 +24,7 @@ Names prefixed business_ and audit_ represent their PostgreSQL schemas. Each FK 
 
 ### A. Demo Business System — IMPLEMENTED IN PHASE 1
 
-Migration implemented; runtime verification pending. Names use `business_` to represent the business schema.
+Migration implemented; runtime acceptance is recorded in VERIFICATION.md. Names use `business_` to represent the business schema.
 
 ```mermaid
 erDiagram
@@ -322,4 +322,3 @@ A generic transactions table is deferred: invoices and payments already represen
 Evidence is a standalone snapshot entity because exceptions need evidence before a finding exists and multiple findings may cite the same evidence. finding_evidence is therefore a junction. sod_conflicts is a typed projection for explainable rule/user combinations, tied to evidence and results rather than a second independent truth. Validate evidence/result consistency before persistence.
 
 Source references deliberately are not FKs: findings must survive source mutation/deletion. Reports will be derived views rather than a table until export retention requirements exist. The eleven business domain tables have migrations; audit domain tables remain planned.
-

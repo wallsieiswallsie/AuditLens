@@ -16,15 +16,18 @@
     "build": "npm run build -w @auditlens/web",
     "test": "node --test tests/*.test.js",
     "db:check": "node scripts/check-database.js",
-    "db:migrate": "knex --knexfile database/knexfile.js migrate:latest",
-    "db:rollback": "knex --knexfile database/knexfile.js migrate:rollback",
+    "db:migrate": "knex --knexfile apps/api/database/knexfile.js migrate:latest",
+    "db:rollback": "node scripts/rollback-database.js",
     "docs:check": "node scripts/document-schema.js --check && node scripts/check-docs.js",
     "db:generate": "node scripts/generate-dataset.js",
     "db:seed": "node scripts/dataset-database.js seed",
     "db:reset": "node scripts/dataset-database.js reset",
     "db:validate-data": "node scripts/dataset-database.js validate",
     "db:status": "node scripts/dataset-database.js status",
-    "docs:schema": "node scripts/document-schema.js"
+    "docs:schema": "node scripts/document-schema.js",
+    "db:inspect": "node scripts/inspect-database.js",
+    "db:provision-reader": "node scripts/provision-reader.js",
+    "test:db": "node scripts/accept-database.js"
   },
   "dependencies": {
     "dotenv": "^16.6.1",

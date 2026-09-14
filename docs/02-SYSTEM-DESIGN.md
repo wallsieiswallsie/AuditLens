@@ -1,6 +1,8 @@
 # System design
 
 ## Business context and boundaries
+
+This document describes target responsibilities and workflows. Today the API has only public GET /health, Web has navigation placeholders, and Python has a health CLI. Source generation and QA are implemented under apps/api/database; audit-domain persistence and execution are planned.
 A fictional organization processes invoices and payments. Employees may have permissions that exceed their responsibilities; transaction and activity data can reveal control weaknesses.
 
 | Actor/component | Responsibility |

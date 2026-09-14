@@ -1,6 +1,6 @@
 # AuditLens project overview
 
-**Status: Phase 1 source dataset implemented; database runtime verification pending. All audit capabilities described here are planned.**
+**Status: Phase 1 source dataset and source-reader privileges verified on disposable local PostgreSQL 17.5. Configuration and deployment contracts are stabilized; remote Railway settings remain unverified. All audit capabilities described here are planned.** See [current verification](VERIFICATION.md).
 
 ## Technical explanation
 AuditLens is a modular digital audit and internal control testing platform. A synthetic Demo Business System produces users, permissions, invoices, approvals, payments and activity records. AuditLens reads that source through a restricted database identity, validates the population, executes versioned tests and preserves evidence for human review. Its own findings and results belong to a separate audit schema.

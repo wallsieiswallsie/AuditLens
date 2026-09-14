@@ -1,13 +1,15 @@
 # Data lineage
 
-Phase 1 implements the synthetic generator, source migrations, fixture artifacts and dataset QA. Everything after the business schema in the analysis flow below is planned. Audit-related results/configuration belong to audit, never source tables.
+Phase 1 implements the synthetic generator, source migrations, fixture artifacts and dataset QA. The source-reader permission boundary has explicit provisioning and passed actual PostgreSQL 17.5 permission tests in disposable acceptance; extraction and everything after the reader remain planned. Audit-related results/configuration belong to audit, never source tables.
+
+Source/tooling ownership: apps/api/database/generators produces apps/api/database/sample-data artifacts; apps/api/database/seeds/workflow.js writes development fixtures; apps/api/database/validation/validate.js performs fixture QA. Root scripts are command entry points to these API-owned modules. The independent audit-engine package must not import generators, fixture QA or ground truth.
 
 ```mermaid
 flowchart TD
   Generator["Deterministic synthetic generator"] --> Source["business schema"]
   Generator --> Policy["Fixture policy and dataset manifest"]
   Generator --> Truth["Ground truth: development and test only"]
-  Source --> Reader["Future SELECT-only source reader"]
+  Source --> Reader["Explicit SELECT-only source-reader role"]
   Reader --> Snapshot["Future consistent source snapshot"]
   Snapshot --> Engine["Future independent AuditLens engine"]
   Policy --> Engine
@@ -52,6 +54,6 @@ flowchart LR
 
 Generator UUIDs remain stable for a given version/seed/ordinal. Money is numeric(18,2) in PostgreSQL and decimal strings in artifacts. Timestamps are UTC timestamptz and ISO strings, with Asia/Jakarta used only for the fixture calendar. Per-table hashes canonicalize keys and row order, so SQL retrieval order cannot change the logical fingerprint.
 
-Database QA uses one repeatable-read read-only transaction to compare a consistent population with regenerated expected records. This is not the future source reader: it uses the developer connection and does not claim actual grant enforcement. Future extraction must provision and verify a SELECT-only identity, capture source IDs, dataset identity, extraction cutoff, counts, timezone and policy/test versions, and preserve evidence independently of mutable source rows. No audit-to-business foreign keys are planned. Snapshot retention, redaction and externally anchored integrity remain open.
+Database QA uses one repeatable-read read-only transaction to compare a consistent population with regenerated expected records. This fixture-validation command is separate from the source-reader permission test: it uses the developer connection and does not claim actual grant enforcement. Provisioning and acceptance are in [ADR-008](adr/ADR-008-database-privilege-separation.md). Future extraction must use a separately authenticated reader login and reverify its grants, capture source IDs, dataset identity, extraction cutoff, counts, timezone and policy/test versions, and preserve evidence independently of mutable source rows. No audit-to-business foreign keys are planned. Snapshot retention, redaction and externally anchored integrity remain open.
 
 See [ADR-002](adr/ADR-002-audit-read-only-principle.md), [ADR-005](adr/ADR-005-phase-1-dataset-conventions.md) and [verification](VERIFICATION.md).

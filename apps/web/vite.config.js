@@ -21,8 +21,8 @@ export default defineConfig(({ mode }) => {
 
   const allowedHost = env.WEB_ALLOWED_HOST?.trim();
 
-  if (!allowedHost) {
-    throw new Error('Missing required environment variable: WEB_ALLOWED_HOST');
+  if (allowedHost && !/^(?:localhost|[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?)$/.test(allowedHost)) {
+    throw new Error('Invalid WEB_ALLOWED_HOST: expected a hostname without scheme or port');
   }
 
   return {
@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
 
     preview: {
       host: '0.0.0.0',
-      allowedHosts: [allowedHost],
+      allowedHosts: allowedHost ? [allowedHost] : [],
     },
   };
 });

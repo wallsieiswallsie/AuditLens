@@ -19,8 +19,12 @@ export async function seedEmpty(db,dataset) {
     for(const name of TABLES) for(let i=0;i<dataset.tables[name].length;i+=250) await trx.withSchema('business').table(name).insert(dataset.tables[name].slice(i,i+250));
   });
 }
-export async function resetData(db,env=process.env) {
+export function assertReset(env=process.env) {
+  assert.equal(env.NODE_ENV||'development','development','Destructive operations are development-only');
   assert.equal(env.AUDITLENS_ALLOW_LOCAL_RESET,'YES','Set AUDITLENS_ALLOW_LOCAL_RESET=YES to delete local business data');
+}
+export async function resetData(db,env=process.env) {
+  assertReset(env);
   await db.transaction(async trx=>{
     await trx.raw('SELECT pg_advisory_xact_lock(20260914)');
     // No CASCADE, no schema/database drop, no writes to audit or migration metadata.
