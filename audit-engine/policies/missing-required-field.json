@@ -1,0 +1,26 @@
+{
+  "allow_partial_results": false,
+  "contract_version": "1",
+  "description": "Checks completeness of configured invoice fields.",
+  "detector_configuration": {
+    "business.missing_required_field": {
+      "table": "invoices",
+      "id_field": "id",
+      "required_fields": [
+        "reference",
+        "vendor_id"
+      ],
+      "treat_empty_string_as_missing": true
+    }
+  },
+  "disabled_detectors": [],
+  "enabled_detectors": [
+    "business.missing_required_field"
+  ],
+  "fail_on_detector_error": true,
+  "minimum_confidence": 0.0,
+  "minimum_severity": "info",
+  "name": "Missing Required Field Example",
+  "policy_id": "business.missing-required-field.example",
+  "policy_version": "auditlens-policy-v1"
+}

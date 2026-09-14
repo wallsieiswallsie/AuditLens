@@ -4,7 +4,7 @@ Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. 
 
 ## Immediate next milestone
 
-Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Recommended next incremental rule: `business.missing_required_field` (not started).
+Audit Policy + Detector SDK and the [Audit Rule Pack v1 foundation](AUDIT-RULE-PACK.md) are implemented. Completeness control `business.missing_required_field` is implemented. Recommended next incremental rule: `business.sequence_gap` (not started).
 
 Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
 

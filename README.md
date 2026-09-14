@@ -162,4 +162,4 @@ The local framework now supports explicit versioned detector registration and im
 JSON policies. Default execution remains `framework.health`; select
 `audit-engine/policies/examples.json` to run both non-business framework detectors.
 See [Detector SDK](docs/DETECTOR-SDK.md) and [ADR-010](docs/adr/ADR-010-detector-sdk-and-audit-policy.md).
-Audit Rule Pack v1 now includes `business.duplicate_transaction_reference`. See [rule semantics and offline example](docs/AUDIT-RULE-PACK.md). No production deployment changes are included.
+Audit Rule Pack v1 now includes `business.duplicate_transaction_reference` and `business.missing_required_field`. See [rule semantics and offline example](docs/AUDIT-RULE-PACK.md). No production deployment changes are included.

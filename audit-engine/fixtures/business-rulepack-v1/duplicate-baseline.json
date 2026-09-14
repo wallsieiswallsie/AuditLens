@@ -1,0 +1,5 @@
+{
+  "policy_json": "{\"allow_partial_results\":false,\"contract_version\":\"1\",\"description\":\"Example business audit using duplicate transaction references.\",\"detector_configuration\":{\"business.duplicate_transaction_reference\":{\"case_sensitive\":true,\"id_field\":\"id\",\"ignore_empty\":true,\"reference_field\":\"reference\",\"table\":\"invoices\"}},\"disabled_detectors\":[],\"enabled_detectors\":[\"business.duplicate_transaction_reference\"],\"fail_on_detector_error\":true,\"minimum_confidence\":0.0,\"minimum_severity\":\"info\",\"name\":\"Audit Rule Pack v1 Example\",\"policy_id\":\"business.rulepack.v1.example\",\"policy_version\":\"auditlens-policy-v1\"}",
+  "config_json": "{\"values\":{\"case_sensitive\":true,\"id_field\":\"id\",\"ignore_empty\":true,\"reference_field\":\"reference\",\"table\":\"invoices\"}}",
+  "hash": "0498dd5b110d7ecb3f3364f76f623123befc549e9ba2e2a6347a2f3dec81f932"
+}

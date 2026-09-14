@@ -1,7 +1,7 @@
 # Audit Policy and Detector SDK
 
 Framework version: **0.3.0**. The explicit registry contains `framework.health`,
-`framework.snapshot_integrity`, and `business.duplicate_transaction_reference`.
+`framework.snapshot_integrity`, `business.duplicate_transaction_reference`, and `business.missing_required_field`.
 See [Audit Rule Pack v1](AUDIT-RULE-PACK.md) for business rule semantics.
 
 ```mermaid
@@ -70,7 +70,7 @@ IDs, and never replaces a registration. `get(id, expected_version)` checks versi
 metadata stability. `list()` sorts by ID. No imports are derived from policy text or
 user paths. Only explicitly registered, reviewed repository modules are supported.
 
-`ConfigField` supports exactly boolean, integer and string values. Booleans do not count as integers. Unknown keys and incorrect types
+`ConfigField` supports exactly boolean, integer, string and list[string] values. Booleans do not count as integers. Unknown keys and incorrect types
 are rejected. Defaults are deterministic; `DetectorConfig.values` is deeply frozen.
 String support is used for configured snapshot table/field names. There is no
 arbitrary JSON configuration, connection capability or environment interpolation.

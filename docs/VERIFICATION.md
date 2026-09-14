@@ -1,5 +1,50 @@
 # Verification record
 
+## Completeness rule — 2026-09-15 Asia/Jakarta (current)
+
+Added only `business.missing_required_field` 1.0.0, category data_completeness.
+Framework remains 0.3.0. SDK change: bounded list[string] configuration using the
+existing frozen array representation. No result/snapshot/policy contract changes,
+new dependencies, source schema changes, production changes or Git commits.
+See [rule details and examples](AUDIT-RULE-PACK.md#completeness-control-businessmissing_required_field).
+
+| Executed check | Result |
+| --- | --- |
+| `audit-engine/.venv/Scripts/python.exe -m pytest` | PASS: 148 passed; all previous 112 retained, 36 new completeness regressions |
+| `npm test` | PASS: 17 passed, 0 failed |
+| `$env:API_URL='http://localhost:3001'; npm run build` | PASS: Vite production build, 26 modules |
+| CLI no arguments / health / detector inspect / policy validate | PASS: actual commands |
+| Legacy no-policy / framework policy / duplicate-reference CLI | PASS: retained subprocess tests; existing behavior unchanged |
+| Completeness positive / negative / invalid config / missing field / reordered CLI | PASS: actual subprocess tests through normal policy run/result inspection |
+| Offline completeness fixture | PASS: three invoices, two findings, three evidence items; checked-in result compared against reordered CLI executions |
+| Configuration and requirements | PASS: malformed lists/types, empty/duplicate fields, missing table/ID/required field; analysis not called, including empty tables |
+| Missing-value semantics | PASS: null, configurable empty strings, multiple missing fields, complete rows, whitespace, zero, false, arrays and objects |
+| Reproducibility and sensitivity | PASS: row/key order, artifact roots, operator, snapshot/run IDs and time invariant; record/presence/config/version/finding/evidence mutations change SHA-256 |
+| Prior serialization and logical hashes | PASS: retained default/boolean/integer golden baselines plus pre-edit duplicate-reference policy, effective scalar configuration and hash |
+| `$env:PG_BIN='C:/Program Files/PostgreSQL/17/bin'; npm run test:db` | PASS: PostgreSQL 17.5; report 2026-09-14T22:40:04.134Z UTC; disposable cluster stopped |
+| PostgreSQL framework acceptance | PASS: 10 checks, 11 tables, 19,654 records; both business policies, offline source isolation, evidence comparison and tamper rejection |
+| PostgreSQL constraints / privileges / integrity | PASS: seven constraint cases, reader SELECT and seventeen denials; source hashes unchanged; audit schema empty |
+| `npm run docs:check` | PASS: schema parity, 48 Markdown files, 166 relative links, 15 Mermaid diagrams |
+| `git diff --check` | PASS: no whitespace errors |
+
+The duplicate-reference baseline was captured from the unchanged working tree before
+editing the SDK, using the existing business snapshot and policy. The verified hash
+is `0498dd5b110d7ecb3f3364f76f623123befc549e9ba2e2a6347a2f3dec81f932`.
+
+The first Python run reported 147 passed and one failure in a new test assertion:
+it omitted the existing DetectorConfig values wrapper. Correcting that assertion
+produced the full passing run; no previous test was weakened or deleted.
+The first PostgreSQL attempt hit the known Windows restricted-token initdb failure;
+the disposable runner was retried with broader process permissions.
+
+Secret-sentinel regressions pass. Detector execution still receives only frozen
+AuditContext and validated DetectorConfig, with no new privileged capability.
+Record summary metadata lives once in the first canonical evidence context, avoiding
+contract changes and quadratic field-list repetition. Current limitations remain
+approved inventory, string record identities, unconditional requirements, trusted
+in-process execution and unsigned whole-snapshot logical checksums.
+
+
 ## Audit Rule Pack v1 Foundation â€” 2026-09-15 Asia/Jakarta (current)
 
 Implemented exactly one business detector: `business.duplicate_transaction_reference`

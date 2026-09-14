@@ -57,6 +57,19 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
         ref = finding['evidence'][0]['observed_value']
         assert {e['source_record_id']['id'] for e in finding['evidence']} == {
             row['id'] for row in one.tables['invoices'] if row['reference'] == ref}
+    completeness_policy = policy_path.with_name('missing-required-field.json')
+    prior_runs = {p.name for p in (Path(directory) / 'runs').iterdir()}
+    cli('run', '--snapshot', ids[0], '--policy', str(completeness_policy),
+        env={**os.environ, 'AUDIT_SOURCE_DATABASE_URL': 'unusable', 'DATABASE_URL': 'unusable'})
+    completeness_id = next(p.name for p in (Path(directory) / 'runs').iterdir() if p.name not in prior_runs)
+    completeness = json.loads(cli('result', 'inspect', completeness_id))
+    expected_missing = {row['id']: sorted(field for field in ('reference', 'vendor_id')
+        if row[field] is None or row[field] == '') for row in one.tables['invoices']}
+    expected_missing = {key: fields for key, fields in expected_missing.items() if fields}
+    assert completeness['detector_id'] == 'business.missing_required_field'
+    assert completeness['finding_count'] == len(expected_missing)
+    assert completeness['status'] == ('findings' if expected_missing else 'passed')
+    assert {f['entity_id']: [e['field'] for e in f['evidence']] for f in completeness['findings']} == expected_missing
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -74,7 +87,7 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 9, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 10, 'tables': 11,
                       'records': sum(one.snapshot.record_counts.values()),
                       'snapshot_hash': one.snapshot.snapshot_hash,
-                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, secret exclusion, tamper rejection'}))
+                      'coverage': 'reader CLI extraction twice, deterministic hashes, inspect, offline run/result, multi-detector policy run, business duplicate groups and record evidence, completeness records and fields, secret exclusion, tamper rejection'}))
