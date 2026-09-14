@@ -10,6 +10,8 @@ INTEGRATION TEST / RUNTIME ACCEPTANCE: npm run test:db creates a fresh PostgreSQ
 RAILWAY MANUAL VERIFICATION: confirm dashboard roots/commands/variables/watch paths, public health, HTTPS, restart policy and SPA reload. Local build/static HTTP acceptance does not prove remote configuration. Record each class separately in VERIFICATION.md.
 
 ## Planned layers
+The current framework suite is `python -m unittest discover -s audit-engine/tests`: typed contract round trips, recursive immutability, stable ordering/UTC/decimal serialization, table/snapshot hashes, tampering, missing files, unsafe IDs, no-clobber writes, failed runs, provenance and CLI paths. Runtime isolation regression checks exclude fixture/generator imports and database access from execution/health. The disposable PostgreSQL suite also runs real Python snapshot/inspect/run/result commands through the restricted reader login, compares two exports, runs with unusable database URLs, checks secret absence and verifies source hashes unchanged. Web app and explicit environment-probe builds include a dedicated-reader sentinel. See [framework](AUDIT-FRAMEWORK.md) and [executed results](VERIFICATION.md).
+
 | Layer | Purpose and meaningful cases |
 | --- | --- |
 | Unit | Parameter validation, permission expansion, decimal comparison and lifecycle transitions |

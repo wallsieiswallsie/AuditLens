@@ -1,6 +1,6 @@
 # Environment and Railway deployment
 
-API and Web remain separate services. Database tooling is owned by apps/api/database; Python remains a local health CLI. The running Railway services are **REPORTED AS WORKING** by the developer. Remote settings, domains, logs and deployment isolation have not been independently inspected. No Railway dashboard configuration is stored in this repository.
+API and Web remain separate services. Database administration tooling is owned by apps/api/database; Python is a local snapshot/execution CLI, not a deployed service. The running Railway services are **REPORTED AS WORKING** by the developer. Remote settings, domains, logs and deployment isolation have not been independently inspected. No Railway dashboard configuration is stored in this repository.
 
 ## Canonical configuration
 
@@ -11,6 +11,9 @@ API and Web remain separate services. Database tooling is owned by apps/api/data
 | API_HOST | API bind address; default 0.0.0.0 for platform access; example sets 127.0.0.1 for local development |
 | API_URL | Required public HTTP(S) API endpoint at Web build/dev time; trailing slashes normalized; no credentials/query/fragment; rebuild after changing it |
 | DATABASE_URL | Canonical API/migration/tooling PostgreSQL connection; never set on Web |
+| AUDIT_SOURCE_DATABASE_URL | Optional dedicated local extraction login; preferred over DATABASE_URL, always selects auditlens_source_reader; never set on Web. No URL query overrides. Process environment or root .env |
+| AUDIT_OPERATOR | Optional explicit local operator label from process environment; --operator overrides; default local. No automatic OS identity collection |
+| AUDITLENS_TEST_PYTHON | Optional interpreter path for disposable acceptance; defaults to engine venv then python on PATH |
 | WEB_PORT | Vite development port, default 5173; does not control production serving |
 | WEB_ALLOWED_HOST | Optional hostname for custom-host local Vite preview only; omitted for builds and standard localhost preview; no scheme, credentials or port |
 | AUDITLENS_DATA_SEED | Fixture generation/QA seed, default 20260914 |
@@ -53,6 +56,8 @@ Do not give Web PostgreSQL/admin/JWT credentials or deploy Python. Future cross-
 | npm run db:status | READ-ONLY | Same report; nonzero if not ready |
 | npm run db:validate-data | READ-ONLY | Repeatable-read fixture counts, hashes, keys and exact ground-truth QA |
 | npm run db:generate | LOCAL FILE WRITE | Regenerates small manifests/examples, no database access |
+| python -m audit_engine snapshot | SOURCE READ / LOCAL FILE WRITE | Fixed reader role, consistent explicit SELECT; normalized JSONL/manifest under ignored artifacts |
+| python -m audit_engine run --snapshot ID | LOCAL FILE READ/WRITE | Validate frozen snapshot, execute health, publish run/provenance/result; no database access |
 | npm run db:migrate | MUTATING | Applies pending migrations; administrator responsibility |
 | npm run db:seed | MUTATING / LOCAL-ONLY | Development, loopback, database auditlens, password, no URL overrides; requires empty source tables |
 | npm run db:reset | DESTRUCTIVE / LOCAL-ONLY | Same destination restrictions plus AUDITLENS_ALLOW_LOCAL_RESET=YES; deletes source rows transactionally |
@@ -65,6 +70,8 @@ A loopback URL may be a tunnel. The operator must verify disposability before se
 Inspection checks connection/database/version, business/audit schemas, each of eleven business tables, both Knex metadata tables, expected migration filenames, applied names, pending names and unexpected names. It never calls the Knex migrator, creates metadata or writes source data. Migration names are read only if metadata already exists; the caller needs SELECT on that metadata. Readiness does not prove migration contents/checksums, fixture validity or database security. Connection errors omit URLs/passwords.
 
 ## Local use and manual Railway checks
+Local extraction requires the editable engine package, Node on PATH and npm ci. Provision a dedicated reader login separately under the existing reader permission role; the extractor never creates credentials or changes grants. Inspect/run/health need no database connection. Artifact storage is manual local retention; no result schema/migration is added. See [CLI setup and limits](AUDIT-FRAMEWORK.md).
+
 
 Copy .env.example, set local DATABASE_URL and matching Compose-only POSTGRES_PASSWORD, then npm ci. Run db:inspect before migration. Compose binds PostgreSQL to loopback and retains original credentials in its named volume; changing .env does not rotate passwords. Do not delete an existing volume to fix credentials.
 

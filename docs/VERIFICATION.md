@@ -1,6 +1,59 @@
 # Verification record
 
-## Stabilization acceptance — 2026-09-14 (current)
+## Local CLI Audit Framework — 2026-09-15 Asia/Jakarta (current)
+
+Implemented and locally verified: typed extraction/snapshot/run/provenance/result/
+finding/evidence/context contracts; eleven-table read-only extraction; canonical
+JSONL snapshots and hashes; independent integrity validation; immutable context;
+local run/provenance/result artifacts; health smoke execution only. No business
+detector, authentication, API result persistence or Railway change was made.
+
+| Executed check | Result | Evidence |
+| --- | --- | --- |
+| npm test | PASS: 17 passed, 0 failed | Existing API, dataset, guards, static serving and enhanced app/env-probe reader-secret isolation |
+| npm run build | PASS | API_URL=http://localhost:3001; actual Vite production output generated |
+| npm run docs:check | PASS | Compiled migration/dictionary/ERD parity; 43 Markdown files, 145 relative links, 14 Mermaid diagrams |
+| Python unittest discover -s audit-engine/tests | PASS: 30 passed, 0 failed | Existing health plus 29 framework tests, including contracts, determinism, integrity, safety, failure lifecycle and CLI |
+| python -m audit_engine --help | PASS | Four command groups and artifact-root option printed |
+| python -m audit_engine health | PASS | status ok, service auditlens-engine, Pandas 3.0.5 |
+| python -m audit_engine | PASS | Original no-argument health behavior retained |
+| npm run test:db | PASS | Full disposable PostgreSQL 17.5 acceptance, including Python snapshot/inspect/run/result CLI; final completion 2026-09-14T17:12:52.037Z |
+| db:inspect / db:status / db:validate-data | PASS inside acceptance | Real read-only empty inspection/readiness plus populated fixture validation; no configured external target used |
+| Reader extraction | PASS | Two exports through authenticated non-superuser login selecting auditlens_source_reader; eleven tables, 19,654 rows |
+| Logical determinism | PASS | Both exports: ee36c5de51c49c3eac8828327e67e913206b47eef3ad97c4d23731ca6b389cd8 |
+| Source integrity | PASS | Existing fixture hash ce8a804cea5a71bba995530d06dab875433d61faf149ac2bf9ab298284a906f2 and every fixture table hash unchanged after extraction |
+| Offline execution / result | PASS | Real CLI run with both database URL variables deliberately unusable; framework.health passed, zero findings; result inspect succeeded |
+| Tamper rejection | PASS | Modified live exported snapshot rejected by CLI before execution; offline tests also cover counts, metadata, missing files and hashes |
+| PostgreSQL constraints / privileges | PASS | Seven constraint cases and seventeen reader denial cases; approved SELECT succeeds; audit schema stays empty |
+| Secrets and labels | PASS | Reader URL/password absent from temporary artifacts; source URL errors sanitized; runtime import regression excludes synthetic labels/generators; Web sentinel tests pass |
+| Artifact Git exclusion / whitespace | PASS | git check-ignore confirms default runtime path; git diff --check succeeds |
+
+The first sandboxed test:db attempt failed at initdb's Windows restricted-token
+creation (error 87), before migration/extraction. Broader-process runs of the same
+self-contained runner passed and stopped their private clusters. No existing database
+URL was targeted. Test snapshots/results were temporary and removed by the harness;
+stopped cluster files remain in OS temporary storage for diagnosis. Node 22.14.0,
+Python 3.12.14 and PostgreSQL 17.5 are the local environment inherited from stabilization.
+
+Snapshot hash differs from the fixture hash by design: the new versioned JSONL/
+UTC-microsecond/manifest contract is independent of generator serialization.
+Run IDs and timestamps intentionally differ on replay; semantic health output
+and content hashes are reproducible. Integrity is not an authenticated signature.
+
+Requires configured PostgreSQL: routine operator snapshot creation needs a separately
+authorized reader login/URL and existing grants. Disposable extraction is verified;
+no claim is made about any external or production reader identity.
+
+Requires Railway verification: deployed runtime, settings, production grants and
+remote audit access remain unverified. Railway was not modified. Phase 0: verified
+locally. Phase 1: verified on disposable PostgreSQL. Stabilization: complete locally.
+Local CLI Audit Framework: implemented and locally verified. Next: Audit Policy +
+Detector SDK. See [framework specification](AUDIT-FRAMEWORK.md) and
+[ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
+
+The older milestone records below are historical and retain their original counts.
+
+## Stabilization acceptance — 2026-09-14 (historical)
 
 This section is the current factual record; all older snapshots below are historical. **Phase 0: VERIFIED locally. Phase 1: VERIFIED on disposable PostgreSQL. Stabilization: COMPLETE for repository/local acceptance. Ready for the next local CLI Audit Framework milestone, after its documented design decisions; framework implementation has not begun.** Railway dashboard/runtime evidence remains NOT VERIFIABLE, independently of the local pass.
 

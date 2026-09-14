@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auditlens-engine"
-version = "0.1.0"
-description = "Educational AuditLens analysis foundation; no audit rules yet"
+version = "0.2.0"
+description = "AuditLens local snapshot framework; no business audit rules"
 requires-python = ">=3.11"
 dependencies = ["pandas>=2.2,<3.1"]
 
@@ -15,3 +15,5 @@ auditlens-engine = "audit_engine.__main__:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"audit_engine.repositories" = ["*.json", "*.mjs"]

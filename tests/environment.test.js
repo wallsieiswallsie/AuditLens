@@ -45,17 +45,18 @@ test('frontend URL normalization and path joining', () => {
 });
 
 test('production application and env probe expose public API_URL without server secrets', async () => {
-  const values = { API_URL: 'https://public-api.example.test/', DATABASE_URL: connection, JWT_ACCESS_SECRET: 'ACCESS_SENTINEL_98765', JWT_REFRESH_SECRET: 'REFRESH_SENTINEL_98765', VITE_UNRELATED_SECRET: 'UNRELATED_SENTINEL_98765' };
+  const values = { API_URL: 'https://public-api.example.test/', DATABASE_URL: connection, AUDIT_SOURCE_DATABASE_URL: 'postgresql://reader:READER_SENTINEL_98765@localhost/auditlens', JWT_ACCESS_SECRET: 'ACCESS_SENTINEL_98765', JWT_REFRESH_SECRET: 'REFRESH_SENTINEL_98765', VITE_UNRELATED_SECRET: 'UNRELATED_SENTINEL_98765' };
   const previous = Object.fromEntries(Object.keys(values).map(key => [key, process.env[key]]));
   Object.assign(process.env, values);
   try {
     const options = { root: fileURLToPath(new URL('../apps/web/', import.meta.url)), configFile: fileURLToPath(new URL('../apps/web/vite.config.js', import.meta.url)), logLevel: 'silent', build: { write: false } };
     const app = await build(options);
-    const probe = await build({ ...options, plugins: [{ name: 'env-probe', resolveId: id => id === 'env-probe' ? id : undefined, load: id => id === 'env-probe' ? 'globalThis.probe = [import.meta.env, import.meta.env.API_URL, import.meta.env.DATABASE_URL, import.meta.env.JWT_ACCESS_SECRET, import.meta.env.JWT_REFRESH_SECRET];' : undefined }], build: { write: false, rollupOptions: { input: 'env-probe' } } });
+    const probe = await build({ ...options, plugins: [{ name: 'env-probe', resolveId: id => id === 'env-probe' ? id : undefined, load: id => id === 'env-probe' ? 'globalThis.probe = [import.meta.env, import.meta.env.API_URL, import.meta.env.DATABASE_URL, import.meta.env.AUDIT_SOURCE_DATABASE_URL, import.meta.env.JWT_ACCESS_SECRET, import.meta.env.JWT_REFRESH_SECRET];' : undefined }], build: { write: false, rollupOptions: { input: 'env-probe' } } });
     for (const result of [app, probe]) {
       const code = result.output.map(item => item.code || item.source).join('\n');
       assert.ok(code.includes('https://public-api.example.test'));
-      for (const key of ['DATABASE_URL','JWT_ACCESS_SECRET','JWT_REFRESH_SECRET','VITE_UNRELATED_SECRET']) assert.ok(!code.includes(values[key]), key + ' leaked');
+      for (const key of ['DATABASE_URL','AUDIT_SOURCE_DATABASE_URL','JWT_ACCESS_SECRET','JWT_REFRESH_SECRET','VITE_UNRELATED_SECRET']) assert.ok(!code.includes(values[key]), key + ' leaked');
+      assert.ok(!code.includes('READER_SENTINEL_98765'));
     }
   } finally {
     for (const [key, value] of Object.entries(previous)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }

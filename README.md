@@ -3,7 +3,7 @@
 
 An educational full-stack project exploring how system data supports traceable internal control testing.
 
-**Development status: configuration/deployment contracts and Phase 1 acceptance verified locally on disposable PostgreSQL 17.5. The local CLI Audit Framework is the next milestone; no audit capabilities or authentication are implemented. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
+**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; only framework.health executes. No business detectors or authentication exist. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
 
 ## Problem and planned capabilities
 Permissions, transactions and activity logs can hide control weaknesses when reviewed separately. AuditLens will connect repeatable testing with evidence and human-reviewed findings.
@@ -11,10 +11,10 @@ Permissions, transactions and activity logs can hide control weaknesses when rev
 Planned modules: user access review; segregation of duties; transaction exceptions; audit trail analysis; risk/control mapping; findings; scope-aware dashboard and reporting.
 
 ## Architecture
-A Demo Business System will own source writes. AuditLens will read source records through a restricted connection and save its results separately. One PostgreSQL database, auditlens, contains business and audit schemas. A modular Hapi API serves the React UI; an explicit Python CLI will perform analysis. Auditors have independent identities from the business accounts being tested. Explicit source-reader provisioning and PostgreSQL acceptance are described in [ADR-008](docs/adr/ADR-008-database-privilege-separation.md); extraction and a result writer remain planned.
+A Demo Business System will own source writes. AuditLens reads approved source columns through a restricted connection, freezes normalized snapshots and executes a Python health detector against immutable context. Runs, provenance and results are local files. One PostgreSQL database, auditlens, contains business and audit schemas; no result tables are created. A modular Hapi API serves the React UI. See [source-reader provisioning](docs/adr/ADR-008-database-privilege-separation.md) and the [framework specification](docs/AUDIT-FRAMEWORK.md).
 
 ## Stack
-React 19, Vite, JavaScript, React Router, Tailwind CSS and DaisyUI; Node.js and Hapi; PostgreSQL 17 and Knex; Python and Pandas with SQL planned for extraction; JWT planned for Phase 2; Docker Compose for local PostgreSQL; Git. Use Node.js 22.12+ and Python 3.11+.
+React 19, Vite, JavaScript, React Router, Tailwind CSS and DaisyUI; Node.js and Hapi; PostgreSQL 17, Knex and pg; Python standard-library snapshot framework with Pandas health; JWT planned for Phase 2; Docker Compose for local PostgreSQL; Git. Use Node.js 22.12+ and Python 3.11+.
 
 ## Repository structure
 ```text
@@ -41,7 +41,7 @@ docker-compose.yml
 ```
 Operational and audit submodules will be introduced inside the API when implemented. Reserved folders contain a README or Python package marker.
 
-Database tooling is API-owned. Root commands and scripts orchestrate that tooling without changing ownership. Web and API are separate Railway services; Python remains a local CLI scaffold. See [ADR-007](docs/adr/ADR-007-api-database-and-independent-deployment.md). node_modules, apps/web/dist, Python virtual environments and caches are dependency/generated artifacts.
+Database administration tooling is API-owned. Root commands and scripts orchestrate that tooling without changing ownership. Web and API are separate Railway services; Python is a local snapshot/execution CLI. Its narrow extraction transport reuses the installed Node pg driver. See [ADR-007](docs/adr/ADR-007-api-database-and-independent-deployment.md). node_modules, apps/web/dist, Python virtual environments, caches and audit-engine/artifacts are generated and ignored.
 
 ## Local setup
 Install Node.js 22.12+, Python 3.11+, Docker Desktop (running with Linux containers) and Git. From the repository root:
@@ -108,7 +108,21 @@ Run `npm run test:db` with PostgreSQL 17+ initdb/pg_ctl on PATH (or PG_BIN). Thi
 After db:migrate on a confirmed disposable development database, run `npm run db:status`, `npm run db:seed` and `npm run db:validate-data`. Offline generation: `npm run db:generate`. See [dataset and guarded reset instructions](docs/16-SYNTHETIC-DATASET.md), [business process](docs/17-BUSINESS-PROCESS.md), [lineage](docs/18-DATA-LINEAGE.md) and [Phase 1 decisions](docs/adr/ADR-005-phase-1-dataset-conventions.md). Default seed: 20260914. No detector may consume the development ground truth.
 
 ## Roadmap
-Next milestone: Local CLI Audit Framework. Freeze the source extraction/snapshot contract, local operator provenance, policy versions and minimal evidence retention before implementation. Authentication/RBAC is required before remote audit access. See [roadmap](docs/13-DEVELOPMENT-ROADMAP.md) and [open questions](docs/OPEN-QUESTIONS.md).
+Next milestone: Audit Policy + Detector SDK. The local snapshot framework is implemented; authentication/RBAC remains required before remote audit access. See [roadmap](docs/13-DEVELOPMENT-ROADMAP.md) and [open questions](docs/OPEN-QUESTIONS.md).
+
+## Local audit framework
+
+Prefer AUDIT_SOURCE_DATABASE_URL for a dedicated login authorized to select the existing reader role; extraction falls back to DATABASE_URL but always selects auditlens_source_reader. Neither URL belongs in Web. From repository root:
+
+```powershell
+.\audit-engine\.venv\Scripts\python.exe -m audit_engine health
+.\audit-engine\.venv\Scripts\python.exe -m audit_engine snapshot
+.\audit-engine\.venv\Scripts\python.exe -m audit_engine snapshot inspect <snapshot-id>
+.\audit-engine\.venv\Scripts\python.exe -m audit_engine run --snapshot <snapshot-id>
+.\audit-engine\.venv\Scripts\python.exe -m audit_engine result inspect <audit-run-id>
+```
+
+See [contracts, integrity and retention](docs/AUDIT-FRAMEWORK.md) and [ADR-009](docs/adr/ADR-009-snapshot-based-audit-execution.md). A passed framework.health result only means the snapshot is readable.
 
 ## Documentation
 - [01 PROJECT OVERVIEW](docs/01-PROJECT-OVERVIEW.md)

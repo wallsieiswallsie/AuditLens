@@ -2,12 +2,12 @@
 
 AuditLens adalah proyek portofolio pendidikan untuk mempelajari audit digital, pengendalian internal, risiko TI, analisis sistem dan rekayasa perangkat lunak dengan data sintetis. Proyek ini tidak menggunakan atau mengklaim metodologi milik PwC maupun organisasi lain.
 
-Status terbaru: stabilisasi konfigurasi dan acceptance lokal PostgreSQL 17.5 lulus, termasuk hak pembaca sumber. Pengaturan Railway belum diverifikasi langsung. Tahap berikutnya adalah Local CLI Audit Framework; belum diimplementasikan. Lihat [catatan verifikasi](VERIFICATION.md).
+Status terbaru: stabilisasi dan Local CLI Audit Framework sudah diimplementasikan dan diverifikasi lokal dengan PostgreSQL 17.5. Framework mengambil snapshot melalui pembaca terbatas, memvalidasi hash, lalu menyimpan run, provenance dan hasil lokal. Hanya framework.health tersedia; belum ada detektor bisnis atau autentikasi. Railway belum diverifikasi langsung. Tahap berikutnya Audit Policy + Detector SDK. Lihat [catatan verifikasi](VERIFICATION.md) dan [panduan framework](AUDIT-FRAMEWORK.md).
 
 ## Tujuan dan cara kerja
 Bayangkan perusahaan latihan yang mencatat faktur dan pembayaran. Sistem bisnis menjalankan proses operasional. AuditLens bertindak sebagai meja pemeriksaan yang membaca data, mencari penyimpangan dan menyimpan hasil pemeriksaan secara terpisah.
 
-Alurnya: pegawai → sistem bisnis demo → PostgreSQL → pembacaan khusus audit → pengujian Python → hasil dan bukti → penelaahan auditor. AuditLens tidak boleh mengubah catatan bisnis sumber.
+Alur lokal saat ini: PostgreSQL → ekstraksi read-only → snapshot JSONL dan manifest/hash → validasi → konteks beku → framework.health → artefak hasil lokal. Kontrak bukti dan temuan tersedia untuk detektor masa depan. AuditLens tidak mengubah sumber dan detektor tidak memperoleh koneksi database.
 
 ## Komponen teknis
 React 19 dan Vite menyediakan antarmuka. React Router mengatur halaman. Tailwind CSS dan DaisyUI menyediakan gaya dasar. Hapi pada Node.js menyediakan API. PostgreSQL menyimpan data, sedangkan Knex mengatur koneksi dan migrasi. Python, Pandas dan SQL akan menjalankan analisis tabel. JWT direncanakan untuk autentikasi; belum diimplementasikan.
@@ -30,6 +30,6 @@ Pahami proses → identifikasi risiko → identifikasi kontrol → tentukan tuju
 Temuan bergerak dari draft, in_review, open, remediated hingga closed. Pemilik proses menangani perbaikan dan penelaah memverifikasi penutupan.
 
 ## Kondisi saat ini dan langkah berikutnya
-Phase 0 menyediakan dokumentasi, halaman placeholder, endpoint health dan health Python. Phase 1 menyediakan migrasi tabel bisnis, generator deterministik, manifest ground truth dan validasi dataset. Acceptance lokal PostgreSQL 17.5 berhasil untuk migrasi, seed, rollback, determinisme, constraints dan penolakan perubahan oleh pembaca sumber. Web dan API tetap layanan Railway terpisah; pengaturan remote belum diverifikasi. Tooling database berada di apps/api/database; audit-engine tetap terpisah. Autentikasi, aturan audit, dashboard data dan laporan belum diimplementasikan. Tahap berikutnya adalah Local CLI Audit Framework; lihat [verifikasi](VERIFICATION.md) dan [roadmap](13-DEVELOPMENT-ROADMAP.md).
+Phase 0 dan Phase 1 tetap terverifikasi. Acceptance PostgreSQL juga menjalankan CLI snapshot dua kali, membandingkan hash, menjalankan audit tanpa koneksi database, menolak snapshot yang diubah dan membuktikan sumber tetap sama. Framework memakai dependensi pg Node yang sudah tersedia melalui transport terbatas; Python memiliki kontrak dan eksekusi. Identitas operator eksplisit atau local, tanpa membaca nama pengguna mesin. Ground truth hanya untuk evaluasi, tidak dimuat runtime. Web/API tetap terpisah dan Railway belum diverifikasi. Tahap selanjutnya Audit Policy + Detector SDK; lihat [verifikasi](VERIFICATION.md) dan [roadmap](13-DEVELOPMENT-ROADMAP.md).
 
 Pelajari [arsitektur](03-SYSTEM-ARCHITECTURE.md), [ERD](04-ERD.md), [kamus data](05-DATA-DICTIONARY.md), [katalog pengujian](08-AUDIT-TEST-CATALOG.md) dan [pertanyaan terbuka](OPEN-QUESTIONS.md). Petunjuk menjalankan aplikasi tersedia di [README](../README.md).

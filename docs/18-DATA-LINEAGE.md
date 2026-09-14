@@ -1,6 +1,6 @@
 # Data lineage
 
-Phase 1 implements the synthetic generator, source migrations, fixture artifacts and dataset QA. The source-reader permission boundary has explicit provisioning and passed actual PostgreSQL 17.5 permission tests in disposable acceptance; extraction and everything after the reader remain planned. Audit-related results/configuration belong to audit, never source tables.
+Phase 1 implements synthetic generation, migrations and fixture QA. The Local CLI Audit Framework now implements restricted extraction, frozen snapshots, integrity validation, immutable context and local runs/results. PostgreSQL acceptance proves the source is unchanged. Future database results belong to audit; current results are local files, never source writes.
 
 Source/tooling ownership: apps/api/database/generators produces apps/api/database/sample-data artifacts; apps/api/database/seeds/workflow.js writes development fixtures; apps/api/database/validation/validate.js performs fixture QA. Root scripts are command entry points to these API-owned modules. The independent audit-engine package must not import generators, fixture QA or ground truth.
 
@@ -10,16 +10,16 @@ flowchart TD
   Generator --> Policy["Fixture policy and dataset manifest"]
   Generator --> Truth["Ground truth: development and test only"]
   Source --> Reader["Explicit SELECT-only source-reader role"]
-  Reader --> Snapshot["Future consistent source snapshot"]
-  Snapshot --> Engine["Future independent AuditLens engine"]
-  Policy --> Engine
-  Engine --> Results["Future audit results and evidence"]
+  Reader --> Snapshot["Canonical JSONL snapshot and manifest/hash"]
+  Snapshot --> Engine["Validated frozen context / framework.health"]
+  Versions["Central framework and policy versions"] --> Engine
+  Engine --> Results["Local runs, provenance and results"]
   Results --> Findings["Future human-reviewed findings"]
   Truth --> Benchmark["Test harness compares exact sets"]
   Results --> Benchmark
 ```
 
-Ground truth never flows into the analysis engine. The test harness may compare independently produced outputs against the manifest after analysis. Fixture policy is separate input describing expected behavior; it contains no injected anomaly labels. Dataset hashes identify an exact generated population. They do not establish trust against a database administrator.
+Ground truth and fixture policy never flow into the current runtime. The test harness may compare independent results afterward. Framework policy version is centrally defined, with no business rules yet. Snapshot hashes identify normalized logical content; they differ from fixture-generator hashes because serialization has its own versioned contract. Neither establishes trust against an administrator who can rewrite data and hashes.
 
 ## Table relationships
 
@@ -54,6 +54,6 @@ flowchart LR
 
 Generator UUIDs remain stable for a given version/seed/ordinal. Money is numeric(18,2) in PostgreSQL and decimal strings in artifacts. Timestamps are UTC timestamptz and ISO strings, with Asia/Jakarta used only for the fixture calendar. Per-table hashes canonicalize keys and row order, so SQL retrieval order cannot change the logical fingerprint.
 
-Database QA uses one repeatable-read read-only transaction to compare a consistent population with regenerated expected records. This fixture-validation command is separate from the source-reader permission test: it uses the developer connection and does not claim actual grant enforcement. Provisioning and acceptance are in [ADR-008](adr/ADR-008-database-privilege-separation.md). Future extraction must use a separately authenticated reader login and reverify its grants, capture source IDs, dataset identity, extraction cutoff, counts, timezone and policy/test versions, and preserve evidence independently of mutable source rows. No audit-to-business foreign keys are planned. Snapshot retention, redaction and externally anchored integrity remain open.
+Database QA independently compares the source to generated expected records. The actual CLI extraction uses the restricted role in a consistent transaction; acceptance authenticates a separate reader login and verifies all source hashes afterward. Snapshot identity/hash, primary keys, counts, UTC normalization and framework/policy/detector versions support future evidence references. The snapshot creation timestamp records local artifact creation after extraction, not a PostgreSQL transaction ID or exact source cutoff. No cross-schema evidence FKs exist. Retention is manual local filesystem retention; remote redaction, signatures and external anchoring remain open. See [snapshot/evidence contracts](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
 
 See [ADR-002](adr/ADR-002-audit-read-only-principle.md), [ADR-005](adr/ADR-005-phase-1-dataset-conventions.md) and [verification](VERIFICATION.md).

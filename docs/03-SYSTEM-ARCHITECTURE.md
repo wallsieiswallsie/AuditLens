@@ -19,7 +19,11 @@ Separate Railway services are an explicit requirement and REPORTED AS WORKING. N
 
 ## Database identities
 
-CURRENT: DATABASE_URL is the migration/admin identity also used by API startup. Explicit administration provisions auditlens_source_reader as a non-owner NOLOGIN permission group with business SELECT only. Acceptance authenticates a separate unprivileged test login and SET ROLE. No reader credential is needed for API health or Web. PLANNED: extraction login, least-privilege API runtime and a separate audit result writer. No audit-engine deployment, extraction or result tables exist. See [ADR-008](adr/ADR-008-database-privilege-separation.md) for PUBLIC/default-grant treatment and [verification](VERIFICATION.md) for runtime evidence.
+CURRENT: DATABASE_URL remains the API/migration connection. Extraction prefers AUDIT_SOURCE_DATABASE_URL and always selects the provisioned NOLOGIN auditlens_source_reader role in a read-only repeatable-read transaction. A separate unprivileged login exercises the real CLI in disposable acceptance. No reader credential belongs in Web. Snapshot/execution/results are local files; least-privilege API runtime and database result writer remain planned. See [ADR-008](adr/ADR-008-database-privilege-separation.md), [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md) and [framework contracts](AUDIT-FRAMEWORK.md).
+
+## Current local execution
+
+The Python package owns contracts, normalization, hashes, immutable context and execution. A narrow Node bridge reuses pg for approved SELECTs only. Detectors receive frozen context and never import the source repository. Source → extraction → snapshot/manifest/hash → validated audit context → framework.health → local run/provenance/result. The diagrams below include future database persistence and business analysis, which are not implemented.
 
 ## 1. System context
 ```mermaid
@@ -40,13 +44,14 @@ flowchart TB
   API --> AuditRepo["Audit repositories (planned)"]
   AuditRepo --> AuditDB["PostgreSQL audit schema"]
   Demo["Business module (planned)"] --> BizDB["PostgreSQL business schema"]
-  CLI["Explicit run CLI (planned)"] --> Engine["Python / Pandas / SQL"]
-  BizDB -->|SELECT only| Reader["Provisioned source-reader role; extraction planned"]
-  Reader --> Engine
+  CLI["Local run CLI"] --> Engine["Python frozen audit context"]
+  BizDB -->|SELECT only| Reader["Restricted extraction bridge"]
+  Reader --> Snapshot["Validated frozen snapshot"]
+  Snapshot --> Engine
   Engine --> Writer["Audit result writer (planned)"]
   Writer --> AuditDB
 ```
-The web is a Vite application. Hapi provides a single API with separated modules. PostgreSQL hosts two schemas. Python handles tabular analysis. The source-reader permission role has explicit provisioning; the future extraction login and result writer will use distinct credentials; no source-writing capability belongs to the reader. No queue, cache or additional service is required in Phase 0.
+The web is a Vite application. Hapi provides a single API with separated modules. PostgreSQL hosts two schemas. Python handles snapshot normalization and framework execution. Extraction prefers a dedicated login selecting the explicitly provisioned reader role. Results currently use local files; the diagram's database writer remains planned. No queue, cache or deployed Python service is introduced.
 
 ## 3. Audit data flow
 ```mermaid

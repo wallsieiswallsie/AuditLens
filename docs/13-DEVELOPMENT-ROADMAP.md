@@ -1,14 +1,14 @@
 # Development roadmap
 
-Phase 0 is VERIFIED for the local foundation and deployment contract. Phase 1 is VERIFIED on disposable PostgreSQL 17.5: migration/reload, fixture QA, constraints and real source-reader denial all pass. Stabilization is COMPLETE for repository/local acceptance. Railway dashboard behavior remains NOT VERIFIABLE and must be checked before claiming remote deployment acceptance. Phases 2–9 remain NOT STARTED; Phase 10 has only documentation/license groundwork.
+Phase 0 is VERIFIED locally. Phase 1 is VERIFIED on disposable PostgreSQL 17.5. Stabilization and the Local CLI Audit Framework are COMPLETE for repository/local acceptance. Phase 3's local snapshot/run/result foundation is implemented; its remote/database extension remains future work. Phase 2 and business detector phases remain NOT STARTED. Railway runtime remains separately unverified.
 
 ## Immediate next milestone
 
-NEXT PHASE: Local CLI Audit Framework.
+NEXT PHASE: Audit Policy + Detector SDK.
 
 Completed: PORT/test/example alignment, optional preview host, production static serving with SPA fallback, independent Railway contract, safe inspection, guarded rollback/reset, deterministic disposable database acceptance and verified source-reader grants. Source tables, fixture semantics and expected hashes are unchanged. See [current evidence](VERIFICATION.md).
 
-Before framework implementation, decide the initial extraction/snapshot format, operator provenance, policy versioning, minimal evidence retention and result-writer identity. Then local CLI framework → User Access Review → authentication/RBAC before remote audit access. No detector, result persistence, authentication or queue was built during stabilization.
+Delivered after stabilization: typed contracts, restricted read-only extraction, deterministic JSONL snapshots/hashes, independent integrity validation, explicit operator provenance, central versions, immutable context, CLI lifecycle and local results. Only framework.health runs. Next freeze policy/rule and Detector SDK semantics before User Access Review. Authentication/RBAC is required before remote audit access; database result writer and retention service remain deferred. See [framework](AUDIT-FRAMEWORK.md) and [ADR-009](adr/ADR-009-snapshot-based-audit-execution.md).
 
 ## Phase 0: Architecture & Documentation
 
@@ -35,6 +35,8 @@ Before framework implementation, decide the initial extraction/snapshot format, 
 - Definition of done: 401/403/object-scope tests pass; no insecure bypass.
 
 ## Phase 3: Audit Framework
+
+- Current local milestone: COMPLETE and locally verified; snapshots, CLI, provenance, result contracts and non-business smoke execution. No business detectors or database result tables.
 
 - Objective: Execute reproducible validated runs.
 - Deliverables: Extraction snapshots, manifests, versioned tests, results/evidence and CLI orchestration.

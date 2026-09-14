@@ -1,2 +1,1 @@
-"""AuditLens engine foundation. No source access or audit rules yet."""
-
+"""AuditLens local snapshot framework. No business audit rules."""

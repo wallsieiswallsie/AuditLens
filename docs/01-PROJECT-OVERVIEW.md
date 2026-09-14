@@ -1,6 +1,6 @@
 # AuditLens project overview
 
-**Status: Phase 1 source dataset and source-reader privileges verified on disposable local PostgreSQL 17.5. Configuration and deployment contracts are stabilized; remote Railway settings remain unverified. All audit capabilities described here are planned.** See [current verification](VERIFICATION.md).
+**Status: Phase 1, stabilization and Local CLI Audit Framework verified on disposable local PostgreSQL 17.5. Snapshots, provenance, local runs and results exist; business analysis and remote Railway verification remain outstanding.** See [current verification](VERIFICATION.md) and [framework](AUDIT-FRAMEWORK.md).
 
 ## Technical explanation
 AuditLens is a modular digital audit and internal control testing platform. A synthetic Demo Business System produces users, permissions, invoices, approvals, payments and activity records. AuditLens reads that source through a restricted database identity, validates the population, executes versioned tests and preserves evidence for human review. Its own findings and results belong to a separate audit schema.
@@ -16,7 +16,7 @@ Auditors review exceptions and evidence. Audit managers review findings and repo
 The objectives are to demonstrate system analysis, database design, RBAC, segregation of duties, data integrity, risk assessment, audit trails and full-stack engineering in a readable portfolio.
 
 ## Scope
-Current: documentation, business domain migrations, deterministic synthetic generator and fixture QA, web placeholders, API health and Python health execution.
+Current: documentation, business migrations, deterministic synthetic generator/QA, web placeholders, API health, read-only extraction, frozen snapshots, integrity validation and Python framework.health execution with local results.
 Future: authentication, access review, SoD, transaction and log testing, risk/control mapping, findings and reporting.
 Excluded: production ERP integration, real employee data, certification, proprietary methodologies and automated assurance opinions.
 

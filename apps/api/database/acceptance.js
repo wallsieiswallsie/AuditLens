@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 import { randomBytes } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { generate } from './generators/index.js';
 import { TABLES } from './generators/core.js';
 import { validate } from './validation/validate.js';
@@ -86,6 +88,16 @@ export async function acceptDatabase(db, connection) {
     assert.equal(identity.current_user, READER); assert.equal(identity.session_user, 'auditlens_acceptance_login');
     for (const name of TABLES) assert.equal(Number((await reader.query(`SELECT count(*) AS n FROM business.${name}`)).rows[0].n), fixture.manifest.counts[name]);
     results.reader.SELECT = 'PASS: all eleven approved tables via non-superuser login and SET ROLE';
+    console.log('Acceptance: local CLI snapshots and database-free audit execution');
+    const localPython = join(root, 'audit-engine', '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+    const framework = spawnSync(process.env.AUDITLENS_TEST_PYTHON || (existsSync(localPython) ? localPython : 'python'),
+      ['audit-engine/tests/accept_snapshot.py'], { cwd: root, encoding: 'utf8', timeout: 240000, windowsHide: true,
+        env: { ...process.env, AUDIT_SOURCE_DATABASE_URL: readerUrl.href, DATABASE_URL: 'disabled-admin-fallback',
+          PYTHONPATH: join(root, 'audit-engine/src') } });
+    assert.equal(framework.status, 0, 'Acceptance command failed: Python snapshot framework (output suppressed)');
+    results.framework = JSON.parse(framework.stdout);
+    assert.deepEqual(validate({ ...fixture, tables: await readFixture() }), first);
+    results.framework.sourceUnchanged = 'PASS: all existing fixture hashes unchanged after extraction';
     const denied = async (name, sql) => {
       await reader.query('BEGIN');
       try { await assert.rejects(reader.query(sql), error => error.code === '42501'); results.reader[name] = 'PASS: denied (42501)'; }

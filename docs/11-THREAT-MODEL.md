@@ -5,7 +5,7 @@ The trust boundaries are browser→API, API/engine→database, source→extract 
 | Threat | Asset | Attack scenario | Impact | Mitigation |
 | --- | --- | --- | --- | --- |
 | Reader privilege drift | Source integrity | Reader inherits writes, ownership or executable mutating routines | Extraction alters source | Explicit role checks, PUBLIC/default privilege restrictions, whitelist SELECT and real PostgreSQL write/DDL/function denial acceptance; repeat after changes |
-| Migration identity reused for extraction | Source integrity | Engine uses owner DATABASE_URL | Unrestricted modification | Dedicated reader role and separate future login; current API migration credential remains elevated and must not be reused by engine |
+| Migration identity reused for extraction | Source integrity | Extraction falls back to owner DATABASE_URL | Elevated credentials available to transport | Prefer dedicated AUDIT_SOURCE_DATABASE_URL; fixed restricted SET ROLE plus read-only transaction enforced before SELECT; no credentials passed to context |
 | Browser secret exposure | Credentials | Build publishes environment values | Database compromise | Explicit API_URL mapping, disabled automatic env exposure and production bundle sentinel probes |
 | Destructive tooling targets production | Source availability | Reset/rollback uses wrong URL | Data loss | Development/loopback/database guards, explicit opt-in, no production override; self-created acceptance cluster ignores DATABASE_URL |
 | Unauthorized auditor access | Evidence and findings | Stolen password or token permits review | Confidentiality loss | Password hashing, short JWT expiry, rotation, revocation and object authorization |
@@ -20,3 +20,5 @@ The trust boundaries are browser→API, API/engine→database, source→extract 
 | Inconsistent extraction | Evidence accuracy | Concurrent updates split related records | False positives/negatives | Consistent snapshot, validation and transaction cutoff |
 
 Residual risks: a local database administrator controls both schemas, a compromised host can read local secrets, and incomplete source logging limits what tests can infer. Schema separation is logical isolation, not an independent security perimeter.
+
+Implemented local controls: snapshot file/count/hash validation before execution, canonical UUID containment and link rejection, no-clobber publication, explicit column allowlist and deeply frozen context. Detector code cannot query through the context; only trusted built-in framework.health is registered. A malicious future plugin could use Python/OS capabilities, so this is not an untrusted-code sandbox. A local attacker who can replace both artifacts and their hashes defeats unauthenticated integrity; external anchoring/signatures remain deferred. Snapshots duplicate potentially sensitive source fields and need local filesystem permissions and manual retention. See [framework boundaries](AUDIT-FRAMEWORK.md).

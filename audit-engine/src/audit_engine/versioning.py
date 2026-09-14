@@ -1,0 +1,5 @@
+"""Versions are inputs to reproducibility, not compliance claims."""
+FRAMEWORK_VERSION = "0.2.0"
+SCHEMA_VERSION = "1"
+POLICY_VERSION = "auditlens-policy-v1"
+HEALTH_VERSION = "1.0.0"

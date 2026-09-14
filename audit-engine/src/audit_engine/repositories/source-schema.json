@@ -1,0 +1,13 @@
+{
+  "employees": ["id", "created_at", "updated_at", "employee_number", "full_name", "department", "status", "hired_at", "ended_at"],
+  "users": ["id", "created_at", "updated_at", "employee_id", "email", "account_type", "status", "last_login_at"],
+  "roles": ["id", "created_at", "updated_at", "code", "name"],
+  "permissions": ["id", "created_at", "updated_at", "code", "is_privileged"],
+  "user_roles": ["user_id", "role_id", "created_at"],
+  "role_permissions": ["role_id", "permission_id", "created_at"],
+  "vendors": ["id", "created_at", "updated_at", "code", "name"],
+  "invoices": ["id", "created_at", "updated_at", "vendor_id", "reference", "amount", "currency", "status", "created_by", "supporting_reference"],
+  "invoice_approvals": ["id", "created_at", "invoice_id", "decided_by", "decision", "decided_at"],
+  "payments": ["id", "created_at", "updated_at", "invoice_id", "reference", "amount", "currency", "status", "created_by", "confirmed_by", "confirmed_at"],
+  "audit_logs": ["id", "created_at", "actor_id", "action", "entity_type", "entity_id", "before_data", "after_data", "occurred_at"]
+}

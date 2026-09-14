@@ -11,4 +11,4 @@ __pycache__/
 coverage/
 *.log
 .DS_Store
-
+audit-engine/artifacts/
