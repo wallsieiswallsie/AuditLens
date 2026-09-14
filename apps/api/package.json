@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "migrate" : "knex migrate:latest --knexfile database/knexfile.js",
+    "migrate": "knex migrate:latest --knexfile database/knexfile.js",
     "start": "npm run migrate && node src/index.js"
   },
   "dependencies": {
     "@hapi/hapi": "^21.4.3",
     "dotenv": "^17.4.2",
-    "knex": "^3.3.0"
+    "knex": "^3.3.0",
+    "pg": "^8.23.0"
   }
 }
