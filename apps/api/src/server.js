@@ -9,4 +9,3 @@ export async function createServer(config = readConfig()) {
   server.route(healthRoute);
   return server;
 }
-
