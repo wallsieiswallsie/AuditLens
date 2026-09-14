@@ -8,6 +8,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@hapi/hapi": "^21.4.3"
+    "@hapi/hapi": "^21.4.3",
+    "dotenv": "^17.4.2"
   }
 }
