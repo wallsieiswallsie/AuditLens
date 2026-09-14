@@ -6,9 +6,9 @@ Implementation is delivered, but Phase 1 is **not fully complete** because Postg
 
 | Check | Result |
 | --- | --- |
-| Docker Compose configuration | Passed with transient placeholder DATABASE_PASSWORD; no credential file written |
+| Docker Compose configuration | Passed with a transient placeholder container password; no credential file written |
 | docker info / docker compose up -d postgres | BLOCKED: Docker engine named pipe is unavailable; CLI also reports access denied reading its config |
-| npm run db:check | BLOCKED: DATABASE_PASSWORD is absent; command fails clearly before connecting |
+| npm run db:check | BLOCKED: database credentials were absent; command fails clearly before connecting |
 | PostgreSQL business/audit schema existence | NOT VERIFIED live |
 | public.knex_migrations / clean migration status | NOT VERIFIED live; db:status command supplied |
 | Domain migration | PostgreSQL DDL compiles offline: eleven business tables, PK/FK/unique/check constraints and indexes |
@@ -42,7 +42,7 @@ All data and references are fictional. The source seed writer is a local develop
 
 ## Remaining database verification
 
-Use a dedicated disposable local PostgreSQL instance. Start Docker Desktop's Linux engine; copy .env.example to .env and supply a local password. If 5432 is occupied, choose a free DATABASE_PORT. Do not alter an unrelated server or delete its data.
+Use a dedicated disposable local PostgreSQL instance. Start Docker Desktop's Linux engine; copy .env.example to .env and configure DATABASE_URL and matching Docker-only POSTGRES_PASSWORD. If 5432 is occupied, change the Compose published port and the matching port in DATABASE_URL. Do not alter an unrelated server or delete its data.
 
 ```powershell
 docker compose up -d postgres
@@ -67,3 +67,15 @@ Check actual NOT NULL, FK, duplicate master-key, invalid status, nonpositive mon
 ## Phase 0 historical verification
 
 The foundation was previously verified on Windows with Node.js 22.14.0 and bundled Python 3.12 in audit-engine/.venv. npm install, API health/error and invalid-port tests, React/Vite build, API/frontend startup, live health/frontend HTTP requests, Python health/unittest, and relative-link/Mermaid parsing passed. Browser interaction was not automated. PostgreSQL was blocked then by absent credentials and an unavailable Docker Linux engine. Those infrastructure checks were not retrospectively marked passed.
+
+## Environment refactor — 2026-09-14
+
+- Node tests: 13/13 passed, including API health/error boundaries, DATABASE_URL validation, exact Knex input, missing-URL failures for all database command entry points, local dataset guard, URL normalization, and production bundle secrecy.
+- Production web build passed with API_URL supplied. Both the actual app and an explicit import.meta.env probe were built with synthetic database/JWT/unrelated-variable sentinels; only the public API endpoint was present.
+- Python unittest: 1/1 passed.
+- Offline db:generate passed; generated fixture files have no Git content changes, anomaly counts unchanged, zero orphans.
+- docs:check passed: schema parity, 37 Markdown files, 74 relative links, 12 Mermaid diagrams.
+- docker compose config --quiet passed using a transient placeholder POSTGRES_PASSWORD. Docker emitted a config-file access warning; docker info failed because the engine pipe is unavailable.
+- Live connectivity, migration, rollback, seed, reset and database validation remain unverified: no configured DATABASE_URL or running Docker engine. Missing-configuration command tests do not substitute for live PostgreSQL verification.
+- Final source/Markdown search found no legacy database or frontend endpoint variable names. Dependencies, Git history, virtual environments and generated bundles were excluded from the source search; bundles were checked separately above.
+- Corrected a pre-existing stale migration filename in the offline SQL helper so dataset and documentation tests can execute. Migration contents, business rules and phase scope are unchanged.

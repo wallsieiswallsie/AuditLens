@@ -44,7 +44,8 @@ Install Node.js 22.12+, Python 3.11+, Docker Desktop (running with Linux contain
 
 ```powershell
 Copy-Item .env.example .env
-# Edit .env and supply DATABASE_PASSWORD with a local password.
+# Edit .env: set DATABASE_URL and matching Docker-only POSTGRES_PASSWORD.
+# Set API_URL=http://localhost:3001.
 npm install
 docker compose up -d postgres
 npm run db:check
@@ -54,9 +55,9 @@ npm run dev
 
 On macOS/Linux replace Copy-Item with cp. Open [web](http://127.0.0.1:5173) and [API health](http://127.0.0.1:3001/health). Stop development servers with Ctrl+C. API and web run on the host; only PostgreSQL uses Docker.
 
-.env is loaded from the repository root regardless of workspace command location. API_PORT defaults to 3001, WEB_PORT to 5173, DATABASE_PORT to 5432. JWT placeholders are unused in this phase; do not invent credentials to run health. DATABASE_USER is the local migration administrator only. Never expose database or API services publicly with this foundation.
+.env is loaded from the repository root regardless of workspace command location. API_PORT defaults to 3001 and WEB_PORT to 5173; Compose publishes PostgreSQL on 5432. JWT placeholders are unused in this phase; do not invent credentials to run health. The user in DATABASE_URL is the local migration administrator only. Never expose database or API services publicly with this foundation.
 
-For an existing local PostgreSQL server, skip Docker and configure DATABASE_HOST/PORT/NAME/USER/PASSWORD for a dedicated development database. The user needs permission to create schemas and Knex metadata tables. npm run db:check verifies connection, while db:migrate creates boundaries.
+For an existing local PostgreSQL server, skip Docker and configure DATABASE_URL for a dedicated development database. The user needs permission to create schemas and Knex metadata tables. npm run db:check verifies connection, while db:migrate creates boundaries.
 
 ```powershell
 cd audit-engine
@@ -67,6 +68,17 @@ python -m venv .venv
 cd ..
 ```
 Use .venv/bin/python on macOS/Linux. If python is unavailable, install Python or invoke your installed interpreter by absolute path.
+
+Configure the application with one connection string (percent-encode special characters in the password):
+
+```dotenv
+DATABASE_URL=postgresql://auditlens_dev:CHANGE_ME@127.0.0.1:5432/auditlens
+API_URL=http://localhost:3001
+```
+
+Compose uses POSTGRES_DB (default auditlens), POSTGRES_USER (default auditlens_dev), and POSTGRES_PASSWORD only to initialize the PostgreSQL container. Set POSTGRES_PASSWORD to the same local password as the URL; it is not read by application code. If changing the published Compose port, update the port in DATABASE_URL too. A containerized API would use the PostgreSQL service hostname instead of loopback; dataset writes intentionally remain local-only.
+
+See [environment and Railway configuration](docs/DEPLOYMENT.md) and [ADR-006](docs/adr/ADR-006-environment-connection-strings.md). Set API_URL before building the web app; rebuild after changing it. Missing API_URL fails clearly at development startup/build. Database commands require DATABASE_URL; database-free health and offline fixture generation do not.
 
 ## Development and verification commands
 ```powershell

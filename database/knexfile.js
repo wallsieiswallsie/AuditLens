@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
-import { readConfig } from '../apps/api/src/config/env.js';
+import { requireDatabaseUrl } from '../apps/api/src/config/env.js';
 
 export default {
   client: 'pg',
-  connection: { ...readConfig().database, connectionTimeoutMillis: 5000 },
+  connection: requireDatabaseUrl(),
   pool: { min: 0, max: 5 },
   acquireConnectionTimeout: 5000,
   migrations: {

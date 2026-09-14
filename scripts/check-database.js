@@ -1,10 +1,6 @@
 import knex from 'knex';
 import config from '../database/knexfile.js';
 
-if (!config.connection.password) {
-  console.error('DATABASE_PASSWORD is required for database verification. Set it in your local .env.');
-  process.exit(1);
-}
 const db = knex(config);
 try {
   await db.raw('SELECT 1 AS connected');

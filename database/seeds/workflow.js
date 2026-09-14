@@ -2,9 +2,15 @@ import assert from 'node:assert/strict';
 import { TABLES } from '../generators/core.js';
 export function assertLocal(config,env=process.env) {
   assert.equal(env.NODE_ENV||'development','development','Dataset writes are development-only');
-  assert.ok(['127.0.0.1','localhost','::1'].includes(config.connection.host),'Dataset writes require loopback PostgreSQL');
-  assert.equal(config.connection.database,'auditlens','Dataset writes require the dedicated auditlens development database');
-  assert.ok(config.connection.password,'DATABASE_PASSWORD is required');
+  let connection;
+  try { connection = new URL(config.connection); } catch { throw new Error('Invalid DATABASE_URL'); }
+  // Inspect only for the destructive-write guard; Knex still receives the original URL.
+  assert.ok(['postgres:', 'postgresql:'].includes(connection.protocol), 'Expected PostgreSQL URL');
+  assert.equal(connection.search, '', 'Dataset writes do not allow connection query overrides');
+  assert.equal(connection.hash, '', 'Dataset writes do not allow URL fragments');
+  assert.ok(['127.0.0.1','localhost','[::1]'].includes(connection.hostname),'Dataset writes require loopback PostgreSQL');
+  assert.equal(decodeURIComponent(connection.pathname.slice(1)),'auditlens','Dataset writes require the dedicated auditlens development database');
+  assert.ok(connection.password,'DATABASE_URL must contain a password for dataset writes');
 }
 export async function seedEmpty(db,dataset) {
   await db.transaction(async trx=>{

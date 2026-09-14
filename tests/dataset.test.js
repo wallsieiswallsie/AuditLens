@@ -30,10 +30,10 @@ test('QA rejects unexpected duplicate, wrong SoD IDs, orphan, and accidental dor
   ]) {const d=structuredClone(fixture);change(d);assert.throws(()=>validate(d,{verifyHashes:false}));}
 });
 test('local write guard refuses production, remote host, wrong database and absent credential',()=>{
-  const config={connection:{host:'127.0.0.1',database:'auditlens',password:'test-only'}};
+  const config={connection:'postgresql://dev:test-only@127.0.0.1:5432/auditlens'};
   assert.doesNotThrow(()=>assertLocal(config,{}));
   assert.throws(()=>assertLocal(config,{NODE_ENV:'production'}));
-  for(const patch of [{host:'remote.example.test'},{database:'production'},{password:''}]) assert.throws(()=>assertLocal({connection:{...config.connection,...patch}},{}));
+  for(const connection of ['postgresql://dev:test-only@remote.example.test/auditlens','postgresql://dev:test-only@localhost/production','postgresql://dev@localhost/auditlens','postgresql://dev:test-only@localhost/auditlens?host=remote.example.test']) assert.throws(()=>assertLocal({connection},{}));
 });
 test('domain migration compiles PostgreSQL DDL with 11 tables, constraints and reverse rollback',async()=>{
   const up=(await migrationSql()).join('\n'), down=await migrationSql('down');

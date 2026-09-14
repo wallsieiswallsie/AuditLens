@@ -14,13 +14,20 @@ export function readConfig(env = process.env) {
   return {
     nodeEnv: env.NODE_ENV || 'development',
     api: { host: env.API_HOST || '127.0.0.1', port: integer('API_PORT', 3001) },
-    database: {
-      host: env.DATABASE_HOST || '127.0.0.1',
-      port: integer('DATABASE_PORT', 5432),
-      database: env.DATABASE_NAME || 'auditlens',
-      user: env.DATABASE_USER || 'auditlens_dev',
-      password: env.DATABASE_PASSWORD || '',
-    },
+    database: env.DATABASE_URL,
   };
 }
 
+
+// Database-free health and offline generation do not require a connection.
+export function requireDatabaseUrl(env = process.env) {
+  const value = env.DATABASE_URL?.trim();
+  if (!value) throw new Error('Missing required environment variable: DATABASE_URL');
+  try {
+    const url = new URL(value);
+    if (!['postgres:', 'postgresql:'].includes(url.protocol) || !url.hostname) throw new Error();
+  } catch {
+    throw new Error('Invalid DATABASE_URL: expected a PostgreSQL connection URL');
+  }
+  return value;
+}

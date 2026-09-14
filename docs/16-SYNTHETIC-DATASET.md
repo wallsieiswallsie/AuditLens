@@ -63,7 +63,7 @@ Clean controls include recent active logins, a never-used old dormant account, a
 
 ```powershell
 Copy-Item .env.example .env
-# Supply a local DATABASE_PASSWORD; start Docker Desktop Linux engine.
+# Configure DATABASE_URL and matching Docker-only POSTGRES_PASSWORD; start Docker Desktop Linux engine.
 docker compose up -d postgres
 npm run db:check
 npm run db:migrate

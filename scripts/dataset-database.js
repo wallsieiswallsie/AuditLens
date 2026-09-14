@@ -28,5 +28,5 @@ try {
     });
     console.log(JSON.stringify(validate({...dataset,tables}),null,2));
   }
-} catch(error) {console.error(`Database ${mode} failed: ${error.code||error.message}`);process.exitCode=1;}
+} catch(error) {console.error(`Database ${mode} failed. Check connection availability, local-write safeguards, migrations and dataset validity.`);process.exitCode=1;}
 finally {await db.destroy();}

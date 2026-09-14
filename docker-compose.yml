@@ -2,11 +2,11 @@ services:
   postgres:
     image: postgres:17
     environment:
-      POSTGRES_DB: ${DATABASE_NAME:-auditlens}
-      POSTGRES_USER: ${DATABASE_USER:-auditlens_dev}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-auditlens}
+      POSTGRES_USER: ${POSTGRES_USER:-auditlens_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
-      - "127.0.0.1:${DATABASE_PORT:-5432}:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
