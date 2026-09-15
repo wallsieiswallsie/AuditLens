@@ -1,1 +1,16 @@
-{"allow_partial_results":false,"contract_version":"1","description":"Framework checks only; business audit logic is not included.","detector_configuration":{},"disabled_detectors":[],"enabled_detectors":["framework.health"],"fail_on_detector_error":true,"minimum_confidence":0.0,"minimum_severity":"info","name":"Framework health","policy_id":"framework.default","policy_version":"auditlens-policy-v1"}
+{
+  "allow_partial_results": false,
+  "contract_version": "1",
+  "description": "Framework checks only; business audit logic is not included.",
+  "detector_configuration": {},
+  "disabled_detectors": [],
+  "enabled_detectors": [
+    "framework.health"
+  ],
+  "fail_on_detector_error": true,
+  "minimum_confidence": 0.0,
+  "minimum_severity": "info",
+  "name": "Framework health",
+  "policy_id": "framework.default",
+  "policy_version": "auditlens-policy-v1"
+}

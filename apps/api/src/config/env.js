@@ -6,6 +6,7 @@ dotenv.config({
 });
 
 export function readConfig(env = process.env) {
+  if (env.NODE_ENV === 'production') requireDatabaseUrl(env);
   const integer = (key, fallback) => {
     const value = env[key] || String(fallback);
 

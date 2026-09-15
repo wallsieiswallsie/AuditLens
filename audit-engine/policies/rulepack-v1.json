@@ -1,0 +1,71 @@
+{
+  "allow_partial_results": false,
+  "contract_version": "1",
+  "description": "First integrated deterministic business audit rule pack. Requires integer invoice references for sequence evaluation.",
+  "detector_configuration": {
+    "business.duplicate_transaction_reference": {
+      "case_sensitive": true,
+      "id_field": "id",
+      "ignore_empty": true,
+      "reference_field": "reference",
+      "table": "invoices"
+    },
+    "business.missing_required_field": {
+      "table": "invoices",
+      "id_field": "id",
+      "required_fields": [
+        "reference",
+        "vendor_id"
+      ],
+      "treat_empty_string_as_missing": true
+    },
+    "business.sequence_gap": {
+      "table": "invoices",
+      "id_field": "id",
+      "sequence_field": "reference",
+      "minimum_value": null,
+      "maximum_value": null,
+      "allow_duplicates": true
+    },
+    "business.duplicate_payment": {
+      "table": "payments",
+      "id_field": "id",
+      "match_fields": [
+        "invoice_id",
+        "amount",
+        "currency",
+        "reference"
+      ],
+      "ignore_if_any_match_field_empty": true,
+      "case_sensitive_strings": true
+    },
+    "business.amount_outlier": {
+      "amount_field": "amount",
+      "detect_lower_outliers": false,
+      "detect_upper_outliers": true,
+      "group_by_fields": [
+        "currency"
+      ],
+      "id_field": "id",
+      "ignore_negative": false,
+      "ignore_zero": false,
+      "iqr_multiplier": "1.5",
+      "minimum_sample_size": 8,
+      "table": "payments"
+    }
+  },
+  "disabled_detectors": [],
+  "enabled_detectors": [
+    "business.duplicate_transaction_reference",
+    "business.missing_required_field",
+    "business.sequence_gap",
+    "business.duplicate_payment",
+    "business.amount_outlier"
+  ],
+  "fail_on_detector_error": true,
+  "minimum_confidence": 0.0,
+  "minimum_severity": "info",
+  "name": "Audit Rule Pack v1",
+  "policy_id": "business.rulepack.v1",
+  "policy_version": "auditlens-policy-v1"
+}

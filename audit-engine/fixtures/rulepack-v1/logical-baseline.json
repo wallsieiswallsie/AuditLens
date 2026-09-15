@@ -1,0 +1,11 @@
+{
+  "hash": "8893bf4a40f24d85d545124bb1da878c3228636f59c927a73e60b92d3a1dfb55",
+  "findings": {
+    "business.amount_outlier": 1,
+    "business.duplicate_payment": 1,
+    "business.duplicate_transaction_reference": 1,
+    "business.missing_required_field": 2,
+    "business.sequence_gap": 1
+  },
+  "evidence_count": 9
+}

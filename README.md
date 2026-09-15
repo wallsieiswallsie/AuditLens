@@ -3,7 +3,7 @@
 
 An educational full-stack project exploring how system data supports traceable internal control testing.
 
-**Development status: Phase 0, Phase 1, stabilization and the Local CLI Audit Framework are verified locally. Frozen snapshots, integrity validation and local runs/results are implemented; policy-driven framework detectors and duplicate-reference, completeness, sequence-gap, duplicate-payment and Tukey IQR amount-outlier controls are implemented. Authentication is not implemented. Railway operation remains REPORTED AS WORKING, with dashboard checks outstanding.** See [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
+**Development status: Rule Pack v1 integrates five business controls in framework 0.3.0. The controlled snapshot produces five results, six findings and nine evidence items. Disposable PostgreSQL framework acceptance passes, while its text invoice references correctly fail the integer sequence control. Railway verification is NOT RUN. Authentication, API audit orchestration and real audit UI are not implemented.** See [Rule Pack integration](docs/RULE-PACK-V1.md), [production runbook](docs/PRODUCTION-RUNBOOK.md), [verification](docs/VERIFICATION.md) and [roadmap](docs/13-DEVELOPMENT-ROADMAP.md).
 
 ## Problem and planned capabilities
 Permissions, transactions and activity logs can hide control weaknesses when reviewed separately. AuditLens will connect repeatable testing with evidence and human-reviewed findings.
@@ -82,7 +82,7 @@ API_URL=http://localhost:3001
 
 Compose uses POSTGRES_DB (default auditlens), POSTGRES_USER (default auditlens_dev), and POSTGRES_PASSWORD only to initialize the PostgreSQL container. Set POSTGRES_PASSWORD to the same local password as the URL; it is not read by application code. If changing the published Compose port, update the port in DATABASE_URL too. A containerized API would use the PostgreSQL service hostname instead of loopback; dataset writes intentionally remain local-only.
 
-See [environment and Railway configuration](docs/DEPLOYMENT.md) and [ADR-006](docs/adr/ADR-006-environment-connection-strings.md). Set API_URL before building the web app; rebuild after changing it. Missing API_URL fails clearly at development startup/build. Database commands require DATABASE_URL; database-free health and offline fixture generation do not.
+See [environment and Railway configuration](docs/DEPLOYMENT.md) and [ADR-006](docs/adr/ADR-006-environment-connection-strings.md). Set API_URL before building the web app; rebuild after changing it. Missing API_URL fails clearly at development startup/build. Database commands and production API startup require DATABASE_URL; development health and offline fixture generation do not.
 
 ## Development and verification commands
 ```powershell

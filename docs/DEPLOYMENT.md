@@ -2,6 +2,16 @@
 
 API and Web remain separate services. Database administration tooling is owned by apps/api/database; Python is a local snapshot/execution CLI, not a deployed service. The running Railway services are **REPORTED AS WORKING** by the developer. Remote settings, domains, logs and deployment isolation have not been independently inspected. No Railway dashboard configuration is stored in this repository.
 
+For the current Rule Pack integration, use the [production runbook](PRODUCTION-RUNBOOK.md).
+Root aliases `npm run start:api` and `npm run start:web` delegate to the service
+workspaces. API migrations now use `apps/api/src/migrate.js`, the locally installed
+Knex library, module-relative migration paths and sanitized errors. Actual npm start
+commands are checked from both root and service working directories. Build context
+remains repository root because the shared lockfile lives there; a working service
+command does not prove an isolated `/apps/api` Railway install strategy.
+Production API configuration requires DATABASE_URL even for process startup;
+development health remains database-free. Railway checks for this phase are NOT RUN.
+
 ## Canonical configuration
 
 | Variable | Consumer and behavior |

@@ -1,5 +1,16 @@
 # Audit engine foundation
 
+## Integrated Rule Pack v1
+
+From repository root, validate `audit-engine/policies/rulepack-v1.json` using
+`python -m audit_engine policy validate audit-engine/policies/rulepack-v1.json`.
+The canonical policy selects all five existing business detectors in strict mode.
+See [integration and controlled fixture](../docs/RULE-PACK-V1.md) and
+[operations](../docs/PRODUCTION-RUNBOOK.md). The controlled baseline is five results,
+six findings and nine evidence items. The current PostgreSQL dataset's text invoice
+references deliberately fail integer sequence validation; this is not a complete
+five-control business run on that source. No detector semantics were changed.
+
 The local CLI creates deterministic PostgreSQL snapshots and executes policy-selected detectors against frozen context. The default remains framework.health; Audit Rule Pack v1 adds duplicate transaction reference, required-field completeness, sequence-gap, duplicate-payment and Decimal-only Tukey IQR amount-outlier detection. No source writes exist. Models, repositories and analyzers retain their existing package boundaries. See the [framework guide](../docs/AUDIT-FRAMEWORK.md) for contracts, connection setup, CLI commands, artifact integrity and limitations.
 
 From this directory:

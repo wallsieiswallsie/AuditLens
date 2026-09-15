@@ -11,6 +11,7 @@ import { TABLES } from './generators/core.js';
 import { validate } from './validation/validate.js';
 import { inspectDatabase } from './inspect.js';
 import { provisionReader, READER } from './security/source-reader.js';
+import { verifyRuntime } from '../../../scripts/verify-runtime.js';
 
 // Called only by the runner after it creates a new private PostgreSQL cluster.
 export async function acceptDatabase(db, connection) {
@@ -38,8 +39,11 @@ export async function acceptDatabase(db, connection) {
   command('scripts/check-database.js'); command('scripts/inspect-database.js');
   assert.deepEqual(await inspectDatabase(db), before);
   results.emptyInspection = 'PASS: no schema or migration metadata created';
-  await db.migrate.latest();
+  command('apps/api/src/migrate.js');
+  command('apps/api/src/migrate.js');
+  results.productionMigration = 'PASS: module-relative migration entrypoint applies and safely reruns';
   assert.equal((await inspectDatabase(db)).ready, true);
+  results.productionStart = await verifyRuntime('api', { DATABASE_URL: connection });
   command('scripts/dataset-database.js', ['status']);
   command('scripts/dataset-database.js', ['seed']);
   command('scripts/dataset-database.js', ['validate']);

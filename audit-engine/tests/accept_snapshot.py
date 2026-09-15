@@ -147,6 +147,37 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
         row = next(row for row in one.tables['payments'] if row['id'] == f['entity_id'])
         assert evidence['observed_value'] == row['amount']
         assert evidence['context']['group_values'] == [row['currency']]
+    # The canonical pack retains the approved integer-reference configuration.
+    # The real dataset has text references: all four compatible controls execute,
+    # then sequence fails closed. Never coerce source data or claim a complete run.
+    from audit_engine.execution import execute_policy, logical_result
+    pack = load_policy(policy_path.with_name('rulepack-v1.json'))
+    integrated_run, integrated = execute_policy(ids[0], directory, policy=pack)
+    assert integrated_run.status.value == 'failed'
+    expected_individual = {r['detector_id']: r for r in [business, completeness, payment, amount_result]}
+    from audit_engine.models.contracts import AuditResult, SourceExtraction
+    for r in integrated:
+        if r.detector_id in expected_individual:
+            assert logical_result(r) == logical_result(AuditResult.from_json(json.dumps(expected_individual[r.detector_id])))
+        else:
+            assert r.detector_id == 'business.sequence_gap' and r.summary == 'detector_error'
+    integrated_report = {r.detector_id: {
+        'input_records': len(one.tables[pack.detector_configuration[r.detector_id]['table']]),
+        'evaluated_population': None if r.summary == 'detector_error' else len(one.tables[pack.detector_configuration[r.detector_id]['table']]),
+        'finding_count': r.finding_count, 'status': r.status.value, 'summary': r.summary
+    } for r in integrated}
+    # Safe positive end-to-end run in this same process/environment, using the
+    # committed approved-format fixture. It does not write to PostgreSQL.
+    from audit_engine.snapshots import create_snapshot
+    fixture_root = Path(__file__).resolve().parents[1] / 'fixtures/rulepack-v1'
+    controlled = load_snapshot('00000000-0000-4000-a000-000000000600', fixture_root)
+    controlled_snapshot = create_snapshot(SourceExtraction('postgresql', '1', controlled.tables), directory)
+    controlled_run, controlled_results = execute_policy(controlled_snapshot.snapshot_id, directory, policy=pack)
+    assert controlled_run.status.value == 'completed'
+    baseline = json.loads((fixture_root / 'logical-baseline.json').read_text())
+    assert {r.detector_id: r.finding_count for r in controlled_results} == baseline['findings']
+    assert json.loads((Path(directory) / 'runs' / controlled_run.audit_run_id / 'logical-results.json').read_text())['logical_result_hash'] == baseline['hash']
+    assert len(json.loads(cli('result', 'inspect', controlled_run.audit_run_id))) == 5
     for path in Path(directory).rglob('*'):
         if path.is_file():
             content = path.read_text()
@@ -164,7 +195,10 @@ with tempfile.TemporaryDirectory(prefix='auditlens-framework-') as directory:
     rejected = subprocess.run([sys.executable, '-m', 'audit_engine', '--artifacts-dir', directory,
                                'run', '--snapshot', ids[0]], capture_output=True, timeout=30)
     assert rejected.returncode != 0
-    print(json.dumps({'status': 'PASS', 'checks': 13, 'tables': 11,
+    print(json.dumps({'status': 'PASS', 'checks': 15, 'tables': 11,
+                      'rulepack_v1': {'source_run_status': integrated_run.status.value,
+                          'detectors': integrated_report, 'controlled_run_status': controlled_run.status.value,
+                          'controlled_logical_hash': baseline['hash']},
                       'records': sum(one.snapshot.record_counts.values()),
                       'duplicate_payment_findings': payment['finding_count'],
                       'payment_match_fields': list(fields),

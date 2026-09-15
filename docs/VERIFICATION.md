@@ -1,6 +1,117 @@
 # Verification record
 
-## Amount outlier rule - 2026-09-15 Asia/Jakarta (current)
+## Rule Pack v1 integration - 2026-09-15 Asia/Jakarta (current)
+
+Resumed existing changes; framework remains 0.3.0. No new detector, algorithm,
+hash contract or source schema. The canonical [policy](../audit-engine/policies/rulepack-v1.json)
+composes the five previously verified configurations. See [integration](RULE-PACK-V1.md)
+and [production runbook](PRODUCTION-RUNBOOK.md).
+
+### Local Verification
+
+| Check | Actual result |
+| --- | --- |
+| Full Python suite | PASS: 366 tests in 240.57s; all 357 previous tests plus 9 integration cases |
+| Focused integration suite | PASS: 9 tests in 20.70s |
+| Node suite | PASS: 19 tests, including startup/environment sanitization |
+| Production Web build | PASS: environment-provided API_URL, 26 modules |
+| Legacy CLI, health, registry | PASS: actual subprocess commands |
+| Default/examples and all five individual policies | PASS: CLI validation, execution, snapshot/result inspection |
+| Controlled integrated run | PASS: five results, six findings, nine evidence items |
+| Ordering and isolation | PASS: individual logical outputs equal integrated components; source row/key and policy key order invariant; shared frozen context unchanged |
+| Logical hash sensitivity | PASS: config, source value, version, finding and evidence changes |
+| Strict/partial failure | PASS: exception/missing-field cases; prior results retained; strict later skips; partial later execution; run remains failed |
+| Artifacts/provenance | PASS: policy ID/version, all resolved versions/configs, snapshot reference/hash, logical hash, status and existing atomic/no-clobber writes |
+| Readiness helper | PASS: snapshot/schema/registry/policy validation and actual atomic output probe; bad ID rejected; probes cleaned |
+| API npm start | PASS: repository root and apps/api; migrations first, live health, owned processes stopped |
+| Web npm start | PASS: repository root and apps/web; live index, owned processes stopped |
+| Documentation/whitespace | PASS: schema parity, 50 Markdown files, 195 relative links, 15 Mermaid diagrams; git diff --check clean |
+
+Controlled expected = actual findings: amount 1, duplicate payment 1, duplicate
+reference 1, completeness 2, sequence 1. Eleven tables contain five invoices, eight
+payments and nine empty tables. This is a snapshot-contract fixture, not a database
+seed. Logical hash:
+`8893bf4a40f24d85d545124bb1da878c3228636f59c927a73e60b92d3a1dfb55`.
+All seven existing detector goldens remain compatible. The resumed diffs for
+default/examples/business-rulepack-v1 policies are formatting-only; JSON values and
+normalized serialization are unchanged. CLI evidence and inspectable runs are retained
+locally under ignored `audit-engine/artifacts/rulepack-verification`.
+
+Runtime uses the project-local Knex module, module-relative migration paths and
+sanitized startup messages. Production API requires DATABASE_URL; development health
+defaults remain. No Web configuration semantics or API endpoints changed. Health is
+liveness only. Trusted detectors receive frozen context/config, not connections or
+credentials; this interface is not an OS sandbox.
+
+### Disposable PostgreSQL Verification
+
+PASS, report **2026-09-15T04:17:16.229Z UTC**: PostgreSQL 17.5; 15 framework checks;
+11 tables; 19,654 records; seven constraint checks; 17 reader denials (42501), plus
+SELECT on all approved tables. Production API start from both directories and
+idempotent migrations passed. Source hashes remained unchanged, audit schema stayed
+empty and the private cluster stopped successfully.
+
+| Integrated detector | Input | Evaluated population | Findings | Result |
+| --- | ---: | ---: | ---: | --- |
+| business.amount_outlier | 2,400 | 2,400 | 122 | findings |
+| business.duplicate_payment | 2,400 | 2,400 | 0 | passed |
+| business.duplicate_transaction_reference | 2,000 | 2,000 | 0 | passed |
+| business.missing_required_field | 2,000 | 2,000 | 0 | passed |
+| business.sequence_gap | 2,000 | Not completed | 0 | error / detector_error |
+
+**Framework acceptance PASS is separate from five-rule business compatibility.**
+The strict integrated source run is `failed`: sequence requires integer values while
+the source has prefixed text references. No source coercion, substitution or detector
+weakening occurred. Four compatible results match individual logical outputs exactly.
+Sequence is last, so no later controls exist to skip here; controlled failure tests
+prove later skips separately. A controlled snapshot run in the same acceptance
+environment completed all five controls with the canonical hash above.
+
+Amount evaluation retained 2,400 eligible records, one currency group and one group
+meeting sample size eight; all 122 upper findings matched independently computed IDs.
+Zero findings in the other compatible controls are valid.
+
+Initial infrastructure failures: initdb reported Windows restricted-token errors 87/3.
+The established isolated runner passed with permitted broader process permissions.
+A Web smoke run could not stop its owned npm tree in the restricted context; only
+identified test processes were stopped, cleanup gained bounded failure handling, and
+the broader-process rerun passed. No application permissions or grants were weakened.
+A single invalid CP1252 dash in historical verification text was repaired to UTF-8.
+
+### Production/Railway Verification
+
+No Railway CLI, configured Railway environment, public deployment URLs or authenticated
+browser session was available. Local results do not establish Railway deployment.
+
+| Railway check | Status | Evidence/reason |
+| --- | --- | --- |
+| Build | NOT RUN | No project/deployment access |
+| Startup | NOT RUN | No remote runtime access |
+| API health | NOT RUN | No public API URL |
+| Web health | NOT RUN | No public Web URL |
+| DB connectivity | NOT RUN | No authorized remote DB context |
+| Migrations | NOT RUN | Disposable execution only |
+| Web → API | NOT RUN | No URLs; current UI has no real API call |
+| Engine health | NOT RUN | No deployed Python CLI environment |
+| Rule Pack validation | NOT RUN | Local CLI only |
+| Rule Pack execution | NOT RUN | Controlled local run only |
+| Artifact creation | NOT RUN | No Railway audit run |
+| Artifact inspection | NOT RUN | No Railway artifacts |
+| Read-only source | NOT RUN | Remote grants uninspected; disposable denials verified |
+
+Build context remains repository root for the shared lockfile. Service-directory
+commands also work after dependencies are installed; an isolated Railway subdirectory
+install was not verified. No Railway Volume or external storage is configured here.
+Unmounted container artifacts are ephemeral; actual remote mounts are unverified.
+No production source was modified and no Git commit was executed.
+
+Phase 0 verified locally; Phase 1 verified on disposable PostgreSQL; Rule Pack v1
+integrated on controlled snapshots; production commands verified locally. Railway
+build/runtime and production audit execution NOT RUN. Persistence/orchestration and
+real audit UI are not started. Recommended next phase: **Audit Run persistence +
+Node API orchestration**, the bridge before UI can display real runs/findings.
+
+## Amount outlier rule - 2026-09-15 Asia/Jakarta (previous phase)
 
 Added only `business.amount_outlier` 1.0.0, category `monetary_anomaly`, rule
 `AMOUNT_OUTLIER`, medium severity. Framework remains 0.3.0. Existing string/list/
@@ -202,7 +313,7 @@ duplicate-reference, completeness and sequence integrity complete. Advanced busi
 rules are not started. Production/Railway remains unverified. Recommended next rule:
 `business.duplicate_payment`; not implemented. No Git commits were executed.
 
-## Completeness rule � 2026-09-15 Asia/Jakarta (current)
+## Completeness rule — 2026-09-15 Asia/Jakarta (current)
 
 Added only `business.missing_required_field` 1.0.0, category data_completeness.
 Framework remains 0.3.0. SDK change: bounded list[string] configuration using the

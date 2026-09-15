@@ -1,0 +1,5 @@
+{"amount":"10.00","created_at":null,"created_by":null,"currency":null,"id":"00000000-0000-4000-a000-000000000001","reference":1,"status":null,"supporting_reference":null,"updated_at":null,"vendor_id":"vendor"}
+{"amount":"10.00","created_at":null,"created_by":null,"currency":null,"id":"00000000-0000-4000-a000-000000000002","reference":2,"status":null,"supporting_reference":null,"updated_at":null,"vendor_id":"vendor"}
+{"amount":"10.00","created_at":null,"created_by":null,"currency":null,"id":"00000000-0000-4000-a000-000000000003","reference":2,"status":null,"supporting_reference":null,"updated_at":null,"vendor_id":"vendor"}
+{"amount":"10.00","created_at":null,"created_by":null,"currency":null,"id":"00000000-0000-4000-a000-000000000004","reference":4,"status":null,"supporting_reference":null,"updated_at":null,"vendor_id":null}
+{"amount":"10.00","created_at":null,"created_by":null,"currency":null,"id":"00000000-0000-4000-a000-000000000005","reference":null,"status":null,"supporting_reference":null,"updated_at":null,"vendor_id":"vendor"}
